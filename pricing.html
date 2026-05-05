@@ -285,7 +285,9 @@
 
         if (error) throw error;
         
-        if (data && data.url) {
+        if (data && data.error) {
+          throw new Error(data.error);
+        } else if (data && data.url) {
           window.location.href = data.url;
         } else {
           throw new Error('Ralat menjana pembayaran dari Bayarcash');
