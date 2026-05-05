@@ -272,30 +272,23 @@
       const s = getSession();
 
       try {
-        const { data: { session } } = await sb.auth.getSession();
-        
-        const response = await fetch(`${SUPABASE_URL}/functions/v1/bayarcash-create-payment`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${session?.access_token || SUPABASE_ANON_KEY}`
-          },
-          body: JSON.stringify({
+        const { data, error } = await sb.functions.invoke('bayarcash-create-payment', {
+          body: {
             planId: selectedPlan,
             billing: billing,
             amount: finalPrice,
             payerName: s?.name || s?.email,
             payerEmail: s?.email,
             paymentChannel: selectedPayment
-          })
+          }
         });
 
-        const resData = await response.json();
+        if (error) throw error;
         
-        if (response.ok && resData.url) {
-          window.location.href = resData.url;
+        if (data && data.url) {
+          window.location.href = data.url;
         } else {
-          throw new Error(resData.error || 'Ralat menjana pembayaran dari Bayarcash');
+          throw new Error('Ralat menjana pembayaran dari Bayarcash');
         }
       } catch (err) {
         btn.disabled = false;
