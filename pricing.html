@@ -142,17 +142,17 @@
         <div class="order-summary" id="orderSummary"></div>
         <p style="font-size:.85rem;font-weight:700;margin-bottom:10px;color:var(--text-secondary)" data-i18n="pricing.modal.choose">Pilih kaedah pembayaran:</p>
         <div class="payment-methods">
-          <div class="payment-method selected" onclick="selectPayment(this,'toyyibpay')">
+          <div class="payment-method selected" onclick="selectPayment(this,'1')">
             <div class="pm-icon">🇲🇾</div>
-            <div><div class="pm-name">toyyibPay</div><div class="pm-desc">FPX, Kad Kredit, eWallet</div></div>
+            <div><div class="pm-name">FPX (Bayarcash)</div><div class="pm-desc">Perbankan Internet Malaysia</div></div>
           </div>
-          <div class="payment-method" onclick="selectPayment(this,'billplz')">
-            <div class="pm-icon">🏦</div>
-            <div><div class="pm-name">Billplz</div><div class="pm-desc">FPX Online Banking Malaysia</div></div>
+          <div class="payment-method" onclick="selectPayment(this,'12')">
+            <div class="pm-icon">💳</div>
+            <div><div class="pm-name">Kad Kredit / Debit</div><div class="pm-desc">Visa / Mastercard via Bayarcash</div></div>
           </div>
-          <div class="payment-method" onclick="selectPayment(this,'stripe')">
-            <div class="pm-icon">🌍</div>
-            <div><div class="pm-name">Stripe</div><div class="pm-desc">Visa / Mastercard (Antarabangsa)</div></div>
+          <div class="payment-method" onclick="selectPayment(this,'')">
+            <div class="pm-icon">🌐</div>
+            <div><div class="pm-name">Lain-lain Kaedah</div><div class="pm-desc">E-Wallet, DuitNow, dsb.</div></div>
           </div>
         </div>
         <button class="btn btn-primary btn-block btn-lg" id="payBtn" onclick="processCheckout()" style="margin-top:16px">
@@ -178,7 +178,7 @@
 
     let billing = 'monthly';
     let selectedPlan = null;
-    let selectedPayment = 'toyyibpay';
+    let selectedPayment = '1';
     let appliedPromo = null;
 
     // Show dashboard link if logged in
@@ -256,26 +256,52 @@
       selectedPayment = method;
     }
 
-    function processCheckout() {
+    async function processCheckout() {
       if (!selectedPlan) return;
       const btn = document.getElementById('payBtn');
       btn.disabled = true;
       btn.innerHTML = '<span class="spinner"></span> Memproses...';
-      setTimeout(() => {
-        const res = upgradePlan(selectedPlan, billing, appliedPromo?.code||'');
+      
+      const plan = PLANS[selectedPlan];
+      const price = billing === 'yearly' ? plan.price.yearly * 12 : plan.price.monthly;
+      let disc = 0;
+      if (appliedPromo) {
+        disc = appliedPromo.type === 'percentage' ? price * (appliedPromo.value / 100) : appliedPromo.value;
+      }
+      const finalPrice = price - disc;
+      const s = getSession();
+
+      try {
+        const { data: { session } } = await sb.auth.getSession();
+        
+        const response = await fetch(`${SUPABASE_URL}/functions/v1/bayarcash-create-payment`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session?.access_token || ''}`
+          },
+          body: JSON.stringify({
+            planId: selectedPlan,
+            billing: billing,
+            amount: finalPrice,
+            payerName: s?.name || s?.email,
+            payerEmail: s?.email,
+            paymentChannel: selectedPayment
+          })
+        });
+
+        const resData = await response.json();
+        
+        if (response.ok && resData.url) {
+          window.location.href = resData.url;
+        } else {
+          throw new Error(resData.error || 'Ralat menjana pembayaran dari Bayarcash');
+        }
+      } catch (err) {
         btn.disabled = false;
         btn.innerHTML = '<i class="fa fa-lock"></i> <span id="payBtnText">Bayar Sekarang</span>';
-        if (res.success) {
-          const sub = JSON.parse(localStorage.getItem('pgp_subscriptions')||'[]');
-          const latest = sub[sub.length-1];
-          if (latest) processAffiliateCommission(getSession().userId, latest.amount);
-          closeModal('checkoutModal');
-          showToast('🎉 Pelan berjaya dinaik taraf! Selamat menggunakan ' + res.plan.name, 'success');
-          setTimeout(()=>window.location.href='dashboard.html',1500);
-        } else {
-          showToast(res.message||'Pembayaran gagal.','error');
-        }
-      }, 1500);
+        showToast(err.message || 'Pembayaran gagal.', 'error');
+      }
     }
 
     function applyPromo() {
