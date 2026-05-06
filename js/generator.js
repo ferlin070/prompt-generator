@@ -338,6 +338,535 @@ const BUSINESS_TEMPLATES = {
       { id:'vcard_perk', label:'Kelebihan vCard', type:'text', placeholder:'Simpan terus ke fon dalam satu klik...' }
     ]
   }
+,
+  // ── MAKANAN & MINUMAN (F&B) TAMBAHAN ──────────────────────────
+  frozenFood : { 
+    label:'❄️ Makanan Sejuk Beku', icon:'❄️', category:'Makanan', tone:'Meyakinkan & Praktikal',
+    sections:['Katalog Produk','Cara Penyediaan','Harga Borong','Testimoni'],
+    fields: [
+      { id:'frozen_type', label:'Jenis Produk', type:'text', placeholder:'Karipap pusing, daging perap, kambing perap...' }
+    ]
+  },
+  bubbleTea : { 
+    label:'🧋 Bubble Tea / Jus', icon:'🧋', category:'Makanan', tone:'Ceria & Trendy',
+    sections:['Menu Minuman','Topping Pilihan','Promosi','Lokasi Kedai'],
+    fields: [
+      { id:'best_seller', label:'Minuman Terlaris', type:'text', placeholder:'Brown Sugar Boba, Mango Smoothie...' }
+    ]
+  },
+  snacks : { 
+    label:'🥔 Kerepek & Snek', icon:'🥔', category:'Makanan', tone:'Santai & Tradisional',
+    sections:['Senarai Produk','Pakej Ejen/Dropship','Testimoni Rasa','Beli Online'],
+    fields: [
+      { id:'snack_type', label:'Jenis Snek', type:'text', placeholder:'Kerepek pisang, ubi pedas, rempeyek...' }
+    ]
+  },
+  rawFoodSupplier : { 
+    label:'🥩 Pembekal Bahan Mentah', icon:'🥩', category:'Makanan', tone:'Profesional & Borong',
+    sections:['Senarai Bahan','Harga Borong','Kawasan Penghantaran','Hubungi Kami'],
+    fields: [
+      { id:'raw_material', label:'Bahan Mentah', type:'text', placeholder:'Daging segar, ayam borong, sayur organik...' }
+    ]
+  },
+  foodDelivery : { 
+    label:'🍱 Penghantaran Makanan (Home-cooked)', icon:'🍱', category:'Makanan', tone:'Mesra & Sihat',
+    sections:['Menu Mingguan','Pakej Langganan','Testimoni','Tempah Sekarang'],
+    fields: [
+      { id:'delivery_area', label:'Kawasan Penghantaran', type:'text', placeholder:'Lembah Klang, Shah Alam...' }
+    ]
+  },
+
+  // ── PERUNCITAN & PEMBORONGAN ──────────────────────────
+  miniMarket : { 
+    label:'🏪 Kedai Runcit / Mini Market', icon:'🏪', category:'Peruncitan', tone:'Mudah & Mesra',
+    sections:['Barangan Runcit','Promosi Mingguan','Waktu Operasi','Lokasi'],
+    fields: [
+      { id:'market_specialty', label:'Fokus Jualan', type:'text', placeholder:'Barangan basah, keperluan harian, borong...' }
+    ]
+  },
+  phoneAccessories : { 
+    label:'📱 Aksesori Telefon', icon:'📱', category:'Peruncitan', tone:'Moden & Trendy',
+    sections:['Katalog Gajet','Promosi','Testimoni','Beli Online'],
+    fields: [
+      { id:'gadget_focus', label:'Fokus Gajet', type:'text', placeholder:'Casing, Powerbank, Screen Protector...' }
+    ]
+  },
+  hardwareStore : { 
+    label:'🛠️ Kedai Perkakasan (Hardware)', icon:'🛠️', category:'Peruncitan', tone:'Dipercayai & Lengkap',
+    sections:['Katalog Barang','Perkhidmatan Bancuh Cat','Sebut Harga Borong','Lokasi'],
+    fields: [
+      { id:'hardware_brands', label:'Jenama Utama', type:'text', placeholder:'Nippon Paint, Bosch, Makita...' }
+    ]
+  },
+  stationery : { 
+    label:'✏️ Alat Tulis & Buku', icon:'✏️', category:'Peruncitan', tone:'Ceria & Praktikal',
+    sections:['Katalog Alat Tulis','Perkhidmatan Fotostat','Promosi Back-to-School','Lokasi'],
+    fields: [
+      { id:'stationery_type', label:'Fokus Kedai', type:'text', placeholder:'Buku rujukan, alat tulis pejabat, cetakan...' }
+    ]
+  },
+  jewelryStore : { 
+    label:'💍 Kedai Emas & Barangan Kemas', icon:'💍', category:'Peruncitan', tone:'Mewah & Elegan',
+    sections:['Koleksi Terkini','Harga Emas Semasa','Trade-in Emas','Lokasi'],
+    fields: [
+      { id:'gold_type', label:'Jenis Emas', type:'text', placeholder:'Emas 916, Emas 999, Berlian...' }
+    ]
+  },
+  sportsStore : { 
+    label:'⚽ Barangan Sukan', icon:'⚽', category:'Peruncitan', tone:'Aktif & Energetik',
+    sections:['Katalog Peralatan','Jersi & Pakaian','Promosi','Lokasi'],
+    fields: [
+      { id:'sports_focus', label:'Sukan Fokus', type:'text', placeholder:'Bola sepak, badminton, basikal...' }
+    ]
+  },
+  cosmeticsStore : { 
+    label:'💄 Kedai Kosmetik & Jamu', icon:'💄', category:'Peruncitan', tone:'Kecantikan & Pesona',
+    sections:['Katalog Produk','Testimoni','Cara Penggunaan','Beli Online'],
+    fields: [
+      { id:'cosmetics_brand', label:'Jenama Dijual', type:'text', placeholder:'Jenama tempatan, jamu tradisional, makeup...' }
+    ]
+  },
+  petStore : { 
+    label:'🐾 Kedai Haiwan Peliharaan', icon:'🐾', category:'Peruncitan', tone:'Mesra & Comel',
+    sections:['Katalog Makanan & Aksesori','Servis Grooming','Haiwan Jualan','Lokasi'],
+    fields: [
+      { id:'pet_focus', label:'Fokus Haiwan', type:'text', placeholder:'Kucing, Anjing, Ikan hiasan...' }
+    ]
+  },
+  florist : { 
+    label:'💐 Kedai Bunga (Florist)', icon:'💐', category:'Peruncitan', tone:'Indah & Romantik',
+    sections:['Katalog Jambangan','Gubahan Khas','Kawasan Penghantaran','Tempah Sekarang'],
+    fields: [
+      { id:'flower_events', label:'Acara Fokus', type:'text', placeholder:'Hari Jadi, Konvokesyen, Perkahwinan...' }
+    ]
+  },
+  plasticSupplier : { 
+    label:'📦 Pemborong Plastik & Pembungkusan', icon:'📦', category:'Peruncitan', tone:'Profesional & Borong',
+    sections:['Katalog Pembungkusan','Harga Borong','Custom Printing','Hubungi Kami'],
+    fields: [
+      { id:'packaging_type', label:'Jenis Pembungkusan', type:'text', placeholder:'Bekas makanan, paper bag, custom kotak...' }
+    ]
+  },
+
+  // ── PERKHIDMATAN PROFESIONAL & PENJAGAAN DIRI ──────────
+  pharmacy : { 
+    label:'💊 Farmasi Runcit', icon:'💊', category:'Kesihatan', tone:'Profesional & Meyakinkan',
+    sections:['Katalog Ubat & Suplemen','Nasihat Farmasis','Semakan Kesihatan','Lokasi'],
+    fields: [
+      { id:'pharmacy_services', label:'Perkhidmatan Tambahan', type:'text', placeholder:'Cek tekanan darah, cek gula, konsultasi ubat...' }
+    ]
+  },
+  confinementCentre : { 
+    label:'🤱 Pusat Jagaan Berpantang', icon:'🤱', category:'Kesihatan', tone:'Tenang & Selesa',
+    sections:['Pakej Berpantang','Kemudahan Bilik','Menu Makanan Sihat','Testimoni'],
+    fields: [
+      { id:'confinement_days', label:'Pilihan Pakej', type:'text', placeholder:'Pakej 14 hari, 28 hari, 44 hari...' }
+    ]
+  },
+  optometrist : { 
+    label:'👓 Optometris (Cermin Mata)', icon:'👓', category:'Kesihatan', tone:'Jelas & Profesional',
+    sections:['Koleksi Bingkai','Pemeriksaan Mata','Kanta Lekap','Promosi'],
+    fields: [
+      { id:'glasses_brands', label:'Jenama Bingkai', type:'text', placeholder:'Ray-Ban, Oakley, jenama mampu milik...' }
+    ]
+  },
+  physiotherapy : { 
+    label:'💆‍♂️ Pusat Fisioterapi', icon:'💆‍♂️', category:'Kesihatan', tone:'Pemulihan & Profesional',
+    sections:['Jenis Rawatan','Fisioterapis Bertauliah','Testimoni Pesakit','Tempah Sesi'],
+    fields: [
+      { id:'physio_focus', label:'Fokus Rawatan', type:'text', placeholder:'Kecederaan sukan, strok, sakit belakang...' }
+    ]
+  },
+
+  // ── PENDIDIKAN & LATIHAN ──────────────────────────
+  drivingSchool : { 
+    label:'🚗 Kelas Memandu', icon:'🚗', category:'Pendidikan', tone:'Selamat & Mesra',
+    sections:['Pakej Lesen Memandu','Jadual Kelas','Kadar Bayaran','Daftar Sekarang'],
+    fields: [
+      { id:'license_class', label:'Kelas Lesen', type:'text', placeholder:'Lesen D (Manual), DA (Auto), B2 (Motor)...' }
+    ]
+  },
+  tvet : { 
+    label:'🛠️ Pusat Latihan Kemahiran (TVET)', icon:'🛠️', category:'Pendidikan', tone:'Praktikal & Profesional',
+    sections:['Senarai Kursus','Peluang Kerjaya','Syarat Kelayakan','Daftar Sekarang'],
+    fields: [
+      { id:'tvet_course', label:'Kursus Ditawarkan', type:'text', placeholder:'Kimpalan, Elektrikal, Jahitan, Masakan...' }
+    ]
+  },
+  musicArtClass : { 
+    label:'🎵 Kelas Muzik / Seni', icon:'🎵', category:'Pendidikan', tone:'Kreatif & Menginspirasikan',
+    sections:['Program Kelas','Profil Tenaga Pengajar','Galeri Persembahan','Daftar Kelas'],
+    fields: [
+      { id:'art_type', label:'Jenis Kelas', type:'text', placeholder:'Piano, Gitar, Vokal, Lukisan...' }
+    ]
+  },
+  languageCenter : { 
+    label:'🗣️ Pusat Bahasa Asing', icon:'🗣️', category:'Pendidikan', tone:'Global & Interaktif',
+    sections:['Pilihan Bahasa','Pakej Pembelajaran','Jadual Kelas','Daftar Sekarang'],
+    fields: [
+      { id:'language_focus', label:'Bahasa Ditawarkan', type:'text', placeholder:'Bahasa Inggeris, Mandarin, Jepun, Arab...' }
+    ]
+  },
+  corporateTrainer : { 
+    label:'🎤 Pakar Motivasi & Latihan', icon:'🎤', category:'Pendidikan', tone:'Motivasi & Energetik',
+    sections:['Modul Latihan','Profil Penceramah','Klien Korporat','Tempah Sesi'],
+    fields: [
+      { id:'training_topic', label:'Topik Latihan', type:'text', placeholder:'Team building, Kepimpinan, Sales...' }
+    ]
+  },
+
+  // ── PEMBAIKAN, PENYELENGGARAAN & KEBERSIHAN ──────────
+  carWash : { 
+    label:'🧽 Pusat Basuh Kereta (Car Wash)', icon:'🧽', category:'Penyelenggaraan', tone:'Bersih & Berkilat',
+    sections:['Pakej Cucian','Perkhidmatan Detailing','Harga','Lokasi'],
+    fields: [
+      { id:'wash_services', label:'Servis Ditawarkan', type:'text', placeholder:'Cuci biasa, Polish, Wax, Ceramic Coating...' }
+    ]
+  },
+  aircondService : { 
+    label:'❄️ Servis Aircond', icon:'❄️', category:'Penyelenggaraan', tone:'Pantas & Sejuk',
+    sections:['Jenis Servis','Senarai Harga','Kawasan Liputan','Tempah Servis'],
+    fields: [
+      { id:'aircond_type', label:'Jenis Penghawa Dingin', type:'text', placeholder:'Wall mounted, Cassette, Inverter...' }
+    ]
+  },
+  plumbing : { 
+    label:'🚰 Perkhidmatan Paip (Plumbing)', icon:'🚰', category:'Penyelenggaraan', tone:'Dipercayai & Efisyen',
+    sections:['Senarai Perkhidmatan','Harga Anggaran','Kawasan Liputan','Hubungi Segera'],
+    fields: [
+      { id:'plumbing_issue', label:'Masalah Biasa', type:'text', placeholder:'Paip bocor, sinki tersumbat, tangki air...' }
+    ]
+  },
+  wiring : { 
+    label:'⚡ Perkhidmatan Pendawaian (Wiring)', icon:'⚡', category:'Penyelenggaraan', tone:'Selamat & Cekap',
+    sections:['Jenis Pendawaian','Keselamatan','Sebut Harga','Kawasan Liputan'],
+    fields: [
+      { id:'wiring_type', label:'Jenis Kerja Elektrik', type:'text', placeholder:'Pasang lampu, kipas, tambah plug point...' }
+    ]
+  },
+  techRepair : { 
+    label:'📱 Kedai Pembaikan Telefon/Komputer', icon:'📱', category:'Penyelenggaraan', tone:'Pakar & Pantas',
+    sections:['Senarai Pembaikan','Anggaran Kos','Jaminan (Warranty)','Lokasi'],
+    fields: [
+      { id:'repair_specialty', label:'Kepakaran', type:'text', placeholder:'Tukar skrin, bateri, format laptop, data recovery...' }
+    ]
+  },
+  cleaningService : { 
+    label:'🧹 Pembersihan Rumah/Pejabat', icon:'🧹', category:'Penyelenggaraan', tone:'Bersih & Teliti',
+    sections:['Pakej Pembersihan','Kawasan Liputan','Testimoni','Tempah Slot'],
+    fields: [
+      { id:'cleaning_type', label:'Jenis Cucian', type:'text', placeholder:'Cucian harian, deep cleaning, post-renovation...' }
+    ]
+  },
+  laundry : { 
+    label:'🧺 Kedai Dobi', icon:'🧺', category:'Penyelenggaraan', tone:'Wangi & Bersih',
+    sections:['Perkhidmatan Dobi','Senarai Harga','Waktu Operasi','Lokasi'],
+    fields: [
+      { id:'laundry_type', label:'Jenis Dobi', type:'text', placeholder:'Layan diri 24 jam, dry cleaning, gosok baju...' }
+    ]
+  },
+  landscaping : { 
+    label:'🌱 Pemotongan Rumput & Landskap', icon:'🌱', category:'Penyelenggaraan', tone:'Hijau & Kemas',
+    sections:['Perkhidmatan Penjagaan Laman','Galeri Hasil Kerja','Sebut Harga','Hubungi'],
+    fields: [
+      { id:'landscape_service', label:'Jenis Servis', type:'text', placeholder:'Potong rumput, tebang pokok, tanam bunga...' }
+    ]
+  },
+  pestControl : { 
+    label:'🐜 Kawalan Serangga (Pest Control)', icon:'🐜', category:'Penyelenggaraan', tone:'Berkesan & Selamat',
+    sections:['Jenis Kawalan','Proses Rawatan','Jaminan','Sebut Harga'],
+    fields: [
+      { id:'pest_target', label:'Serangga Sasaran', type:'text', placeholder:'Anai-anai, tikus, nyamuk, lipas...' }
+    ]
+  },
+  tailor : { 
+    label:'✂️ Tukang Jahit (Tailor)', icon:'✂️', category:'Penyelenggaraan', tone:'Kemas & Berkualiti',
+    sections:['Jenis Jahitan','Galeri Pakaian','Senarai Harga','Tempah Ukuran'],
+    fields: [
+      { id:'tailor_specialty', label:'Kepakaran Jahitan', type:'text', placeholder:'Baju kurung, suit lelaki, alteration...' }
+    ]
+  },
+  cobbler : { 
+    label:'👞 Tukang Kasut / Shoe Spa', icon:'👞', category:'Penyelenggaraan', tone:'Teliti & Rapi',
+    sections:['Perkhidmatan Pembaikan','Pakej Cucian Kasut','Galeri Sebelum/Selepas','Lokasi'],
+    fields: [
+      { id:'shoe_services', label:'Servis Ditawarkan', type:'text', placeholder:'Tukar tapak, jahit kasut, deep cleaning...' }
+    ]
+  },
+
+  // ── HARTANAH, PEMBINAAN & UBAH SUAI ──────────────────
+  cabinetMaker : { 
+    label:'🗄️ Pembuatan Kabinet Dapur', icon:'🗄️', category:'Hartanah', tone:'Moden & Praktikal',
+    sections:['Koleksi Rekaan','Material Digunakan','Testimoni','Tempah Ukuran Percuma'],
+    fields: [
+      { id:'cabinet_material', label:'Material Utama', type:'text', placeholder:'Melamine, Plywood, Aluminium, Quartz stone...' }
+    ]
+  },
+  interiorDesign : { 
+    label:'🛋️ Hiasan Dalaman (Interior Design)', icon:'🛋️', category:'Hartanah', tone:'Eksklusif & Estetik',
+    sections:['Portfolio Rekaan','Proses Konsultasi','Pakej ID','Hubungi Kami'],
+    fields: [
+      { id:'id_style', label:'Gaya Rekaan', type:'text', placeholder:'Modern Luxury, Muji, Minimalist, Scandinavian...' }
+    ]
+  },
+  grillAwning : { 
+    label:'🚪 Pemasangan Jeriji Besi & Awning', icon:'🚪', category:'Hartanah', tone:'Kukuh & Selamat',
+    sections:['Galeri Pemasangan','Pilihan Material','Testimoni','Sebut Harga Percuma'],
+    fields: [
+      { id:'grill_material', label:'Material Besi', type:'text', placeholder:'Mild steel, Wrought iron, Polycarbonate awning...' }
+    ]
+  },
+  propertyManagement : { 
+    label:'🏢 Pengurusan Hartanah', icon:'🏢', category:'Hartanah', tone:'Profesional & Sistematik',
+    sections:['Skop Pengurusan','Kelebihan Tuan Rumah','Senarai Hartanah Diurus','Hubungi'],
+    fields: [
+      { id:'management_scope', label:'Skop Kerja', type:'text', placeholder:'Kutipan sewa, penyelenggaraan kerosakan, pembersihan...' }
+    ]
+  },
+
+  // ── PENGANGKUTAN & LOGISTIK ──────────────────────────
+  ehailing : { 
+    label:'🚖 Pemandu E-hailing / Teksi', icon:'🚖', category:'Logistik', tone:'Selamat & Selesa',
+    sections:['Kawasan Liputan','Jenis Kenderaan','Cara Tempahan','Hubungi'],
+    fields: [
+      { id:'ehailing_area', label:'Kawasan Liputan', type:'text', placeholder:'Lembah Klang, KLIA Transfer, Antara Negeri...' }
+    ]
+  },
+  runner : { 
+    label:'🛵 Penghantaran / Runner', icon:'🛵', category:'Logistik', tone:'Pantas & Amanah',
+    sections:['Jenis Tugasan','Kadar Upah','Kawasan Liputan','Tempah Runner'],
+    fields: [
+      { id:'runner_task', label:'Tugasan Biasa', type:'text', placeholder:'Hantar dokumen, beli barang dapur, surprise delivery...' }
+    ]
+  },
+  movers : { 
+    label:'📦 Sewa Lori / Pindah Rumah (Movers)', icon:'📦', category:'Logistik', tone:'Kuat & Berhati-hati',
+    sections:['Pakej Pindah Rumah','Saiz Lori','Testimoni Pelanggan','Dapatkan Sebut Harga'],
+    fields: [
+      { id:'mover_services', label:'Pakej Tambahan', type:'text', placeholder:'Tukang angkat (manpower), wrapping barang, buka/pasang perabot...' }
+    ]
+  },
+  busRental : { 
+    label:'🚌 Bas Sewa Khas', icon:'🚌', category:'Logistik', tone:'Selesa & Selamat',
+    sections:['Galeri Bas','Pakej Percutian','Kapasiti Penumpang','Tempah Sekarang'],
+    fields: [
+      { id:'bus_type', label:'Jenis Bas', type:'text', placeholder:'Bas persiaran 40 penumpang, VIP 30 seat, Mini bas...' }
+    ]
+  },
+
+  // ── TEKNOLOGI & DIGITAL KREATIF ──────────────────────
+  digitalMarketing : { 
+    label:'📈 Agensi Pemasaran Digital', icon:'📈', category:'Teknologi', tone:'Dinamik & Berkesan',
+    sections:['Perkhidmatan Pemasaran','Kajian Kes (Case Study)','Pakej Iklan','Konsultasi Percuma'],
+    fields: [
+      { id:'marketing_channel', label:'Platform Fokus', type:'text', placeholder:'Facebook Ads, Google SEO, TikTok Ads...' }
+    ]
+  },
+  socialMediaManagement : { 
+    label:'📱 Pengurusan Media Sosial', icon:'📱', category:'Teknologi', tone:'Kreatif & Trendy',
+    sections:['Pakej Pengurusan','Portfolio Kandungan','Pencapaian (Engagement)','Hubungi'],
+    fields: [
+      { id:'social_platform', label:'Platform Diuruskan', type:'text', placeholder:'Instagram, TikTok, Facebook Page...' }
+    ]
+  },
+  contentCreator : { 
+    label:'🎬 Pencipta Kandungan / Youtuber', icon:'🎬', category:'Teknologi', tone:'Personal & Unik',
+    sections:['Koleksi Video','Kerjasama Jenama (Sponsorship)','Statistik Tontonan','Hubungi Untuk Kolaborasi'],
+    fields: [
+      { id:'content_niche', label:'Niche Kandungan', type:'text', placeholder:'Gaming, Review Makanan, Travel Vlog...' }
+    ]
+  },
+  graphicDesign : { 
+    label:'🎨 Perkhidmatan Reka Bentuk Grafik', icon:'🎨', category:'Teknologi', tone:'Artistik & Profesional',
+    sections:['Portfolio Reka Bentuk','Senarai Servis','Pakej Harga','Tempah Design'],
+    fields: [
+      { id:'design_services', label:'Jenis Reka Bentuk', type:'text', placeholder:'Logo, Poster, Pembungkusan, Branding...' }
+    ]
+  },
+  copywriting : { 
+    label:'✍️ Terjemahan & Copywriting', icon:'✍️', category:'Teknologi', tone:'Meyakinkan & Tepat',
+    sections:['Servis Penulisan','Sampel Hasil Kerja','Pakej Harga','Hubungi Kami'],
+    fields: [
+      { id:'writing_type', label:'Jenis Penulisan', type:'text', placeholder:'Ayat jualan (Sales copy), Terjemahan dokumen, Skrip video...' }
+    ]
+  },
+  webHosting : { 
+    label:'☁️ Penyedia Pengehosan Web (Hosting)', icon:'☁️', category:'Teknologi', tone:'Pantas & Stabil',
+    sections:['Pakej Hosting','Ciri-ciri Server','Sokongan Teknikal','Beli Sekarang'],
+    fields: [
+      { id:'hosting_features', label:'Kelebihan Hosting', type:'text', placeholder:'99.9% Uptime, Free SSL, Daily Backup...' }
+    ]
+  },
+
+  // ── PENGELUARAN & PEMBUATAN BERSKALA SEDERHANA ───────
+  clothingFactory : { 
+    label:'👕 Kilang Pakaian (Jahit Pukal)', icon:'👕', category:'Pengeluaran', tone:'Berkapasiti & Berkualiti',
+    sections:['Pilihan Kain','Kuantiti Minimum (MOQ)','Galeri Jahitan','Minta Sebut Harga'],
+    fields: [
+      { id:'clothing_type', label:'Jenis Pakaian', type:'text', placeholder:'T-shirt, Tudung, Baju Korporat, Uniform...' }
+    ]
+  },
+  oemCosmetics : { 
+    label:'🧪 Pengeluar Kosmetik OEM', icon:'🧪', category:'Pengeluaran', tone:'Saintifik & Dipercayai',
+    sections:['Proses R&D','Pensijilan (GMP/Halal)','Katalog Produk','Konsultasi Founder'],
+    fields: [
+      { id:'oem_products', label:'Produk Dihasilkan', type:'text', placeholder:'Serum, Pencuci muka, Lipmatte, Suplemen...' }
+    ]
+  },
+  handicrafts : { 
+    label:'🧺 Kraf Tangan & Cenderamata', icon:'🧺', category:'Pengeluaran', tone:'Tradisional & Berseni',
+    sections:['Katalog Kraf','Tempahan Korporat','Cerita Pembuatan','Beli Online'],
+    fields: [
+      { id:'craft_type', label:'Jenis Kraf Tangan', type:'text', placeholder:'Batik, Produk Rotan, Ukiran Kayu...' }
+    ]
+  },
+  printing : { 
+    label:'🖨️ Percetakan (Printing)', icon:'🖨️', category:'Pengeluaran', tone:'Pantas & Jelas',
+    sections:['Katalog Cetakan','Mesin & Teknologi','Harga Borong','Hantar Artwork'],
+    fields: [
+      { id:'print_services', label:'Jenis Cetakan', type:'text', placeholder:'Banner, Stiker label, Baju korporat, Pamplet...' }
+    ]
+  },
+  furnitureMaker : { 
+    label:'🪑 Pembuatan Perabot', icon:'🪑', category:'Pengeluaran', tone:'Kukuh & Elegan',
+    sections:['Koleksi Perabot','Tempahan Khas (Custom)','Material Kayu','Hubungi'],
+    fields: [
+      { id:'furniture_style', label:'Jenis Perabot', type:'text', placeholder:'Perabot kayu solid, palet, besi industri...' }
+    ]
+  },
+  buildingMaterials : { 
+    label:'🧱 Pengeluaran Bahan Binaan', icon:'🧱', category:'Pengeluaran', tone:'Kukuh & Skala Besar',
+    sections:['Katalog Bahan Binaan','Kapasiti Pengeluaran','Pensijilan','Hubungi Sales'],
+    fields: [
+      { id:'material_type', label:'Bahan Dihasilkan', type:'text', placeholder:'Batu bata, simen komersial, bumbung...' }
+    ]
+  },
+
+  // ── AGRIKULTUR, PENTERNAKAN & ASAS TANI ──────────────
+  urbanFarming : { 
+    label:'🥬 Pertanian Bandar / Hidroponik', icon:'🥬', category:'Pertanian', tone:'Moden & Hijau',
+    sections:['Hasil Tanaman','Sistem Hidroponik Dijual','Lawatan Kebun','Beli Sayur'],
+    fields: [
+      { id:'urban_crops', label:'Tanaman Utama', type:'text', placeholder:'Salad, Bayam brazil, Daun pudina...' }
+    ]
+  },
+  livestock : { 
+    label:'🐄 Penternakan Ruminan', icon:'🐄', category:'Pertanian', tone:'Sihat & Berkualiti',
+    sections:['Ternakan Jualan','Pakej Aqiqah/Qurban','Susu Segar','Hubungi Ladang'],
+    fields: [
+      { id:'livestock_type', label:'Jenis Ternakan', type:'text', placeholder:'Lembu Brahman, Kambing Boer, Susu kambing segar...' }
+    ]
+  },
+  poultry : { 
+    label:'🐔 Penternakan Unggas', icon:'🐔', category:'Pertanian', tone:'Segar & Selamat',
+    sections:['Ayam & Telur Jualan','Harga Borong','Sijil Halal/Kesihatan','Hubungi Kami'],
+    fields: [
+      { id:'poultry_type', label:'Fokus Penternakan', type:'text', placeholder:'Ayam kampung, ayam pedaging, telur omega...' }
+    ]
+  },
+  aquaculture : { 
+    label:'🐟 Akuakultur (Ternakan Ikan)', icon:'🐟', category:'Pertanian', tone:'Segar & Semula Jadi',
+    sections:['Hasil Ikan/Udang','Kaedah Ternakan','Harga Borong','Lokasi Kolam'],
+    fields: [
+      { id:'aqua_type', label:'Jenis Ternakan', type:'text', placeholder:'Ikan keli, Talapia merah, Udang harimau...' }
+    ]
+  },
+  plantNursery : { 
+    label:'🪴 Taska Pokok (Nursery)', icon:'🪴', category:'Pertanian', tone:'Hijau & Menyegarkan',
+    sections:['Katalog Pokok','Baja & Tanah','Aksesori Berkebun','Lokasi Taska'],
+    fields: [
+      { id:'plant_type', label:'Jenis Tanaman', type:'text', placeholder:'Anak pokok buah, pokok hiasan dalaman, orkid...' }
+    ]
+  },
+  fertilizerSupplier : { 
+    label:'🧪 Penjualan Baja & Racun', icon:'🧪', category:'Pertanian', tone:'Berkesan & Lulus KKM/DOA',
+    sections:['Katalog Baja','Panduan Penggunaan','Testimoni Kebun','Beli Online'],
+    fields: [
+      { id:'fertilizer_type', label:'Jenis Bekalan', type:'text', placeholder:'Baja organik, racun serangga, vitamin pokok...' }
+    ]
+  },
+
+  // ── ACARA, HIBURAN & PELANCONGAN ─────────────────────
+  weddingPlanner : { 
+    label:'💒 Perancang Perkahwinan', icon:'💒', category:'Acara', tone:'Mewah & Sempurna',
+    sections:['Pakej Perkahwinan','Galeri Pelamin & Dewan','Servis Penyelarasan','Tempah Tarikh'],
+    fields: [
+      { id:'planner_services', label:'Skop Perkhidmatan', type:'text', placeholder:'Dewan, pelamin, katering, baju, jurugambar...' }
+    ]
+  },
+  canopyRental : { 
+    label:'⛺ Penyewaan Kanopi', icon:'⛺', category:'Acara', tone:'Kemas & Selesa',
+    sections:['Jenis Kanopi','Pakej Sewaan','Aksesori (Kerusi/Meja/Kipas)','Sebut Harga'],
+    fields: [
+      { id:'canopy_type', label:'Jenis Khemah', type:'text', placeholder:'Kanopi Arabian, Marquee tent, Transparent...' }
+    ]
+  },
+  tourGuide : { 
+    label:'🗺️ Pemandu Pelancong Berlesen', icon:'🗺️', category:'Pelancongan', tone:'Berpengetahuan & Mesra',
+    sections:['Pakej Lawatan','Profil Pemandu Pelancong','Testimoni Pelancong','Tempah Sesi'],
+    fields: [
+      { id:'tour_focus', label:'Kawasan/Kepakaran', type:'text', placeholder:'Sejarah Melaka, Alam Semula Jadi, Food Tour...' }
+    ]
+  },
+  paSystem : { 
+    label:'🔊 Sistem Audio & Pencahayaan', icon:'🔊', category:'Acara', tone:'Jelas & Meriah',
+    sections:['Pakej PA System','Lampu Pentas','Senarai Peralatan','Tempah Sekarang'],
+    fields: [
+      { id:'pa_equipment', label:'Peralatan Disediakan', type:'text', placeholder:'Speaker aktif, wireless mic, stage lighting...' }
+    ]
+  },
+  eventEntertainer : { 
+    label:'🤡 Penghibur Acara', icon:'🤡', category:'Acara', tone:'Ceria & Menghiburkan',
+    sections:['Profil Penghibur','Galeri Persembahan','Pakej Acara','Tempah Sekarang'],
+    fields: [
+      { id:'entertainer_type', label:'Jenis Persembahan', type:'text', placeholder:'Badut, Live Band, MC Majlis, Silap mata...' }
+    ]
+  },
+
+  // ── PERKHIDMATAN KORPORAT & PERNIAGAAN ────────────────
+  companySecretary : { 
+    label:'📝 Setiausaha Syarikat (CoSec)', icon:'📝', category:'Profesional', tone:'Formal & Cekap',
+    sections:['Pakej Penubuhan Syarikat','Pematuhan SSM','Sokongan Korporat','Hubungi Kami'],
+    fields: [
+      { id:'cosec_services', label:'Servis Ditawarkan', type:'text', placeholder:'Daftar Sdn Bhd, Resolusi Syarikat, Penyata Tahunan...' }
+    ]
+  },
+  taxConsultant : { 
+    label:'📉 Perkhidmatan Percukaian', icon:'📉', category:'Profesional', tone:'Bertauliah & Tepat',
+    sections:['Servis Cukai Koporat/Individu','Perancangan Cukai','Penyelesaian Kes LHDN','Konsultasi'],
+    fields: [
+      { id:'tax_services', label:'Fokus Cukai', type:'text', placeholder:'Cukai Syarikat (C), Individu (B/BE), Audit LHDN...' }
+    ]
+  },
+  recruitmentAgency : { 
+    label:'🤝 Agensi Pekerjaan', icon:'🤝', category:'Profesional', tone:'Cekap & Dipercayai',
+    sections:['Carian Bakat (Headhunting)','Pekerja Asing','Profil Agensi','Hubungi'],
+    fields: [
+      { id:'recruitment_focus', label:'Fokus Pekerja', type:'text', placeholder:'Pekerja profesional, buruh binaan, pembantu rumah...' }
+    ]
+  },
+  businessConsultant : { 
+    label:'📊 Perundingan Pengurusan', icon:'📊', category:'Profesional', tone:'Pakar & Strategik',
+    sections:['Servis Konsultasi','Kajian Kes Kejayaan','Profil Perunding','Tempah Sesi'],
+    fields: [
+      { id:'consulting_area', label:'Bidang Kepakaran', type:'text', placeholder:'Penstrukturan semula, SOP perniagaan, HR setup...' }
+    ]
+  },
+  moneyLender : { 
+    label:'💰 Pembiayaan & Kredit', icon:'💰', category:'Profesional', tone:'Telus & Sah',
+    sections:['Jenis Pinjaman','Syarat Kelayakan','Kalkulator Pinjaman','Mohon Sekarang'],
+    fields: [
+      { id:'loan_type', label:'Fokus Pinjaman', type:'text', placeholder:'Pinjaman peribadi, Pembiayaan PKS (SME), Refinance...' }
+    ]
+  },
+  recyclingCenter : { 
+    label:'♻️ Pusat Kitar Semula', icon:'♻️', category:'Profesional', tone:'Hijau & Tanggungjawab',
+    sections:['Bahan Diterima','Harga Belian Semasa','Perkhidmatan Trak Ambil','Lokasi Pusat'],
+    fields: [
+      { id:'recycle_materials', label:'Bahan Utama', type:'text', placeholder:'Besi buruk, kertas, plastik, e-waste...' }
+    ]
+  }
+
 };
 
 // ───────────────────────────────────────────────────
