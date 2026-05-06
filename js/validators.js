@@ -57,7 +57,8 @@ export const ValidationSchemas = {
     'contractor', 'accounting', 'legal', 'real_estate', 'property', 'propDev', 'renovation',
     'itService', 'webDesign', 'app',
     'event', 'photography', 'logistics', 'ecommerce', 'weddingCatering', 'travel', 'agriculture',
-    'weddingCard', 'businessCard', 'homestay', 'rumahSewa'
+    'weddingCard', 'businessCard', 'homestay', 'rumahSewa',
+    'frozenFood', 'bubbleTea', 'snacks', 'rawFoodSupplier', 'foodDelivery', 'miniMarket', 'phoneAccessories', 'hardwareStore', 'stationery', 'jewelryStore', 'sportsStore', 'cosmeticsStore', 'petStore', 'florist', 'plasticSupplier', 'pharmacy', 'confinementCentre', 'optometrist', 'physiotherapy', 'drivingSchool', 'tvet', 'musicArtClass', 'languageCenter', 'corporateTrainer', 'carWash', 'aircondService', 'plumbing', 'wiring', 'techRepair', 'cleaningService', 'laundry', 'landscaping', 'pestControl', 'tailor', 'cobbler', 'cabinetMaker', 'interiorDesign', 'grillAwning', 'propertyManagement', 'ehailing', 'runner', 'movers', 'busRental', 'digitalMarketing', 'socialMediaManagement', 'contentCreator', 'graphicDesign', 'copywriting', 'webHosting', 'clothingFactory', 'oemCosmetics', 'handicrafts', 'printing', 'furnitureMaker', 'buildingMaterials', 'urbanFarming', 'livestock', 'poultry', 'aquaculture', 'plantNursery', 'fertilizerSupplier', 'weddingPlanner', 'canopyRental', 'tourGuide', 'paSystem', 'eventEntertainer', 'companySecretary', 'taxConsultant', 'recruitmentAgency', 'businessConsultant', 'moneyLender', 'recyclingCenter'
   ]).nullable(),
 
   tags: z.array(z.string().max(50)).max(10, 'Too many tags').optional(),
