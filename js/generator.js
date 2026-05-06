@@ -290,6 +290,16 @@ const BUSINESS_TEMPLATES = {
     ]
   },
 
+  // ── PERTANIAN & AGROTEK ───────────────────────
+  agriculture : { 
+    label:'🚜 Ladang Ternakan & Agrotek', icon:'🚜', category:'Pertanian', tone:'Semula Jadi & Profesional',
+    sections:['Katalog Hasil Ladang','Teknologi & Fasiliti','Harga Borong','Lawatan & Hubungi'],
+    fields: [
+      { id:'farm_produce', label:'Hasil Ladang/Ternakan Utama', type:'text', placeholder:'Lembu wagyu tempatan, Sayur hidroponik...' },
+      { id:'farming_method', label:'Kaedah Pertanian', type:'text', placeholder:'Organik, IoT Smart Farming, Bebas Bahan Kimia...' }
+    ]
+  },
+
   // ── LOGISTIK ─────────────────────────────────
   logistics : { 
     label:'🚚 Logistik / Penghantaran', icon:'🚚', category:'Logistik', tone:'Pantas & Dipercayai',
@@ -491,6 +501,7 @@ function buildFeaturesSection(d, businessType, tpl) {
     weddingCatering: `- Jadual perbandingan pakej (contoh: Pakej A, B, C)\n- Senarai menu terperinci\n- Galeri gambar cantik untuk dewan/pelamin/makanan\n- Pautan/form untuk semak tarikh kekosongan`,
     renovation : `- Galeri portfolio projek terdahulu yang berkualiti tinggi\n- Senarai kepakaran (pemasangan kabinet, pecah dinding, dsb)\n- Form permohonan lawatan tapak / sebut harga percuma\n- Elemen yang membina kredibiliti syarikat (high-ticket)`,
     travel     : `- Jadual perjalanan (itinerary) hari demi hari yang tersusun\n- Senarai hotel penginapan\n- Struktur harga mengikut jenis bilik (Quad, Triple, Double)\n- Form / butang tempahan kerusi terhad`,
+    agriculture: `- Paparkan katalog hasil ladang/ternakan yang segar dan berkualiti\n- Maklumat mengenai teknologi agrotek atau kaedah ternakan yang digunakan\n- Penawaran harga borong / pakej pelaburan / pembelian terus\n- Maklumat jika ladang dibuka untuk lawatan awam (agrotourism)`,
     homestay   : `- Galeri gambar bilik dan kemudahan (kolam renang, ruang tamu, dapur dll)\n- Senarai lengkap kemudahan yang disediakan\n- Jadual harga / kadar sewa\n- Peraturan homestay (House rules)\n- Peta lokasi dan tempat menarik berhampiran\n- Butang tempah sekarang (WhatsApp/form)`,
     rumahSewa  : `- Maklumat spesifikasi rumah (bilik, keluasan, perabot)\n- Galeri gambar keadaan rumah terkini\n- Senarai kemudahan berdekatan (sekolah, kedai, LRT)\n- Maklumat harga sewa dan deposit\n- Terma dan syarat sewaan\n- Butang hubungi pemilik/ejen (WhatsApp)`,
     property   : `- Grid listing hartanah (gambar, harga, lokasi)\n- Kalkulator ansuran\n- Profil ejen\n- WhatsApp terus dengan ejen`,

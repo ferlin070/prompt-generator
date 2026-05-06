@@ -56,7 +56,7 @@ export const ValidationSchemas = {
     'tuition', 'onlineCourse', 'kindergarten',
     'contractor', 'accounting', 'legal', 'real_estate', 'property', 'propDev', 'renovation',
     'itService', 'webDesign', 'app',
-    'event', 'photography', 'logistics', 'ecommerce', 'weddingCatering', 'travel',
+    'event', 'photography', 'logistics', 'ecommerce', 'weddingCatering', 'travel', 'agriculture',
     'weddingCard', 'businessCard', 'homestay', 'rumahSewa'
   ]).nullable(),
 
