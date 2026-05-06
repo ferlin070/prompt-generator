@@ -6,7 +6,7 @@ const BUSINESS_TEMPLATES = {
   // ── MAKANAN & MINUMAN ──────────────────────────
   restaurant : { 
     label:'🍜 Restoran / Kedai Makan', icon:'🍜', category:'Makanan', tone:'Kasual & Mesra', 
-    sections:['Menu Pilihan','Galeri Makanan','Reservasi Online','Ulasan Pelanggan','Lokasi & Hubungi'],
+    sections:['Menu Pilihan','Galeri Makanan','Tempahan Online','Ulasan Pelanggan','Lokasi & Hubungi'],
     fields: [
       { id:'cuisine', label:'Jenis Masakan', type:'text', placeholder:'Melayu, Thai, Barat, Fusion...' },
       { id:'specialty', label:'Menu Signatur (Wajib Cuba)', type:'text', placeholder:'Nasi Lemak Pandan, Shellout...' },
@@ -194,7 +194,7 @@ const BUSINESS_TEMPLATES = {
   },
   property : { 
     label:'🏠 Ejen Hartanah', icon:'🏠', category:'Hartanah', tone:'Profesional & Amanah',
-    sections:['Senarai Properti','Ejen','Kalkulator','Hubungi'],
+    sections:['Senarai Hartanah','Ejen','Kalkulator','Hubungi'],
     fields: [
       { id:'property_type', label:'Jenis Hartanah', type:'text', placeholder:'Condo, Terrace, Land, Commercial...' },
       { id:'location_focus', label:'Kawasan Fokus', type:'text', placeholder:'KLCC, Shah Alam, Cyberjaya...' },
@@ -322,7 +322,7 @@ const BUSINESS_TEMPLATES = {
 
   // ── DIGITAL CARDS ─────────────────────────────
   weddingCard : { 
-    label:'💍 Kad Kawin Digital', icon:'💍', category:'Kad Digital', tone:'Romantik & Elegan',
+    label:'💍 Kad Kahwin Digital', icon:'💍', category:'Kad Digital', tone:'Romantik & Elegan',
     sections:['Mempelai','Aturcara','Peta Lokasi','RSVP','Galeri Gambar','Ucapan'],
     fields: [
       { id:'bride_groom', label:'Nama Pengantin', type:'text', placeholder:'Ali & Fatimah...' },
@@ -878,8 +878,7 @@ function generatePrompt(formData, businessType) {
 
   const langMap = {
     ms: { header: 'Cipta landing page HTML yang lengkap', info: 'MAKLUMAT PERNIAGAAN', design: 'REKA BENTUK & GAYA', features: 'CIRI KHUSUS', tech: 'KEPERLUAN TEKNIKAL', output: 'FORMAT OUTPUT' },
-    en: { header: 'Create a complete, responsive HTML landing page', info: 'BUSINESS INFORMATION', design: 'DESIGN & STYLE', features: 'SPECIFIC FEATURES', tech: 'TECHNICAL REQUIREMENTS', output: 'OUTPUT FORMAT' },
-    id: { header: 'Buat landing page HTML yang lengkap dan responsif', info: 'INFORMASI BISNIS', design: 'DESAIN & GAYA', features: 'FITUR KHUSUS', tech: 'PERSYARATAN TEKNIS', output: 'FORMAT OUTPUT' }
+    en: { header: 'Create a complete, responsive HTML landing page', info: 'BUSINESS INFORMATION', design: 'DESIGN & STYLE', features: 'SPECIFIC FEATURES', tech: 'TECHNICAL REQUIREMENTS', output: 'OUTPUT FORMAT' }
   };
 
   const l = langMap[lang] || langMap.ms;
@@ -901,7 +900,7 @@ function generatePrompt(formData, businessType) {
 function buildHeader(d, type, tpl, l, lang) {
   return `${l.header} untuk ${d.businessName || 'perniagaan ini'}.
   
-Bahasa Kandungan: Sila gunakan ${lang === 'ms' ? 'Bahasa Malaysia' : lang === 'en' ? 'English' : 'Bahasa Indonesia'} sepenuhnya untuk semua teks di dalam website.
+Bahasa Kandungan: Sila gunakan ${lang === 'en' ? 'English' : 'Bahasa Malaysia'} sepenuhnya untuk semua teks di dalam website.
 
 Ini adalah website ${tpl.label || type} yang memerlukan rekabentuk profesional, kod yang bersih, dan pengalaman pengguna yang luar biasa. Hasilkan KOD HTML PENUH yang boleh terus digunakan.`;
 }
@@ -1015,7 +1014,7 @@ function buildContactSection(d) {
 
 function buildFeaturesSection(d, businessType, tpl) {
   const specificMap = {
-    restaurant : `- Sertakan menu dengan kategori (Makanan Utama, Minuman, Pencuci Mulut)\n- Galeri makanan dengan hover zoom\n- Sistem reservasi meja (form)\n- Waktu operasi yang jelas\n- Google Maps embed`,
+    restaurant : `- Sertakan menu dengan kategori (Makanan Utama, Minuman, Pencuci Mulut)\n- Galeri makanan dengan hover zoom\n- Sistem tempahan meja (form)\n- Waktu operasi yang jelas\n- Google Maps embed`,
     cafe       : `- Menu minuman dengan harga\n- Section "Work & Study" (wifi, plug point)\n- Galeri suasana kafe\n- Acara khas bulanan`,
     bakery     : `- Katalog kek dan bakeri dengan gambar\n- Form tempahan khas\n- Info penghantaran dan kawasan\n- Testimoni pelanggan`,
     fashion    : `- Grid produk dengan filter kategori\n- Lookbook section\n- Panduan saiz interaktif\n- Butang "Order via WhatsApp"`,
