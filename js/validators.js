@@ -52,11 +52,11 @@ export const ValidationSchemas = {
 
   businessType: z.enum([
     'restaurant', 'cafe', 'bakery', 'foodtruck',
-    'fashion', 'hijab', 'kids', 'salon', 'spa', 'skincare', 'gym',
+    'fashion', 'hijab', 'kids', 'salon', 'spa', 'skincare', 'gym', 'clinic',
     'tuition', 'onlineCourse', 'kindergarten',
-    'contractor', 'accounting', 'legal', 'real_estate', 'property', 'propDev',
+    'contractor', 'accounting', 'legal', 'real_estate', 'property', 'propDev', 'renovation',
     'itService', 'webDesign', 'app',
-    'event', 'photography', 'logistics', 'ecommerce',
+    'event', 'photography', 'logistics', 'ecommerce', 'weddingCatering', 'travel',
     'weddingCard', 'businessCard', 'homestay', 'rumahSewa'
   ]).nullable(),
 

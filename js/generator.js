@@ -66,6 +66,14 @@ const BUSINESS_TEMPLATES = {
   },
 
   // ── KECANTIKAN & KESIHATAN ─────────────────────
+  clinic : { 
+    label:'🏥 Klinik Estetik & Pergigian', icon:'🏥', category:'Kecantikan', tone:'Profesional & Meyakinkan',
+    sections:['Gambar Sebelum & Selepas','Kelayakan Doktor','Rawatan Ditawarkan','Tempahan Janji Temu'],
+    fields: [
+      { id:'clinic_treatments', label:'Jenis Rawatan', type:'text', placeholder:'Pendakap gigi, pemutihan gigi, rawatan jerawat...' },
+      { id:'doctor_credentials', label:'Kelayakan Doktor', type:'text', placeholder:'Lulusan universiti, pengalaman 10 tahun...' }
+    ]
+  },
   salon : { 
     label:'💇 Salon / Barbershop', icon:'💇', category:'Kecantikan', tone:'Profesional & Trendy',
     sections:['Perkhidmatan','Harga','Galeri','Tempah Temujanji'],
@@ -132,6 +140,14 @@ const BUSINESS_TEMPLATES = {
     fields: [
       { id:'construction_type', label:'Jenis Kerja', type:'text', placeholder:'Renovasi rumah, bina baru, wiring...' },
       { id:'cidb', label:'Lesen/Gred CIDB', type:'text', placeholder:'Gred G3, Berdaftar dengan CIDB...' }
+    ]
+  },
+  renovation : { 
+    label:'🔨 Ubah Suai Rumah & ID', icon:'🔨', category:'Profesional', tone:'Berkualiti & Eksklusif',
+    sections:['Portfolio Projek','Senarai Kepakaran','Testimoni','Borang Lawatan Tapak'],
+    fields: [
+      { id:'reno_expertise', label:'Kepakaran Utama', type:'text', placeholder:'Pemasangan kabinet, pecah dinding, plaster ceiling...' },
+      { id:'reno_style', label:'Gaya Rekaan (ID)', type:'text', placeholder:'Modern Minimalist, Muji, Scandinavian...' }
     ]
   },
   accounting : { 
@@ -239,6 +255,14 @@ const BUSINESS_TEMPLATES = {
   },
 
   // ── ACARA & HIBURAN ───────────────────────────
+  weddingCatering : { 
+    label:'🍽️ Pakej Perkahwinan & Katering', icon:'🍽️', category:'Acara', tone:'Mewah & Romantik',
+    sections:['Perbandingan Pakej','Senarai Menu','Galeri Dewan & Pelamin','Semak Kekosongan'],
+    fields: [
+      { id:'wedding_packages', label:'Pakej Ditawarkan', type:'text', placeholder:'Pakej Lengkap, Pakej Kanopi, Pakej Katering...' },
+      { id:'special_menu', label:'Menu Istimewa', type:'text', placeholder:'Nasi minyak basmathi, kambing golek...' }
+    ]
+  },
   event : { 
     label:'🎉 Penganjur Acara', icon:'🎉', category:'Acara', tone:'Meriah & Kreatif',
     sections:['Perkhidmatan','Portfolio','Pakej','Tempah'],
@@ -253,6 +277,16 @@ const BUSINESS_TEMPLATES = {
     fields: [
       { id:'shoot_style', label:'Gaya Rakaman', type:'text', placeholder:'Cinematic, Candid, High-fashion, Vintage...' },
       { id:'delivery_time', label:'Tempoh Siap', type:'text', placeholder:'Edit dalam 2 minggu, Raw files dlm 24 jam...' }
+    ]
+  },
+
+  // ── PELANCONGAN ────────────────────────────────
+  travel : { 
+    label:'✈️ Agensi Pelancongan & Umrah', icon:'✈️', category:'Pelancongan', tone:'Dipercayai & Menarik',
+    sections:['Jadual Perjalanan','Senarai Hotel','Harga Mengikut Bilik','Borang Tempahan'],
+    fields: [
+      { id:'travel_packages', label:'Pakej Ditawarkan', type:'text', placeholder:'Pakej Umrah VIP, Percutian Eropah...' },
+      { id:'travel_highlights', label:'Kelebihan Pakej', type:'text', placeholder:'Penerbangan terus, hotel 5 bintang...' }
     ]
   },
 
@@ -453,6 +487,10 @@ function buildFeaturesSection(d, businessType, tpl) {
     tuition    : `- Program mengikut umur/tahap\n- Profil guru\n- Jadual kelas\n- Form pendaftaran`,
     onlineCourse:`- Senarai kursus dengan harga\n- Preview kurikulum\n- Profil pengajar\n- Testimoni pelajar\n- FAQ`,
     contractor : `- Senarai perkhidmatan pembinaan\n- Gallery portfolio projek\n- Testimoni klien\n- Form sebutharga percuma`,
+    clinic     : `- Paparkan gambar sebelum & selepas (before & after) dengan jelas\n- Profil dan kelayakan doktor yang meyakinkan\n- Form / butang tempahan janji temu yang menonjol\n- Senarai rawatan khusus (cth: braces, rawatan jerawat)`,
+    weddingCatering: `- Jadual perbandingan pakej (contoh: Pakej A, B, C)\n- Senarai menu terperinci\n- Galeri gambar cantik untuk dewan/pelamin/makanan\n- Pautan/form untuk semak tarikh kekosongan`,
+    renovation : `- Galeri portfolio projek terdahulu yang berkualiti tinggi\n- Senarai kepakaran (pemasangan kabinet, pecah dinding, dsb)\n- Form permohonan lawatan tapak / sebut harga percuma\n- Elemen yang membina kredibiliti syarikat (high-ticket)`,
+    travel     : `- Jadual perjalanan (itinerary) hari demi hari yang tersusun\n- Senarai hotel penginapan\n- Struktur harga mengikut jenis bilik (Quad, Triple, Double)\n- Form / butang tempahan kerusi terhad`,
     homestay   : `- Galeri gambar bilik dan kemudahan (kolam renang, ruang tamu, dapur dll)\n- Senarai lengkap kemudahan yang disediakan\n- Jadual harga / kadar sewa\n- Peraturan homestay (House rules)\n- Peta lokasi dan tempat menarik berhampiran\n- Butang tempah sekarang (WhatsApp/form)`,
     rumahSewa  : `- Maklumat spesifikasi rumah (bilik, keluasan, perabot)\n- Galeri gambar keadaan rumah terkini\n- Senarai kemudahan berdekatan (sekolah, kedai, LRT)\n- Maklumat harga sewa dan deposit\n- Terma dan syarat sewaan\n- Butang hubungi pemilik/ejen (WhatsApp)`,
     property   : `- Grid listing hartanah (gambar, harga, lokasi)\n- Kalkulator ansuran\n- Profil ejen\n- WhatsApp terus dengan ejen`,

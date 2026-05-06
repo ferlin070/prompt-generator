@@ -64,8 +64,10 @@ serve(async (req) => {
 
     const requestBody = {
       ...payload,
+      payment_channel: paymentChannel ? [paymentChannel.toString()] : [],
       portal_key: portalKey,
       checksum,
+      payer_telephone_number: '0123456789', // Default dummy phone number
       return_url: `${req.headers.get('origin')}/dashboard.html?payment=success`,
       callback_url: `${req.headers.get('origin')}/bayarcash-webhook` // Using Supabase function URL would be better, but we don't know it here dynamically easily. Actually, we can use Deno env variables or pass it.
     };
@@ -88,14 +90,18 @@ serve(async (req) => {
 
     if (!response.ok) {
       console.error('Bayarcash API Error:', data);
-      throw new Error(data.message || 'Failed to create payment intent');
+      let errorMsg = data.message || 'Failed to create payment intent';
+      if (data.errors) {
+        errorMsg += ' | Details: ' + JSON.stringify(data.errors);
+      }
+      throw new Error(errorMsg);
     }
 
     return new Response(
       JSON.stringify({ 
-        url: data.data?.url,
+        url: data.url || data.data?.url,
         orderNumber: orderNumber,
-        transactionId: data.data?.id
+        transactionId: data.id || data.data?.id
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 },
     );
