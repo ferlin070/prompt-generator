@@ -121,7 +121,43 @@
       'saved.unfavorite': 'Remove favorite',
       'saved.chars': 'chars',
       'saved.addedFav': 'Added to favorites',
-      'saved.removedFav': 'Removed from favorites'
+      'saved.removedFav': 'Removed from favorites',
+
+      // Image Generator
+      'img.title': 'Image Generator',
+      'img.subtitle': 'Create high-quality AI image prompts easily.',
+      'img.step1.title': 'Basic Information',
+      'img.step1.sub': 'Define the core of your image.',
+      'img.subject': 'Subject',
+      'img.subjectPlaceholder': 'e.g., An old man, an orange cat...',
+      'img.action': 'Action / Pose',
+      'img.actionPlaceholder': 'e.g., Drinking coffee, jumping...',
+      'img.setting': 'Setting / Environment',
+      'img.settingPlaceholder': 'e.g., Cyberpunk cafe, magic forest...',
+      
+      'img.step2.title': 'Artistic Style',
+      'img.step2.sub': 'Choose the look and feel of the image.',
+      'img.medium': 'Medium / Art Style',
+      'img.artist': 'Artist Reference (Optional)',
+      'img.mood': 'Mood / Atmosphere',
+      'img.colors': 'Color Palette',
+      
+      'img.step3.title': 'Technical & Quality',
+      'img.step3.sub': 'Professional settings for realistic results.',
+      'img.angle': 'Camera Angle',
+      'img.lighting': 'Lighting',
+      'img.lens': 'Lens / Camera Type',
+      'img.quality': 'Quality Tags',
+      'img.render': 'Render Engine',
+      
+      'img.step4.title': 'Advanced Settings',
+      'img.step4.sub': 'Fine-tune your prompt.',
+      'img.aspect': 'Aspect Ratio',
+      'img.negative': 'Negative Prompt',
+      'img.negativePlaceholder': 'What you DON\'T want in the image...',
+      
+      'img.step5.title': 'Your Image Prompt is Ready!',
+      'img.generate': 'Generate Image Prompt'
     },
     'ms-MY': {
       // Common
@@ -240,7 +276,43 @@
       'saved.unfavorite': 'Buang kegemaran',
       'saved.chars': 'aksara',
       'saved.addedFav': 'Ditambah ke kegemaran',
-      'saved.removedFav': 'Dibuang dari kegemaran'
+      'saved.removedFav': 'Dibuang dari kegemaran',
+
+      // Image Generator
+      'img.title': 'Image Generator',
+      'img.subtitle': 'Cipta prompt imej AI berkualiti tinggi dengan mudah.',
+      'img.step1.title': 'Maklumat Asas',
+      'img.step1.sub': 'Tentukan teras gambar anda.',
+      'img.subject': 'Subjek Utama',
+      'img.subjectPlaceholder': 'Contoh: Lelaki tua, kucing oren...',
+      'img.action': 'Aksi / Gaya',
+      'img.actionPlaceholder': 'Contoh: Sedang minum kopi, melompat...',
+      'img.setting': 'Latar Belakang',
+      'img.settingPlaceholder': 'Contoh: Kafe siberpunk, hutan ajaib...',
+      
+      'img.step2.title': 'Gaya & Seni',
+      'img.step2.sub': 'Pilih rupa dan gaya visual gambar.',
+      'img.medium': 'Gaya Seni / Medium',
+      'img.artist': 'Rujukan Artis (Pilihan)',
+      'img.mood': 'Suasana / Emosi',
+      'img.colors': 'Palet Warna',
+      
+      'img.step3.title': 'Teknikal & Kualiti',
+      'img.step3.sub': 'Tetapan profesional untuk hasil realistik.',
+      'img.angle': 'Sudut Kamera',
+      'img.lighting': 'Pencahayaan',
+      'img.lens': 'Jenis Lensa/Kamera',
+      'img.quality': 'Tag Kualiti',
+      'img.render': 'Enjin Render',
+      
+      'img.step4.title': 'Tetapan Lanjutan',
+      'img.step4.sub': 'Perhalusi prompt anda.',
+      'img.aspect': 'Nisbah Bidang (Aspect Ratio)',
+      'img.negative': 'Prompt Negatif',
+      'img.negativePlaceholder': 'Apa yang anda TIDAK MAHU dalam gambar...',
+      
+      'img.step5.title': 'Prompt Imej Anda Telah Sedia!',
+      'img.generate': 'Jana Prompt Imej'
     }
   };
 

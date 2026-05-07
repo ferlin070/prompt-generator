@@ -8,6 +8,20 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    .step-content { display:none; }
+    .step-content.active { display:block; animation: fadeIn .3s ease; }
+    @keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+    .form-grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .nav-btns { display:flex; justify-content:space-between; align-items:center; margin-top:28px; padding-top:20px; border-top:1px solid var(--border); }
+    .progress-bar { height: 6px; background: var(--bg-secondary); border-radius: 3px; margin-bottom: 24px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--accent-primary); width: 0%; transition: 0.3s; }
+    .selection-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-top: 10px; }
+    .selection-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; text-align: center; cursor: pointer; transition: 0.2s; font-size: 0.85rem; }
+    .selection-item:hover { border-color: var(--accent-primary); }
+    .selection-item.active { border-color: var(--accent-primary); background: var(--accent-glow); color: var(--accent-light); font-weight: 600; }
+    @media(max-width:768px) { .form-grid-2 { grid-template-columns:1fr; } }
+  </style>
 </head>
 <body>
 <div class="app-layout">
@@ -31,10 +45,6 @@
         <a href="affiliate.html" class="nav-link"><span class="nav-icon">🔗</span> <span data-i18n="nav.affiliate">Affiliate</span></a>
         <a href="admin.html" class="nav-link" data-admin-only><span class="nav-icon">👑</span> <span data-i18n="nav.admin">Admin Panel</span></a>
       </div>
-      <div class="nav-section">
-        <div class="nav-section-label" data-i18n="dash.account">Akaun</div>
-        <a href="#" class="nav-link" data-logout><span class="nav-icon">🚪</span> <span data-i18n="dash.logout">Log Keluar</span></a>
-      </div>
     </nav>
   </aside>
   <div class="sidebar-overlay" id="sidebarOverlay"></div>
@@ -42,21 +52,167 @@
   <main class="main-content">
     <div class="top-bar">
       <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
-      <span style="font-weight:700;font-size:.95rem" data-i18n="dash.imageGenerator">🖼️ Image Generator</span>
+      <span style="font-weight:700;font-size:.95rem" data-i18n="img.title">🖼️ Image Generator</span>
       <div style="width:34px"></div>
     </div>
 
     <div class="page-header">
-      <h1 class="page-title" data-i18n="dash.imageGenerator">🖼️ Image Generator</h1>
-      <p class="page-subtitle">Ciri ini akan datang tidak lama lagi! Jana imej AI berkualiti tinggi untuk perniagaan anda.</p>
+      <h1 class="page-title" data-i18n="img.title">🖼️ Image Generator</h1>
+      <p class="page-subtitle" data-i18n="img.subtitle">Cipta prompt imej AI berkualiti tinggi dengan mudah.</p>
     </div>
 
     <div class="page-body">
-      <div class="card" style="text-align:center; padding:60px 20px;">
-        <div style="font-size:4rem; margin-bottom:20px;">🚀</div>
-        <h2 style="font-weight:700; margin-bottom:10px;">Coming Soon!</h2>
-        <p style="color:var(--text-secondary); max-width:500px; margin:0 auto 24px;">Kami sedang membangunkan integrasi penjanaan imej AI yang akan memudahkan anda mencipta aset visual untuk website anda.</p>
-        <a href="dashboard.html" class="btn btn-primary">Kembali ke Dashboard</a>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:20%"></div></div>
+
+      <div class="card">
+        <!-- STEP 1: Basic -->
+        <div class="step-content active" id="step1">
+          <h2 data-i18n="img.step1.title">Maklumat Asas</h2>
+          <p data-i18n="img.step1.sub" style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:20px;">Tentukan teras gambar anda.</p>
+          <div class="form-group">
+            <label class="form-label" data-i18n="img.subject">Subjek Utama *</label>
+            <input type="text" class="form-control" id="imgSubject" data-i18n-placeholder="img.subjectPlaceholder" placeholder="Lelaki tua, kucing oren..."/>
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="img.action">Aksi / Gaya</label>
+            <input type="text" class="form-control" id="imgAction" data-i18n-placeholder="img.actionPlaceholder" placeholder="Sedang minum kopi, melompat..."/>
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="img.setting">Latar Belakang</label>
+            <input type="text" class="form-control" id="imgSetting" data-i18n-placeholder="img.settingPlaceholder" placeholder="Kafe siberpunk, hutan ajaib..."/>
+          </div>
+          <div class="nav-btns">
+            <div></div>
+            <button class="btn btn-primary" onclick="goStep(2)">Seterusnya <i class="fa fa-arrow-right"></i></button>
+          </div>
+        </div>
+
+        <!-- STEP 2: Artistic -->
+        <div class="step-content" id="step2">
+          <h2 data-i18n="img.step2.title">Gaya & Seni</h2>
+          <p data-i18n="img.step2.sub" style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:20px;">Pilih rupa dan gaya visual gambar.</p>
+          <div class="form-group">
+            <label class="form-label" data-i18n="img.medium">Gaya Seni / Medium</label>
+            <div class="selection-grid" id="mediumGrid">
+              <div class="selection-item" onclick="selectItem('medium', 'Photorealistic', this)">📸 Photorealistic</div>
+              <div class="selection-item" onclick="selectItem('medium', '3D Render', this)">🧊 3D Render</div>
+              <div class="selection-item" onclick="selectItem('medium', 'Oil Painting', this)">🎨 Oil Painting</div>
+              <div class="selection-item" onclick="selectItem('medium', 'Anime', this)">🎌 Anime</div>
+              <div class="selection-item" onclick="selectItem('medium', 'Watercolor', this)">💧 Watercolor</div>
+              <div class="selection-item" onclick="selectItem('medium', 'Vector Art', this)">📐 Vector Art</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="img.mood">Suasana / Emosi</label>
+            <div class="selection-grid" id="moodGrid">
+              <div class="selection-item" onclick="selectItem('mood', 'Cinematic', this)">🎬 Cinematic</div>
+              <div class="selection-item" onclick="selectItem('mood', 'Romantic', this)">❤️ Romantic</div>
+              <div class="selection-item" onclick="selectItem('mood', 'Futuristic', this)">🚀 Futuristic</div>
+              <div class="selection-item" onclick="selectItem('mood', 'Gloomy', this)">☁️ Gloomy</div>
+              <div class="selection-item" onclick="selectItem('mood', 'Peaceful', this)">🌿 Peaceful</div>
+            </div>
+          </div>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label" data-i18n="img.colors">Palet Warna</label>
+              <input type="text" class="form-control" id="imgColors" placeholder="Neon, pastel, warm tone..."/>
+            </div>
+            <div class="form-group">
+              <label class="form-label" data-i18n="img.artist">Rujukan Artis (Pilihan)</label>
+              <input type="text" class="form-control" id="imgArtist" placeholder="Vincent van Gogh, Studio Ghibli..."/>
+            </div>
+          </div>
+          <div class="nav-btns">
+            <button class="btn btn-ghost" onclick="goStep(1)"><i class="fa fa-arrow-left"></i> Kembali</button>
+            <button class="btn btn-primary" onclick="goStep(3)">Seterusnya <i class="fa fa-arrow-right"></i></button>
+          </div>
+        </div>
+
+        <!-- STEP 3: Technical -->
+        <div class="step-content" id="step3">
+          <h2 data-i18n="img.step3.title">Teknikal & Kualiti</h2>
+          <p data-i18n="img.step3.sub" style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:20px;">Tetapan profesional untuk hasil realistik.</p>
+          <div class="form-grid-2">
+            <div class="form-group">
+              <label class="form-label" data-i18n="img.angle">Sudut Kamera</label>
+              <select class="form-control" id="imgAngle">
+                <option value="">Default</option>
+                <option value="Close-up portrait">Close-up portrait</option>
+                <option value="Wide-angle shot">Wide-angle shot</option>
+                <option value="Bird-eye view">Bird-eye view</option>
+                <option value="Macro photography">Macro photography</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" data-i18n="img.lighting">Pencahayaan</label>
+              <select class="form-control" id="imgLighting">
+                <option value="">Default</option>
+                <option value="Cinematic lighting">Cinematic lighting</option>
+                <option value="Golden hour">Golden hour</option>
+                <option value="Natural sunlight">Natural sunlight</option>
+                <option value="Neon lights">Neon lights</option>
+                <option value="Studio lighting">Studio lighting</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="img.quality">Tag Kualiti</label>
+            <div style="display:flex; flex-wrap:wrap; gap:10px;">
+              <label class="checkbox-item"><input type="checkbox" class="img-quality" value="Masterpiece" checked/> Masterpiece</label>
+              <label class="checkbox-item"><input type="checkbox" class="img-quality" value="Highly detailed" checked/> Highly detailed</label>
+              <label class="checkbox-item"><input type="checkbox" class="img-quality" value="8k resolution" checked/> 8k resolution</label>
+              <label class="checkbox-item"><input type="checkbox" class="img-quality" value="Hyper-realistic"/> Hyper-realistic</label>
+              <label class="checkbox-item"><input type="checkbox" class="img-quality" value="Sharp focus"/> Sharp focus</label>
+            </div>
+          </div>
+          <div class="nav-btns">
+            <button class="btn btn-ghost" onclick="goStep(2)"><i class="fa fa-arrow-left"></i> Kembali</button>
+            <button class="btn btn-primary" onclick="goStep(4)">Seterusnya <i class="fa fa-arrow-right"></i></button>
+          </div>
+        </div>
+
+        <!-- STEP 4: Advanced -->
+        <div class="step-content" id="step4">
+          <h2 data-i18n="img.step4.title">Tetapan Lanjutan</h2>
+          <p data-i18n="img.step4.sub" style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:20px;">Perhalusi prompt anda.</p>
+          <div class="form-group">
+            <label class="form-label" data-i18n="img.aspect">Nisbah Bidang (Aspect Ratio)</label>
+            <select class="form-control" id="imgAspect">
+              <option value="1:1">1:1 (Instagram)</option>
+              <option value="16:9">16:9 (Desktop/YouTube)</option>
+              <option value="9:16">9:16 (TikTok/Reels)</option>
+              <option value="4:5">4:5 (Portrait)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" data-i18n="img.negative">Prompt Negatif</label>
+            <textarea class="form-control" id="imgNegative" rows="3" data-i18n-placeholder="img.negativePlaceholder" placeholder="Apa yang anda TIDAK MAHU dalam gambar..."></textarea>
+          </div>
+          <div class="nav-btns">
+            <button class="btn btn-ghost" onclick="goStep(3)"><i class="fa fa-arrow-left"></i> Kembali</button>
+            <button class="btn btn-primary" onclick="generatePrompt()">Jana Prompt Imej <i class="fa fa-wand-magic-sparkles"></i></button>
+          </div>
+        </div>
+
+        <!-- STEP 5: Result -->
+        <div class="step-content" id="step5">
+          <h2 data-i18n="img.step5.title">Prompt Imej Anda Telah Sedia!</h2>
+          <p style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:20px;">Salin prompt di bawah untuk digunakan dalam Midjourney, DALL-E, atau Stable Diffusion.</p>
+          
+          <div class="form-group">
+            <label class="form-label">Full Prompt (English)</label>
+            <textarea class="form-control" id="finalPrompt" style="min-height:180px; font-family:monospace; font-size:0.9rem;" readonly></textarea>
+          </div>
+
+          <div style="display:flex; gap:10px; margin-top:15px;">
+            <button class="btn btn-primary btn-full" onclick="copyToClipboard(document.getElementById('finalPrompt').value)"><i class="fa fa-copy"></i> Salin Prompt</button>
+          </div>
+
+          <div class="nav-btns">
+            <button class="btn btn-ghost" onclick="goStep(4)"><i class="fa fa-arrow-left"></i> Kembali</button>
+            <button class="btn btn-ghost" onclick="location.reload()"><i class="fa fa-refresh"></i> Mula Baru</button>
+          </div>
+        </div>
       </div>
     </div>
   </main>
@@ -68,6 +224,70 @@
 <script>
   initI18n();
   const session = requireAuth();
+
+  let currentStep = 1;
+  const selections = {
+    medium: '',
+    mood: ''
+  };
+
+  function goStep(n) {
+    if (n === 2 && !document.getElementById('imgSubject').value.trim()) {
+      showToast('Sila masukkan subjek utama.', 'error');
+      return;
+    }
+    document.querySelectorAll('.step-content').forEach(s => s.classList.remove('active'));
+    document.getElementById('step' + n).classList.add('active');
+    document.getElementById('progressFill').style.width = (n * 20) + '%';
+    currentStep = n;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function selectItem(category, value, el) {
+    document.querySelectorAll(`#${category}Grid .selection-item`).forEach(i => i.classList.remove('active'));
+    el.classList.add('active');
+    selections[category] = value;
+  }
+
+  function generatePrompt() {
+    const subject = document.getElementById('imgSubject').value.trim();
+    const action = document.getElementById('imgAction').value.trim();
+    const setting = document.getElementById('imgSetting').value.trim();
+    const medium = selections.medium;
+    const mood = selections.mood;
+    const colors = document.getElementById('imgColors').value.trim();
+    const artist = document.getElementById('imgArtist').value.trim();
+    const angle = document.getElementById('imgAngle').value;
+    const lighting = document.getElementById('imgLighting').value;
+    const aspect = document.getElementById('imgAspect').value;
+    const negative = document.getElementById('imgNegative').value.trim();
+    
+    const qualityTags = Array.from(document.querySelectorAll('.img-quality:checked')).map(cb => cb.value);
+
+    // Build parts
+    let parts = [];
+    parts.push(subject);
+    if (action) parts.push(action);
+    if (setting) parts.push('in ' + setting);
+    if (medium) parts.push(medium);
+    if (artist) parts.push('in the style of ' + artist);
+    if (mood) parts.push(mood + ' atmosphere');
+    if (colors) parts.push(colors + ' color palette');
+    if (angle) parts.push(angle);
+    if (lighting) parts.push(lighting);
+    if (qualityTags.length) parts.push(qualityTags.join(', '));
+    
+    // Final string
+    let fullPrompt = parts.filter(Boolean).join(', ');
+    
+    // Add Aspect Ratio for Midjourney style if needed
+    if (aspect !== '1:1') {
+      fullPrompt += ` --ar ${aspect}`;
+    }
+
+    document.getElementById('finalPrompt').value = fullPrompt;
+    goStep(5);
+  }
 </script>
 </body>
 </html>
