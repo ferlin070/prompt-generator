@@ -68,7 +68,8 @@
 
       // Dashboard
       'dash.main': 'Main',
-      'dash.newPrompt': 'Create Prompt',
+      'dash.newPrompt': 'Website Generator',
+      'dash.imageGenerator': 'Image Generator',
       'dash.saved': 'Saved Prompts',
       'dash.other': 'Other',
       'dash.pricing': 'Pricing & Plans',
@@ -81,7 +82,7 @@
       'dash.stat.week': 'This Week',
       'dash.stat.fav': 'Favorites',
       'dash.quick': 'Quick Actions',
-      'dash.action.create': 'Create Prompt',
+      'dash.action.create': 'Website Generator',
       'dash.action.viewAll': 'View All Prompts',
       'dash.action.fav': 'Favorite Prompts',
       'dash.recent': 'Recent Prompts',
@@ -186,7 +187,8 @@
 
       // Dashboard
       'dash.main': 'Utama',
-      'dash.newPrompt': 'Jana Prompt Baru',
+      'dash.newPrompt': 'Website Generator',
+      'dash.imageGenerator': 'Image Generator',
       'dash.saved': 'Prompt Tersimpan',
       'dash.other': 'Lain-lain',
       'dash.pricing': 'Harga & Pelan',
@@ -199,7 +201,7 @@
       'dash.stat.week': 'Jana Minggu Ini',
       'dash.stat.fav': 'Kegemaran',
       'dash.quick': 'Tindakan Pantas',
-      'dash.action.create': 'Jana Prompt Baru',
+      'dash.action.create': 'Website Generator',
       'dash.action.viewAll': 'Lihat Semua Prompt',
       'dash.action.fav': 'Prompt Kegemaran',
       'dash.recent': 'Prompt Terbaru',
