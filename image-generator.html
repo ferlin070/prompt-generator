@@ -16,10 +16,9 @@
     .nav-btns { display:flex; justify-content:space-between; align-items:center; margin-top:28px; padding-top:20px; border-top:1px solid var(--border); }
     .progress-bar { height: 6px; background: var(--bg-secondary); border-radius: 3px; margin-bottom: 24px; overflow: hidden; }
     .progress-fill { height: 100%; background: var(--accent-primary); width: 0%; transition: 0.3s; }
-    .selection-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; margin-top: 10px; }
-    .selection-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px; text-align: center; cursor: pointer; transition: 0.2s; font-size: 0.85rem; }
-    .selection-item:hover { border-color: var(--accent-primary); }
-    .selection-item.active { border-color: var(--accent-primary); background: var(--accent-glow); color: var(--accent-light); font-weight: 600; }
+    .checkbox-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; margin-top: 10px; }
+    .opt-group { margin-bottom: 20px; padding: 15px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); }
+    .opt-group-title { font-size: 0.85rem; font-weight: 700; color: var(--accent-light); text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
     @media(max-width:768px) { .form-grid-2 { grid-template-columns:1fr; } }
   </style>
 </head>
@@ -78,7 +77,7 @@
             <input type="text" class="form-control" id="imgAction" data-i18n-placeholder="img.actionPlaceholder" placeholder="Sedang minum kopi, melompat..."/>
           </div>
           <div class="form-group">
-            <label class="form-label" data-i18n="img.setting">Latar Belakang</label>
+            <label class="form-label" data-i18n="img.setting">Latar Belakang / Persekitaran</label>
             <input type="text" class="form-control" id="imgSetting" data-i18n-placeholder="img.settingPlaceholder" placeholder="Kafe siberpunk, hutan ajaib..."/>
           </div>
           <div class="nav-btns">
@@ -87,107 +86,218 @@
           </div>
         </div>
 
-        <!-- STEP 2: Artistic -->
+        <!-- STEP 2: Artistic Style -->
         <div class="step-content" id="step2">
-          <h2 data-i18n="img.step2.title">Gaya & Seni</h2>
+          <h2 data-i18n="img.step2.title">Gaya Seni & Medium</h2>
           <p data-i18n="img.step2.sub" style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:20px;">Pilih rupa dan gaya visual gambar.</p>
+          
           <div class="form-group">
-            <label class="form-label" data-i18n="img.medium">Gaya Seni / Medium</label>
-            <div class="selection-grid" id="mediumGrid">
-              <div class="selection-item" onclick="selectItem('medium', 'Photorealistic', this)">📸 Photorealistic</div>
-              <div class="selection-item" onclick="selectItem('medium', '3D Render', this)">🧊 3D Render</div>
-              <div class="selection-item" onclick="selectItem('medium', 'Oil Painting', this)">🎨 Oil Painting</div>
-              <div class="selection-item" onclick="selectItem('medium', 'Anime', this)">🎌 Anime</div>
-              <div class="selection-item" onclick="selectItem('medium', 'Watercolor', this)">💧 Watercolor</div>
-              <div class="selection-item" onclick="selectItem('medium', 'Vector Art', this)">📐 Vector Art</div>
-            </div>
+            <label class="form-label" data-i18n="img.medium">Gaya Seni Utama</label>
+            <select class="form-control" id="imgMedium">
+              <option value="">Default / Auto</option>
+              <optgroup label="Fotografi Realistik">
+                <option value="DSLR photography">DSLR Photography</option>
+                <option value="Polaroid style">Polaroid</option>
+                <option value="CCTV footage">CCTV Footage</option>
+                <option value="Drone photography">Drone Photography</option>
+                <option value="Macro photography">Macro Photography</option>
+                <option value="Disposable camera style">Disposable Camera</option>
+              </optgroup>
+              <optgroup label="Seni Digital & 3D">
+                <option value="3D render">3D Render</option>
+                <option value="Isometric 3D">Isometric 3D</option>
+                <option value="Voxel art">Voxel Art</option>
+                <option value="Low poly art">Low Poly Art</option>
+                <option value="Vector illustration">Vector Illustration</option>
+                <option value="Flat design">Flat Design</option>
+              </optgroup>
+              <optgroup label="Lukisan Tradisional">
+                <option value="Oil painting">Oil Painting</option>
+                <option value="Watercolor">Watercolor</option>
+                <option value="Charcoal sketch">Charcoal Sketch</option>
+                <option value="Ink wash">Ink Wash</option>
+                <option value="Woodcut print">Woodcut Print</option>
+                <option value="Pencil drawing">Pencil Drawing</option>
+              </optgroup>
+              <optgroup label="Animasi & Komik">
+                <option value="Anime style">Anime Style</option>
+                <option value="Studio Ghibli style">Studio Ghibli Style</option>
+                <option value="Pixar 3D style">Pixar 3D Style</option>
+                <option value="Marvel comic style">Marvel Comic Style</option>
+                <option value="Vintage manga">Vintage Manga</option>
+                <option value="Pop art">Pop Art</option>
+              </optgroup>
+              <optgroup label="Estetik Khusus">
+                <option value="Minimalist and clean">Minimalist and Clean</option>
+                <option value="Cyberpunk">Cyberpunk</option>
+                <option value="Steampunk">Steampunk</option>
+                <option value="Retro synthwave">Retro Synthwave</option>
+                <option value="Corporate modern">Corporate Modern</option>
+              </optgroup>
+            </select>
           </div>
-          <div class="form-group">
-            <label class="form-label" data-i18n="img.mood">Suasana / Emosi</label>
-            <div class="selection-grid" id="moodGrid">
-              <div class="selection-item" onclick="selectItem('mood', 'Cinematic', this)">🎬 Cinematic</div>
-              <div class="selection-item" onclick="selectItem('mood', 'Romantic', this)">❤️ Romantic</div>
-              <div class="selection-item" onclick="selectItem('mood', 'Futuristic', this)">🚀 Futuristic</div>
-              <div class="selection-item" onclick="selectItem('mood', 'Gloomy', this)">☁️ Gloomy</div>
-              <div class="selection-item" onclick="selectItem('mood', 'Peaceful', this)">🌿 Peaceful</div>
-            </div>
-          </div>
+
           <div class="form-grid-2">
             <div class="form-group">
-              <label class="form-label" data-i18n="img.colors">Palet Warna</label>
-              <input type="text" class="form-control" id="imgColors" placeholder="Neon, pastel, warm tone..."/>
+              <label class="form-label" data-i18n="img.mood">Suasana / Emosi (Vibe)</label>
+              <select class="form-control" id="imgMood">
+                <option value="">Default</option>
+                <option value="Energetic and dynamic">Energetic and Dynamic</option>
+                <option value="Calm and peaceful">Calm and Peaceful</option>
+                <option value="Dark and moody">Dark and Moody</option>
+                <option value="Mysterious">Mysterious</option>
+                <option value="Corporate and professional">Corporate and Professional</option>
+                <option value="Futuristic">Futuristic</option>
+                <option value="Nostalgic">Nostalgic</option>
+                <option value="Epic and majestic">Epic and Majestic</option>
+              </select>
             </div>
             <div class="form-group">
-              <label class="form-label" data-i18n="img.artist">Rujukan Artis (Pilihan)</label>
-              <input type="text" class="form-control" id="imgArtist" placeholder="Vincent van Gogh, Studio Ghibli..."/>
+              <label class="form-label" data-i18n="img.colors">Palet Warna</label>
+              <select class="form-control" id="imgColors">
+                <option value="">Default</option>
+                <option value="Monochrome">Monochrome (Hitam Putih)</option>
+                <option value="Sepia">Sepia</option>
+                <option value="Vibrant and saturated">Vibrant and Saturated</option>
+                <option value="Muted colors">Muted Colors</option>
+                <option value="Pastel tones">Pastel Tones</option>
+                <option value="Earth tones">Earth Tones</option>
+                <option value="Warm tones">Warm Tones</option>
+                <option value="Cool tones">Cool Tones</option>
+              </select>
             </div>
           </div>
+
+          <div class="form-group">
+            <label class="form-label" data-i18n="img.artist">Rujukan Artis (Pilihan)</label>
+            <input type="text" class="form-control" id="imgArtist" placeholder="Vincent van Gogh, Studio Ghibli, Greg Rutkowski..."/>
+          </div>
+
           <div class="nav-btns">
             <button class="btn btn-ghost" onclick="goStep(1)"><i class="fa fa-arrow-left"></i> Kembali</button>
             <button class="btn btn-primary" onclick="goStep(3)">Seterusnya <i class="fa fa-arrow-right"></i></button>
           </div>
         </div>
 
-        <!-- STEP 3: Technical -->
+        <!-- STEP 3: Photography & Lighting -->
         <div class="step-content" id="step3">
-          <h2 data-i18n="img.step3.title">Teknikal & Kualiti</h2>
-          <p data-i18n="img.step3.sub" style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:20px;">Tetapan profesional untuk hasil realistik.</p>
+          <h2 data-i18n="img.step3.title">Teknikal & Pencahayaan</h2>
+          <p data-i18n="img.step3.sub" style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:20px;">Tetapan kamera dan cahaya profesional.</p>
+          
           <div class="form-grid-2">
             <div class="form-group">
-              <label class="form-label" data-i18n="img.angle">Sudut Kamera</label>
+              <label class="form-label" data-i18n="img.angle">Sudut & Jarak Kamera</label>
               <select class="form-control" id="imgAngle">
                 <option value="">Default</option>
-                <option value="Close-up portrait">Close-up portrait</option>
-                <option value="Wide-angle shot">Wide-angle shot</option>
-                <option value="Bird-eye view">Bird-eye view</option>
-                <option value="Macro photography">Macro photography</option>
+                <option value="Extreme close-up">Extreme Close-up</option>
+                <option value="Close-up">Close-up</option>
+                <option value="Medium shot">Medium Shot (Paras Pinggang)</option>
+                <option value="Full body shot">Full Body Shot</option>
+                <option value="Wide establishing shot">Wide Establishing Shot</option>
+                <option value="Eye-level angle">Eye-level Angle</option>
+                <option value="Low angle">Low Angle (Nampak Gah)</option>
+                <option value="High angle">High Angle (Dari Atas)</option>
+                <option value="Bird's-eye view">Bird's-eye View</option>
+                <option value="Worm's-eye view">Worm's-eye View</option>
+                <option value="Dutch angle">Dutch Angle (Senget)</option>
               </select>
             </div>
             <div class="form-group">
-              <label class="form-label" data-i18n="img.lighting">Pencahayaan</label>
+              <label class="form-label" data-i18n="img.lighting">Pencahayaan (Lighting)</label>
               <select class="form-control" id="imgLighting">
                 <option value="">Default</option>
-                <option value="Cinematic lighting">Cinematic lighting</option>
-                <option value="Golden hour">Golden hour</option>
-                <option value="Natural sunlight">Natural sunlight</option>
-                <option value="Neon lights">Neon lights</option>
-                <option value="Studio lighting">Studio lighting</option>
+                <optgroup label="Cahaya Semula Jadi">
+                  <option value="Golden hour">Golden Hour (Senja)</option>
+                  <option value="Blue hour">Blue Hour (Awal Pagi)</option>
+                  <option value="Overcast">Overcast (Mendung)</option>
+                  <option value="Direct sunlight">Direct Sunlight</option>
+                  <option value="Dappled light">Dappled Light</option>
+                </optgroup>
+                <optgroup label="Studio / Buatan">
+                  <option value="Cinematic lighting">Cinematic Lighting</option>
+                  <option value="Three-point studio lighting">Three-point Studio Lighting</option>
+                  <option value="Neon lights">Neon Lights</option>
+                  <option value="Cyberpunk glow">Cyberpunk Glow</option>
+                  <option value="LED ring light">LED Ring Light</option>
+                  <option value="Harsh flash">Harsh Flash</option>
+                </optgroup>
+                <optgroup label="Arah Cahaya">
+                  <option value="Backlit">Backlit (Dari Belakang)</option>
+                  <option value="Volumetric lighting">Volumetric Lighting (God Rays)</option>
+                  <option value="Rim lighting">Rim Lighting</option>
+                </optgroup>
               </select>
             </div>
           </div>
+
           <div class="form-group">
-            <label class="form-label" data-i18n="img.quality">Tag Kualiti</label>
-            <div style="display:flex; flex-wrap:wrap; gap:10px;">
-              <label class="checkbox-item"><input type="checkbox" class="img-quality" value="Masterpiece" checked/> Masterpiece</label>
-              <label class="checkbox-item"><input type="checkbox" class="img-quality" value="Highly detailed" checked/> Highly detailed</label>
-              <label class="checkbox-item"><input type="checkbox" class="img-quality" value="8k resolution" checked/> 8k resolution</label>
-              <label class="checkbox-item"><input type="checkbox" class="img-quality" value="Hyper-realistic"/> Hyper-realistic</label>
-              <label class="checkbox-item"><input type="checkbox" class="img-quality" value="Sharp focus"/> Sharp focus</label>
+            <label class="form-label">Kesan Lensa & Fokus</label>
+            <div class="checkbox-grid">
+              <label class="checkbox-item"><input type="checkbox" class="img-lens-effect" value="Shallow depth of field"/> Shallow depth of field (Bokeh)</label>
+              <label class="checkbox-item"><input type="checkbox" class="img-lens-effect" value="Motion blur"/> Motion blur</label>
+              <label class="checkbox-item"><input type="checkbox" class="img-lens-effect" value="Sharp focus"/> Sharp focus</label>
+              <label class="checkbox-item"><input type="checkbox" class="img-lens-effect" value="Lens flare"/> Lens flare</label>
+              <label class="checkbox-item"><input type="checkbox" class="img-lens-effect" value="Vignette"/> Vignette</label>
             </div>
           </div>
+
+          <div class="form-group">
+            <label class="form-label">Jenis Lensa Khusus (Pilihan)</label>
+            <select class="form-control" id="imgLens">
+              <option value="">Default</option>
+              <option value="Shot on 15mm wide-angle lens">15mm Wide-angle</option>
+              <option value="Shot on 35mm prime lens">35mm Prime</option>
+              <option value="Shot on 85mm portrait lens">85mm Portrait</option>
+              <option value="Shot on fisheye lens">Fisheye Lens</option>
+            </select>
+          </div>
+
           <div class="nav-btns">
             <button class="btn btn-ghost" onclick="goStep(2)"><i class="fa fa-arrow-left"></i> Kembali</button>
             <button class="btn btn-primary" onclick="goStep(4)">Seterusnya <i class="fa fa-arrow-right"></i></button>
           </div>
         </div>
 
-        <!-- STEP 4: Advanced -->
+        <!-- STEP 4: Quality & Safety -->
         <div class="step-content" id="step4">
-          <h2 data-i18n="img.step4.title">Tetapan Lanjutan</h2>
-          <p data-i18n="img.step4.sub" style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:20px;">Perhalusi prompt anda.</p>
+          <h2 data-i18n="img.step4.title">Kualiti & Lanjutan</h2>
+          <p data-i18n="img.step4.sub" style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:20px;">Penggalak kualiti dan aspek gambar.</p>
+          
+          <div class="opt-group">
+            <div class="opt-group-title">🚀 Penggalak Kualiti AI</div>
+            <div class="checkbox-grid">
+              <label class="checkbox-item"><input type="checkbox" class="img-quality" value="Masterpiece" checked/> Masterpiece</label>
+              <label class="checkbox-item"><input type="checkbox" class="img-quality" value="8k resolution" checked/> 8k Resolution</label>
+              <label class="checkbox-item"><input type="checkbox" class="img-quality" value="Highly detailed" checked/> Highly Detailed</label>
+              <label class="checkbox-item"><input type="checkbox" class="img-quality" value="Intricate details" checked/> Intricate Details</label>
+              <label class="checkbox-item"><input type="checkbox" class="img-quality" value="Unreal Engine 5 render"/> Unreal Engine 5</label>
+              <label class="checkbox-item"><input type="checkbox" class="img-quality" value="Octane render"/> Octane Render</label>
+              <label class="checkbox-item"><input type="checkbox" class="img-quality" value="Ray tracing"/> Ray Tracing</label>
+              <label class="checkbox-item"><input type="checkbox" class="img-quality" value="Award-winning photography"/> Award-winning</label>
+            </div>
+            <button class="btn btn-ghost btn-sm" style="margin-top:10px" onclick="checkAllQuality()">Tandakan Semua</button>
+          </div>
+
+          <div class="opt-group">
+            <div class="opt-group-title">🛡️ Pakej Keselamatan (Negative Prompt)</div>
+            <div class="checkbox-grid">
+              <label class="checkbox-item"><input type="checkbox" class="img-negative-preset" value="text, watermark, signature, logo, typography, words"/> Buang Teks & Logo</label>
+              <label class="checkbox-item"><input type="checkbox" class="img-negative-preset" value="bad anatomy, deformed, missing fingers, extra limbs, bad eyes, unnatural proportions"/> Betulkan Anatomi Manusia</label>
+              <label class="checkbox-item"><input type="checkbox" class="img-negative-preset" value="low resolution, blurry, pixelated, jpeg artifacts, worst quality, out of frame"/> Elak Kualiti Rendah</label>
+              <label class="checkbox-item"><input type="checkbox" class="img-negative-preset" value="3d, cartoon, anime, illustration, sketch, painting"/> Halang Gaya Kartun</label>
+            </div>
+          </div>
+
           <div class="form-group">
             <label class="form-label" data-i18n="img.aspect">Nisbah Bidang (Aspect Ratio)</label>
             <select class="form-control" id="imgAspect">
-              <option value="1:1">1:1 (Instagram)</option>
-              <option value="16:9">16:9 (Desktop/YouTube)</option>
-              <option value="9:16">9:16 (TikTok/Reels)</option>
-              <option value="4:5">4:5 (Portrait)</option>
+              <option value="1:1">1:1 (Square / Instagram)</option>
+              <option value="16:9">16:9 (Landscape / YouTube)</option>
+              <option value="9:16">9:16 (Portrait / TikTok)</option>
+              <option value="4:5">4:5 (Standard Portrait)</option>
             </select>
           </div>
-          <div class="form-group">
-            <label class="form-label" data-i18n="img.negative">Prompt Negatif</label>
-            <textarea class="form-control" id="imgNegative" rows="3" data-i18n-placeholder="img.negativePlaceholder" placeholder="Apa yang anda TIDAK MAHU dalam gambar..."></textarea>
-          </div>
+
           <div class="nav-btns">
             <button class="btn btn-ghost" onclick="goStep(3)"><i class="fa fa-arrow-left"></i> Kembali</button>
             <button class="btn btn-primary" onclick="generatePrompt()">Jana Prompt Imej <i class="fa fa-wand-magic-sparkles"></i></button>
@@ -197,15 +307,21 @@
         <!-- STEP 5: Result -->
         <div class="step-content" id="step5">
           <h2 data-i18n="img.step5.title">Prompt Imej Anda Telah Sedia!</h2>
-          <p style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:20px;">Salin prompt di bawah untuk digunakan dalam Midjourney, DALL-E, atau Stable Diffusion.</p>
+          <p style="color:var(--text-secondary); font-size:0.85rem; margin-bottom:20px;">Salin prompt di bawah untuk hasil yang menakjubkan.</p>
           
           <div class="form-group">
-            <label class="form-label">Full Prompt (English)</label>
-            <textarea class="form-control" id="finalPrompt" style="min-height:180px; font-family:monospace; font-size:0.9rem;" readonly></textarea>
+            <label class="form-label">Positive Prompt (Input ini ke Midjourney/DALL-E)</label>
+            <textarea class="form-control" id="finalPrompt" style="min-height:160px; font-family:monospace; font-size:0.9rem;" readonly></textarea>
           </div>
 
-          <div style="display:flex; gap:10px; margin-top:15px;">
-            <button class="btn btn-primary btn-full" onclick="copyToClipboard(document.getElementById('finalPrompt').value)"><i class="fa fa-copy"></i> Salin Prompt</button>
+          <div class="form-group" id="negContainer" style="display:none">
+            <label class="form-label">Negative Prompt (Input ini ke ruang Negative Prompt)</label>
+            <textarea class="form-control" id="finalNegative" style="min-height:100px; font-family:monospace; font-size:0.85rem; color:var(--accent-secondary);" readonly></textarea>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:10px; margin-top:15px;">
+            <button class="btn btn-primary" onclick="copyToClipboard(document.getElementById('finalPrompt').value)"><i class="fa fa-copy"></i> Salin Positive Prompt</button>
+            <button class="btn btn-ghost" id="btnCopyNeg" style="display:none" onclick="copyToClipboard(document.getElementById('finalNegative').value)"><i class="fa fa-ban"></i> Salin Negative Prompt</button>
           </div>
 
           <div class="nav-btns">
@@ -225,12 +341,6 @@
   initI18n();
   const session = requireAuth();
 
-  let currentStep = 1;
-  const selections = {
-    medium: '',
-    mood: ''
-  };
-
   function goStep(n) {
     if (n === 2 && !document.getElementById('imgSubject').value.trim()) {
       showToast('Sila masukkan subjek utama.', 'error');
@@ -239,53 +349,64 @@
     document.querySelectorAll('.step-content').forEach(s => s.classList.remove('active'));
     document.getElementById('step' + n).classList.add('active');
     document.getElementById('progressFill').style.width = (n * 20) + '%';
-    currentStep = n;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  function selectItem(category, value, el) {
-    document.querySelectorAll(`#${category}Grid .selection-item`).forEach(i => i.classList.remove('active'));
-    el.classList.add('active');
-    selections[category] = value;
+  function checkAllQuality() {
+    document.querySelectorAll('.img-quality').forEach(cb => cb.checked = true);
   }
 
   function generatePrompt() {
     const subject = document.getElementById('imgSubject').value.trim();
     const action = document.getElementById('imgAction').value.trim();
     const setting = document.getElementById('imgSetting').value.trim();
-    const medium = selections.medium;
-    const mood = selections.mood;
-    const colors = document.getElementById('imgColors').value.trim();
+    const medium = document.getElementById('imgMedium').value;
+    const mood = document.getElementById('imgMood').value;
+    const colors = document.getElementById('imgColors').value;
     const artist = document.getElementById('imgArtist').value.trim();
     const angle = document.getElementById('imgAngle').value;
     const lighting = document.getElementById('imgLighting').value;
+    const lens = document.getElementById('imgLens').value;
     const aspect = document.getElementById('imgAspect').value;
-    const negative = document.getElementById('imgNegative').value.trim();
     
+    const lensEffects = Array.from(document.querySelectorAll('.img-lens-effect:checked')).map(cb => cb.value);
     const qualityTags = Array.from(document.querySelectorAll('.img-quality:checked')).map(cb => cb.value);
+    const negPresets = Array.from(document.querySelectorAll('.img-negative-preset:checked')).map(cb => cb.value);
 
-    // Build parts
+    // Build Positive Prompt
     let parts = [];
     parts.push(subject);
     if (action) parts.push(action);
     if (setting) parts.push('in ' + setting);
     if (medium) parts.push(medium);
-    if (artist) parts.push('in the style of ' + artist);
-    if (mood) parts.push(mood + ' atmosphere');
-    if (colors) parts.push(colors + ' color palette');
-    if (angle) parts.push(angle);
     if (lighting) parts.push(lighting);
+    if (angle) parts.push(angle);
+    if (lens) parts.push(lens);
+    if (lensEffects.length) parts.push(lensEffects.join(', '));
+    if (mood) parts.push(mood);
+    if (colors) parts.push(colors);
+    if (artist) parts.push('in the style of ' + artist);
     if (qualityTags.length) parts.push(qualityTags.join(', '));
     
-    // Final string
     let fullPrompt = parts.filter(Boolean).join(', ');
-    
-    // Add Aspect Ratio for Midjourney style if needed
-    if (aspect !== '1:1') {
-      fullPrompt += ` --ar ${aspect}`;
-    }
+    if (aspect !== '1:1') fullPrompt += ` --ar ${aspect}`;
+
+    // Build Negative Prompt
+    let fullNegative = negPresets.filter(Boolean).join(', ');
 
     document.getElementById('finalPrompt').value = fullPrompt;
+    document.getElementById('finalNegative').value = fullNegative;
+
+    const negContainer = document.getElementById('negContainer');
+    const btnCopyNeg = document.getElementById('btnCopyNeg');
+    if (fullNegative) {
+      negContainer.style.display = 'block';
+      btnCopyNeg.style.display = 'flex';
+    } else {
+      negContainer.style.display = 'none';
+      btnCopyNeg.style.display = 'none';
+    }
+
     goStep(5);
   }
 </script>
