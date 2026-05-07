@@ -416,37 +416,56 @@
   }
 
   async function saveImagePrompt() {
-    const prompt = document.getElementById('finalPrompt').value;
-    const negative = document.getElementById('finalNegative').value;
-    const subject = document.getElementById('imgSubject').value;
+    const promptValue = document.getElementById('finalPrompt').value;
+    const negativeValue = document.getElementById('finalNegative').value;
+    const subjectValue = document.getElementById('imgSubject').value;
     
-    if (!prompt) return;
+    if (!promptValue) {
+      showToast('Tiada prompt untuk disimpan.', 'error');
+      return;
+    }
 
     const btnSave = document.getElementById('btnSave');
     btnSave.disabled = true;
+    const originalHTML = btnSave.innerHTML;
     btnSave.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Menyimpan...';
 
-    const promptData = {
-      title: subject || 'Image Prompt',
-      businessType: 'image_generator',
-      businessTypeLabel: 'Image Generator',
-      generatedPrompt: prompt + (negative ? '\n\nNegative Prompt: ' + negative : ''),
-      formData: {
-        subject: subject,
-        medium: document.getElementById('imgMedium').value,
-        mood: document.getElementById('imgMood').value,
-        negative: negative
-      },
-      tags: ['image', 'ai-art']
-    };
+    try {
+      const promptData = {
+        title: subjectValue || 'Image Prompt',
+        businessType: 'image_generator',
+        businessTypeLabel: 'Image Generator',
+        generatedPrompt: promptValue,
+        formData: {
+          subject: subjectValue,
+          negative: negativeValue || '',
+          medium: document.getElementById('imgMedium').value || '',
+          mood: document.getElementById('imgMood').value || '',
+          aspect: document.getElementById('imgAspect').value || '1:1'
+        },
+        tags: ['image', 'ai-art']
+      };
 
-    const result = await savePrompt(promptData);
-    if (result) {
-      showToast('Prompt imej berjaya disimpan!', 'success');
-      btnSave.innerHTML = '<i class="fa fa-check"></i> Tersimpan';
-    } else {
+      // If there is a negative prompt, we append it to the main prompt for storage
+      // so it shows up when viewing the saved prompt.
+      if (negativeValue) {
+        promptData.generatedPrompt += '\n\n--- NEGATIVE PROMPT ---\n' + negativeValue;
+      }
+
+      const result = await savePrompt(promptData);
+      if (result) {
+        showToast('Prompt imej berjaya disimpan!', 'success');
+        btnSave.innerHTML = '<i class="fa fa-check"></i> Tersimpan';
+        btnSave.classList.remove('btn-blue');
+        btnSave.classList.add('btn-ghost');
+      } else {
+        throw new Error('Database error');
+      }
+    } catch (err) {
+      console.error('Save error:', err);
+      showToast('Gagal menyimpan prompt. Sila cuba lagi.', 'error');
       btnSave.disabled = false;
-      btnSave.innerHTML = '<i class="fa fa-floppy-disk"></i> Simpan Prompt';
+      btnSave.innerHTML = originalHTML;
     }
   }
 </script>
