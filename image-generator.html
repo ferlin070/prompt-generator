@@ -321,6 +321,7 @@
 
           <div style="display:flex; flex-direction:column; gap:10px; margin-top:15px;">
             <button class="btn btn-primary" onclick="copyToClipboard(document.getElementById('finalPrompt').value)"><i class="fa fa-copy"></i> Salin Positive Prompt</button>
+            <button class="btn btn-blue" id="btnSave" onclick="saveImagePrompt()"><i class="fa fa-floppy-disk"></i> Simpan Prompt</button>
             <button class="btn btn-ghost" id="btnCopyNeg" style="display:none" onclick="copyToClipboard(document.getElementById('finalNegative').value)"><i class="fa fa-ban"></i> Salin Negative Prompt</button>
           </div>
 
@@ -334,8 +335,12 @@
   </main>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/rate-limiting.js"></script>
 <script src="js/i18n.js"></script>
 <script src="js/auth.js"></script>
+<script src="js/storage.js"></script>
 <script src="js/utils.js"></script>
 <script>
   initI18n();
@@ -408,6 +413,41 @@
     }
 
     goStep(5);
+  }
+
+  async function saveImagePrompt() {
+    const prompt = document.getElementById('finalPrompt').value;
+    const negative = document.getElementById('finalNegative').value;
+    const subject = document.getElementById('imgSubject').value;
+    
+    if (!prompt) return;
+
+    const btnSave = document.getElementById('btnSave');
+    btnSave.disabled = true;
+    btnSave.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Menyimpan...';
+
+    const promptData = {
+      title: subject || 'Image Prompt',
+      businessType: 'image_generator',
+      businessTypeLabel: 'Image Generator',
+      generatedPrompt: prompt + (negative ? '\n\nNegative Prompt: ' + negative : ''),
+      formData: {
+        subject: subject,
+        medium: document.getElementById('imgMedium').value,
+        mood: document.getElementById('imgMood').value,
+        negative: negative
+      },
+      tags: ['image', 'ai-art']
+    };
+
+    const result = await savePrompt(promptData);
+    if (result) {
+      showToast('Prompt imej berjaya disimpan!', 'success');
+      btnSave.innerHTML = '<i class="fa fa-check"></i> Tersimpan';
+    } else {
+      btnSave.disabled = false;
+      btnSave.innerHTML = '<i class="fa fa-floppy-disk"></i> Simpan Prompt';
+    }
   }
 </script>
 </body>
