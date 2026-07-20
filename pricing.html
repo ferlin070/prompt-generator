@@ -165,9 +165,7 @@
 
   <div id="toast-container"></div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/env.js"></script>
-  <script src="js/supabase-config.js"></script>
+  <script src="js/api.js"></script>
   <script src="js/i18n.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/storage.js"></script>
@@ -273,22 +271,21 @@
       const s = getSession();
 
       try {
-        const { data, error } = await sb.functions.invoke('bayarcash-create-payment', {
-          body: {
+        const data = await api('/api/bayarcash/create-payment', {
+          method: 'POST',
+          body: JSON.stringify({
             planId: selectedPlan,
             billing: billing,
             amount: finalPrice,
             payerName: s?.name || s?.email,
             payerEmail: s?.email,
             paymentChannel: selectedPayment
-          }
+          })
         });
 
-        if (error) throw error;
-        
-        if (data && data.error) {
+        if (data.error) {
           throw new Error(data.error);
-        } else if (data && data.url) {
+        } else if (data.url) {
           window.location.href = data.url;
         } else {
           throw new Error('Ralat menjana pembayaran dari Bayarcash');
@@ -300,10 +297,10 @@
       }
     }
 
-    function applyPromo() {
+    async function applyPromo() {
       const code = document.getElementById('promoInput').value.trim();
       if (!code) return;
-      const r = validatePromoCode(code);
+      const r = await validatePromoCode(code);
       const msg = document.getElementById('promoMsg');
       msg.textContent = r.message;
       msg.style.color = r.valid ? '#3fb950' : 'var(--error)';

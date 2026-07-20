@@ -170,10 +170,8 @@
 
 <div class="modal-overlay" id="confirmModal"><div class="modal" style="max-width:400px"><div class="modal-header"><h3 class="modal-title" data-i18n="dash.modal.confirm">Sahkan</h3><button class="modal-close" onclick="closeConfirmModal()">✕</button></div><div class="modal-body"><p id="confirmMessage"></p></div><div class="modal-footer"><button class="btn btn-ghost" onclick="closeConfirmModal()" data-i18n="dash.modal.cancel">Batal</button><button class="btn btn-danger" id="confirmOk" data-i18n="dash.modal.delete">Ya, Sahkan</button></div></div></div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="js/env.js"></script>
-<script src="js/supabase-config.js"></script>
 <script src="js/rate-limiting.js"></script>
+<script src="js/api.js"></script>
 <script src="js/i18n.js"></script>
 <script src="js/auth.js"></script>
 <script src="js/storage.js"></script>
@@ -209,26 +207,22 @@
   }
 
   async function loadStats() {
-    const { count: userCount } = await sb.from('profiles').select('*', { count: 'exact', head: true });
-    const { count: promptCount } = await sb.from('prompts').select('*', { count: 'exact', head: true });
-    const { data: activeSubs } = await sb.from('subscriptions').select('amount').eq('status', 'active');
-    
-    document.getElementById('statTotalUsers').textContent = userCount || 0;
-    document.getElementById('statTotalPrompts').textContent = promptCount || 0;
-    document.getElementById('statActiveSubs').textContent = activeSubs?.length || 0;
-    
-    const mrr = (activeSubs || []).reduce((acc, curr) => acc + parseFloat(curr.amount || 0), 0);
-    document.getElementById('statTotalRevenue').textContent = `RM${mrr}`;
+    const data = await api('/api/admin/stats');
+    document.getElementById('statTotalUsers').textContent = data.userCount || 0;
+    document.getElementById('statTotalPrompts').textContent = data.promptCount || 0;
+    document.getElementById('statActiveSubs').textContent = data.activeSubs || 0;
+    document.getElementById('statTotalRevenue').textContent = `RM${data.mrr || 0}`;
   }
 
   async function loadRecentUsers() {
-    const { data } = await sb.from('profiles').select('*').order('created_at', { ascending: false }).limit(5);
+    const data = await api('/api/admin/users');
+    const users = data.users || [];
     const tbody = document.getElementById('recentUsersTable');
-    if (!data || data.length === 0) {
+    if (users.length === 0) {
       tbody.innerHTML = `<tr><td colspan="4" style="text-align:center">${i18nText('admin.noUsers', 'Tiada pengguna terbaru')}</td></tr>`;
       return;
     }
-    tbody.innerHTML = data.map(u => `
+    tbody.innerHTML = users.slice(0, 5).map(u => `
       <tr>
         <td style="font-weight:600">${u.name}</td>
         <td>${u.email}</td>
@@ -241,11 +235,9 @@
   async function showTab(tabId, el) {
     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
     document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
-    
     const target = document.getElementById('tab' + tabId.charAt(0).toUpperCase() + tabId.slice(1));
     if(target) target.classList.add('active');
     el.classList.add('active');
-
     if (tabId === 'users') loadAllUsers();
     if (tabId === 'subs') loadAllSubs();
     if (tabId === 'promo') loadAllPromos();
@@ -253,12 +245,10 @@
   }
 
   async function loadAllUsers(query = '') {
-    let q = sb.from('profiles').select('*').order('created_at', { ascending: false });
-    if (query) q = q.or(`name.ilike.%${query}%,email.ilike.%${query}%`);
-    
-    const { data } = await q.limit(50);
+    const url = query ? `/api/admin/users?q=${encodeURIComponent(query)}` : '/api/admin/users';
+    const data = await api(url);
     const tbody = document.getElementById('allUsersTable');
-    tbody.innerHTML = (data || []).map(u => `
+    tbody.innerHTML = (data.users || []).map(u => `
       <tr>
         <td>${u.name}</td>
         <td>${u.email}</td>
@@ -281,17 +271,21 @@
   }
 
   async function updateUserPlan(userId, plan) {
-    const { error } = await sb.from('profiles').update({ plan }).eq('id', userId);
-    if (error) showToast(error.message, "error");
-    else showToast(i18nText('admin.planUpdated', 'Pelan pengguna dikemaskini'), "success");
+    try {
+      await api('/api/admin/users', { method: 'PUT', body: JSON.stringify({ userId, plan }) });
+      showToast(i18nText('admin.planUpdated', 'Pelan pengguna dikemaskini'), "success");
+    } catch (e) {
+      showToast(e.message, "error");
+    }
   }
 
   async function toggleUserAdmin(userId, isAdmin) {
-    const { error } = await sb.from('profiles').update({ is_admin: isAdmin }).eq('id', userId);
-    if (error) showToast(error.message, "error");
-    else {
+    try {
+      await api('/api/admin/users', { method: 'PUT', body: JSON.stringify({ userId, is_admin: isAdmin }) });
       showToast(i18nText('admin.adminStatusUpdated', 'Status admin dikemaskini'), "success");
       loadAllUsers();
+    } catch (e) {
+      showToast(e.message, "error");
     }
   }
 
@@ -303,9 +297,9 @@
   }
 
   async function loadAllSubs() {
-    const { data } = await sb.from('subscriptions').select('*').order('created_at', { ascending: false });
+    const data = await api('/api/admin/subscriptions');
     const tbody = document.getElementById('allSubsTable');
-    tbody.innerHTML = (data || []).map(s => `
+    tbody.innerHTML = (data.subscriptions || []).map(s => `
       <tr>
         <td style="font-size:10px">${s.user_id}</td>
         <td>${s.plan}</td>
@@ -317,9 +311,9 @@
   }
 
   async function loadAllPromos() {
-    const { data } = await sb.from('promo_codes').select('*').order('created_at', { ascending: false });
+    const data = await api('/api/admin/promocodes');
     const tbody = document.getElementById('allPromosTable');
-    tbody.innerHTML = (data || []).map(p => `
+    tbody.innerHTML = (data.promos || []).map(p => `
       <tr>
         <td style="font-weight:700">${p.code}</td>
         <td>${p.type}</td>
@@ -338,27 +332,26 @@
     const code = document.getElementById('newPromoCode').value.toUpperCase();
     const type = document.getElementById('newPromoType').value;
     const value = document.getElementById('newPromoValue').value;
-    
     if(!code || !value) { showToast(i18nText('admin.fillPromo', "Sila isi kod dan nilai"), "error"); return; }
-    
-    const { error } = await sb.from('promo_codes').insert({ code, type, value: parseFloat(value) });
-    if (error) showToast(error.message, "error");
-    else {
+    try {
+      await api('/api/admin/promocodes', { method: 'POST', body: JSON.stringify({ code, type, value: parseFloat(value) }) });
       showToast(i18nText('admin.promoCreated', "Kod promo dicipta!"), "success");
       closeModal('addPromoModal');
       loadAllPromos();
+    } catch (e) {
+      showToast(e.message, "error");
     }
   }
 
   async function togglePromo(id, active) {
-    await sb.from('promo_codes').update({ active }).eq('id', id);
+    await api('/api/admin/promocodes', { method: 'PUT', body: JSON.stringify({ id, active }) });
     loadAllPromos();
   }
 
   async function loadAllWithdrawals() {
-    const { data } = await sb.from('withdrawals').select('*').order('requested_at', { ascending: false });
+    const data = await api('/api/admin/withdrawals');
     const tbody = document.getElementById('allWithdrawalsTable');
-    tbody.innerHTML = (data || []).map(w => `
+    tbody.innerHTML = (data.withdrawals || []).map(w => `
       <tr>
         <td style="font-size:10px">${w.user_id}</td>
         <td>RM${w.amount}</td>
@@ -373,15 +366,15 @@
 
   async function approveWithdrawal(id) {
     if (!confirm(i18nText('admin.approveConfirm', "Sahkan pengeluaran ini telah dibayar?"))) return;
-    const { error } = await sb.from('withdrawals').update({ status: 'approved', approved_at: new Date().toISOString() }).eq('id', id);
-    if (error) showToast(error.message, "error");
-    else {
+    try {
+      await api('/api/admin/withdrawals', { method: 'PUT', body: JSON.stringify({ id, status: 'approved' }) });
       showToast(i18nText('admin.withdrawalApproved', "Withdrawal disahkan!"), "success");
       loadAllWithdrawals();
+    } catch (e) {
+      showToast(e.message, "error");
     }
   }
 
-  // Run init
   document.addEventListener('DOMContentLoaded', () => {
     initAdmin();
   });

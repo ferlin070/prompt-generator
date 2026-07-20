@@ -1,7 +1,3 @@
-// =====================================================
-// subscription.js — Plan management (Supabase)
-// =====================================================
-
 const PLANS = {
   free:    { id:'free',    name:'Percuma', icon:'<i class="fa fa-gift"></i>', price:{monthly:0,yearly:0},    limits:{promptsPerMonth:5,savedPrompts:10,aiCalls:0,teamMembers:1,export:['txt'],watermark:true,analytics:false,affiliate:false,apiAccess:false,whitelabel:false}, features:['5 prompt/bulan','10 prompt tersimpan','Template asas','Eksport .txt','Sokongan komuniti'], missing:['Jana AI sebenar','Eksport PDF/DOCX','Program affiliate','Analytics','API access'], color:'var(--text-muted)', cta:'Mulakan Percuma', badge:null },
   starter: { id:'starter', name:'Starter', icon:'<i class="fa fa-bolt"></i>', price:{monthly:29,yearly:19},   limits:{promptsPerMonth:50,savedPrompts:100,aiCalls:50,teamMembers:1,export:['txt','pdf'],watermark:false,analytics:false,affiliate:true,apiAccess:false,whitelabel:false}, features:['50 prompt/bulan','100 prompt tersimpan','Jana AI sebenar (50x/bln)','Eksport PDF','Program affiliate','Tiada watermark','Sokongan email'], missing:['DOCX export','Analytics','API access','White-label'], color:'#388BFD', cta:'Cuba 7 Hari Percuma', badge:'Popular' },
@@ -10,14 +6,12 @@ const PLANS = {
 };
 const PLAN_ORDER = ['free','starter','pro','agency'];
 
-// ── Get user plan ─────────────────────────────────
 function getUserPlan() {
   const session = getSession();
   if (!session) return PLANS.free;
   return PLANS[session.plan] || PLANS.free;
 }
 
-// ── Upgrade plan ──────────────────────────────────
 async function upgradePlan(planId, billingCycle='monthly', promoCode='') {
   const session = getSession();
   if (!session) return { success:false, message:'Sila log masuk dahulu.' };
@@ -29,18 +23,17 @@ async function upgradePlan(planId, billingCycle='monthly', promoCode='') {
 
   let discount = 0;
   if (promoCode) {
-    const { data: code } = await sb.from('promo_codes')
-      .select('*').eq('code', promoCode.toUpperCase()).eq('active', true).single();
-    if (code) {
-      discount = code.type==='percentage' ? price*(code.value/100) : code.value;
-      await sb.from('promo_codes').update({ used_count: (code.used_count||0)+1 }).eq('id', code.id);
-    }
+    try {
+      const data = await api(`/api/promo-codes/validate?code=${encodeURIComponent(promoCode)}`);
+      if (data.valid) {
+        discount = data.code.type==='percentage' ? price*(data.code.value/100) : data.code.value;
+      }
+    } catch {}
   }
 
   const expiresAt = new Date(Date.now() + expiryDays*864e5).toISOString();
 
-  // Update profile
-  const { error: profErr } = await sb.from('profiles').update({
+  const updateRes = await updateUserProfile({
     plan: planId,
     plan_billing_cycle: billingCycle,
     plan_started_at: new Date().toISOString(),
@@ -48,23 +41,18 @@ async function upgradePlan(planId, billingCycle='monthly', promoCode='') {
     ai_credits_left: plan.limits.aiCalls===-1 ? 99999 : plan.limits.aiCalls,
     is_trial: true,
     trial_ends_at: new Date(Date.now()+7*864e5).toISOString(),
-    updated_at: new Date().toISOString()
-  }).eq('id', session.userId);
+  });
+  if (!updateRes.success) return { success:false, message: updateRes.message };
 
-  if (profErr) return { success:false, message: profErr.message };
-
-  // Insert subscription record
-  await sb.from('subscriptions').insert({
-    user_id: session.userId, plan: planId, billing_cycle: billingCycle,
-    amount: price-discount, discount, promo_code: promoCode||null,
-    status: 'active', expires_at: expiresAt, payment_method: 'toyyibpay'
+  await api('/api/subscriptions/checkout', {
+    method: 'POST',
+    body: JSON.stringify({ plan: planId, billing_cycle: billingCycle, promo_code: promoCode || null }),
   });
 
   await cacheSession();
-  return { success:true, plan, price:price-discount, discount };
+  return { success:true, plan, price: price-discount, discount };
 }
 
-// ── Check limits ──────────────────────────────────
 async function checkLimit(feature) {
   const plan = getUserPlan();
   const stats = await getUserStats();
@@ -76,38 +64,32 @@ async function checkLimit(feature) {
       if ((stats.thisMonth||0) >= plan.limits.promptsPerMonth)
         return {allowed:false, reason:`Had bulanan (${plan.limits.promptsPerMonth}) dicapai.`, upgrade:true};
       return {allowed:true, remaining: plan.limits.promptsPerMonth-(stats.thisMonth||0)};
-
     case 'savePrompt':
       if (plan.limits.savedPrompts===-1) return {allowed:true};
       if ((stats.total||0) >= plan.limits.savedPrompts)
         return {allowed:false, reason:`Had simpanan (${plan.limits.savedPrompts}) dicapai.`, upgrade:true};
       return {allowed:true};
-
     case 'aiGenerate':
       if (!plan.limits.aiCalls) return {allowed:false, reason:'Naik taraf ke Starter untuk Jana AI.', upgrade:true};
       if ((profile?.ai_credits_left||0) <= 0) return {allowed:false, reason:'Kredit AI habis.', upgrade:true};
       return {allowed:true, remaining: profile?.ai_credits_left||0};
-
     case 'affiliate':
       if (!plan.limits.affiliate) return {allowed:false, reason:'Naik taraf ke Starter untuk program affiliate.', upgrade:true};
       return {allowed:true};
-
     default: return {allowed:true};
   }
 }
 
-// ── Deduct AI credit ──────────────────────────────
 async function deductAICredit(amount=1) {
   const session = getSession();
   if (!session) return;
   const profile = await getCurrentProfile();
   if (profile?.plan === 'agency') return;
-  await sb.from('profiles').update({
+  await updateUserProfile({
     ai_credits_left: Math.max(0, (profile?.ai_credits_left||0) - amount)
-  }).eq('id', session.userId);
+  });
 }
 
-// ── Show upgrade modal ────────────────────────────
 function showUpgradePrompt(reason='') {
   const plan = getUserPlan();
   const nextPlan = PLAN_ORDER[PLAN_ORDER.indexOf(plan.id)+1] || 'pro';
@@ -135,11 +117,11 @@ function showUpgradePrompt(reason='') {
   openModal('upgradeModal');
 }
 
-// ── Validate promo code ───────────────────────────
 async function validatePromoCode(code) {
-  const { data } = await sb.from('promo_codes')
-    .select('*').eq('code', code.toUpperCase()).eq('active', true).single();
-  if (!data) return {valid:false, message:'Kod promo tidak sah.'};
-  if (data.max_uses && data.used_count >= data.max_uses) return {valid:false, message:'Kod promo telah habis.'};
-  return {valid:true, code:data, message:`Diskaun ${data.type==='percentage'?data.value+'%':'RM'+data.value} digunakan!`};
+  try {
+    const data = await api(`/api/promo-codes/validate?code=${encodeURIComponent(code)}`);
+    return data;
+  } catch {
+    return {valid:false, message:'Kod promo tidak sah.'};
+  }
 }
