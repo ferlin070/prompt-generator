@@ -4,3 +4,5 @@ js/env.js
 supabase/.temp/
 scratch/
 *.log
+.vercel
+.env*

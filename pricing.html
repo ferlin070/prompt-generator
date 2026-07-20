@@ -271,7 +271,7 @@
       const s = getSession();
 
       try {
-        const data = await api('/api/bayarcash/create-payment', {
+        const data = await api('/api/payment', {
           method: 'POST',
           body: JSON.stringify({
             planId: selectedPlan,

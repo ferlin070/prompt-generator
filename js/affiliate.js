@@ -2,20 +2,11 @@ const COMMISSION_RATE = 0.30;
 const MIN_WITHDRAW = 50;
 
 async function generateAffiliateCode() {
-  try {
-    const data = await api('/api/affiliate/generate-code', { method: 'POST' });
-    return data.code;
-  } catch {
-    return null;
-  }
+  try { const data = await api('/api/affiliate', { method: 'POST', body: JSON.stringify({ type: 'generate-code' }) }); return data.code; } catch { return null; }
 }
 
 async function getAffiliateStats() {
-  try {
-    return await api('/api/affiliate/stats');
-  } catch {
-    return null;
-  }
+  try { return await api('/api/affiliate'); } catch { return null; }
 }
 
 async function trackAffiliateClick(code) {
@@ -25,28 +16,13 @@ async function trackAffiliateClick(code) {
 
 async function requestWithdrawal(amount, bankDetails) {
   try {
-    const data = await api('/api/affiliate/withdrawals', {
-      method: 'POST',
-      body: JSON.stringify({
-        amount,
-        bankName: bankDetails.bankName,
-        accountNumber: bankDetails.accountNumber,
-        accountName: bankDetails.accountName,
-      }),
-    });
+    await api('/api/affiliate', { method: 'POST', body: JSON.stringify({ type: 'withdrawal', amount, bankName: bankDetails.bankName, accountNumber: bankDetails.accountNumber, accountName: bankDetails.accountName }) });
     return { success: true };
-  } catch (e) {
-    return { success: false, message: e.message };
-  }
+  } catch (e) { return { success: false, message: e.message }; }
 }
 
 async function getWithdrawals() {
-  try {
-    const data = await api('/api/affiliate/withdrawals');
-    return data.withdrawals || [];
-  } catch {
-    return [];
-  }
+  try { const data = await api('/api/affiliate?type=withdrawals'); return data.withdrawals || []; } catch { return []; }
 }
 
 (function checkRefParam() {
