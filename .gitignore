@@ -1,3 +1,6 @@
 node_modules/
 .env
+js/env.js
+supabase/.temp/
 scratch/
+*.log

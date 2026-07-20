@@ -1,5 +1,6 @@
+require('dotenv').config();
 const { createClient } = require('@supabase/supabase-js');
-const supabase = createClient('https://ddwdwbhcnonbhmlipuvm.supabase.co', 'sb_publishable_REOH4QcENBCviLSQJg3Tdg_N98y5CG7');
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
 
 async function test() {
   const { data: tables, error } = await supabase.from('prompts').select('*').limit(1);

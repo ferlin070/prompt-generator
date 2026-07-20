@@ -1,10 +1,12 @@
 // =====================================================
 // supabase-config.js — Supabase client initialization
 // =====================================================
-// NOTE: Keys are anon (read-only). Service role handled backend-only.
+// NOTE: Anon key is publishable by Supabase design.
+// Security is enforced via RLS policies, not key secrecy.
 
-const SUPABASE_URL  = 'https://ddwdwbhcnonbhmlipuvm.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_REOH4QcENBCviLSQJg3Tdg_N98y5CG7';
+const ENV = window.__ENV__ || {};
+const SUPABASE_URL  = ENV.SUPABASE_URL || 'https://YOUR_NEW_SUPABASE_URL.supabase.co';
+const SUPABASE_ANON_KEY = ENV.SUPABASE_ANON_KEY || 'your-new-anon-key';
 
 // Gunakan window.sb untuk mengelakkan konflik dengan global 'supabase'
 if (!window.sb) {
