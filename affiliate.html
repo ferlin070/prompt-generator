@@ -8,7 +8,7 @@
   <meta name="description" content="Join the PromptBiz Pro affiliate program. Share our AI landing page generator and earn a 30% recurring commission on every referral. Start earning passive income today!"/>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+  <script src="https://unpkg.com/lucide@1.45.0/dist/umd/lucide.min.js" defer></script>
   <link rel="stylesheet" href="css/style.css"/>
   <style>
     .aff-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px}
@@ -149,7 +149,7 @@
 <script src="js/utils.js"></script>
 <script>
 initI18n('langSwitcher');
-  if (window.lucide) lucide.createIcons();
+  window.addEventListener('DOMContentLoaded', () => { if (window.lucide) lucide.createIcons({ icons: lucide.icons }); });
 
 const session = requireAuth();
 if(session) populateUserUI(session);

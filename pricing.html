@@ -8,7 +8,7 @@
   <meta name="description" content="Affordable AI landing page generation plans for Malaysia businesses. Start for free or upgrade to Pro for unlimited prompts and commercial usage."/>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+  <script src="https://unpkg.com/lucide@1.45.0/dist/umd/lucide.min.js" defer></script>
   <link rel="stylesheet" href="css/style.css"/>
   <style>
     .pricing-hero{text-align:center;padding:60px 24px 40px}
@@ -311,7 +311,7 @@
       else appliedPromo = null;
     }
 
-    if (window.lucide) lucide.createIcons();
+    window.addEventListener('DOMContentLoaded', () => { if (window.lucide) lucide.createIcons({ icons: lucide.icons }); });
 
     renderPlans();
   </script>

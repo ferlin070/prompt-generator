@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+  <script src="https://unpkg.com/lucide@1.45.0/dist/umd/lucide.min.js" defer></script>
   <link rel="stylesheet" href="css/style.css"/>
   <style>
     .step-content { display:none; }
@@ -215,7 +215,7 @@
           <div class="form-group" style="margin-top:20px">
             <label class="form-label" data-i18n="generator.tone">Nada Komunikasi</label>
             <div class="tone-grid" id="toneGrid">
-              <div class="tone-option" onclick="selectTone(this,'Profesional & Formal')"><i data-lucide="top-hat"></i> Profesional & Formal</div>
+              <div class="tone-option" onclick="selectTone(this,'Profesional & Formal')"><i data-lucide="briefcase"></i> Profesional & Formal</div>
               <div class="tone-option" onclick="selectTone(this,'Kasual & Mesra')"><i data-lucide="smile"></i> Kasual & Mesra</div>
               <div class="tone-option" onclick="selectTone(this,'Mewah & Eksklusif')"><i data-lucide="gem"></i> Mewah & Eksklusif</div>
               <div class="tone-option" onclick="selectTone(this,'Ceria & Energetik')"><i data-lucide="party-popper"></i> Ceria & Energetik</div>
@@ -441,7 +441,7 @@
 <script src="js/utils.js"></script>
 <script>
 initI18n('langSwitcher');
-  if (window.lucide) lucide.createIcons();
+  window.addEventListener('DOMContentLoaded', () => { if (window.lucide) lucide.createIcons({ icons: lucide.icons }); });
 
 const session = requireAuth();
 if (session) populateUserUI(session);

@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
+  <script src="https://unpkg.com/lucide@1.45.0/dist/umd/lucide.min.js" defer></script>
   <style>
     :root{--bg:#0B0F19;--bg2:#111726;--card:#161D2E;--border:#232D45;--accent:#F59E0B;--accent-l:#FBBF24;--accent-glow:rgba(245,158,11,.16);--text:#E7ECF5;--text2:#9AA5B8;--muted:#5A6678;--error:#F87171;--warning:#FBBF24;--success:#34D399;--radius:12px}
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -229,7 +229,7 @@
 <script src="js/auth.js"></script>
 <script>
   initI18n('langSwitcher');
-  if (window.lucide) lucide.createIcons();
+  window.addEventListener('DOMContentLoaded', () => { if (window.lucide) lucide.createIcons({ icons: lucide.icons }); });
 
   // Redirect jika dah login
   (function() {
