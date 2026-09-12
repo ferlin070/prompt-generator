@@ -12,6 +12,7 @@ import crypto from 'crypto';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 
+app.set('trust proxy', 1);
 app.disable('x-powered-by');
 app.use(express.json({ limit: '5mb' }));
 
@@ -26,7 +27,7 @@ app.use((req, res, next) => {
     "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://unpkg.com https://www.gstatic.com",
     "img-src 'self' data: https:",
     "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com",
-    "connect-src 'self' https://cloudflareinsights.com https://unpkg.com",
+    "connect-src 'self' https://cloudflareinsights.com https://unpkg.com https://app.grapesjs.com",
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",
