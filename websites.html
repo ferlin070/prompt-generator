@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+  <title>Website Saya — PromptBiz Pro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <script src="https://unpkg.com/lucide@1.45.0/dist/umd/lucide.min.js" defer></script>
+  <link rel="stylesheet" href="css/style.css?v=4"/>
+</head>
+<body>
+<div class="app-layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <h1><i data-lucide="sparkles"></i> <span data-i18n="nav.dashboard">Prompt Generator Pro</span></h1>
+      <p>Business Website Builder</p>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-section-label" data-i18n="dash.main">Utama</div>
+        <a href="dashboard.html" class="nav-link"><span class="nav-icon"><i data-lucide="layout-dashboard"></i></span> <span data-i18n="nav.dashboard">Dashboard</span></a>
+        <a href="generator.html" class="nav-link"><span class="nav-icon"><i data-lucide="sparkles"></i></span> <span data-i18n="dash.newPrompt">Website Generator</span></a>
+        <a href="image-generator.html" class="nav-link"><span class="nav-icon"><i data-lucide="image"></i></span> <span data-i18n="dash.imageGenerator">Image Generator</span></a>
+        <a href="websites.html" class="nav-link active"><span class="nav-icon"><i data-lucide="globe"></i></span> <span>Website Saya</span></a>
+        <a href="saved-prompts.html" class="nav-link"><span class="nav-icon"><i data-lucide="save"></i></span> <span data-i18n="dash.saved">Prompt Tersimpan</span></a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label" data-i18n="dash.other">Lain-lain</div>
+        <a href="pricing.html" class="nav-link"><span class="nav-icon"><i data-lucide="circle-dollar-sign"></i></span> <span data-i18n="dash.pricing">Harga & Pelan</span></a>
+        <a href="affiliate.html" class="nav-link"><span class="nav-icon"><i data-lucide="link"></i></span> <span data-i18n="nav.affiliate">Affiliate</span></a>
+        <a href="admin.html" class="nav-link" data-admin-only><span class="nav-icon"><i data-lucide="crown"></i></span> <span data-i18n="nav.admin">Admin Panel</span></a>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-label" data-i18n="dash.account">Akaun</div>
+        <a href="#" class="nav-link" data-logout><span class="nav-icon"><i data-lucide="log-out"></i></span> <span data-i18n="dash.logout">Log Keluar</span></a>
+      </div>
+    </nav>
+    <div class="sidebar-lang">
+      <select id="langSwitcher" class="form-control" style="width: 100%; font-size: 0.8rem; height: 32px;"></select>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-info">
+        <div class="user-avatar" data-user-initials>??</div>
+        <div>
+          <div class="user-name" data-user-name>Pengguna</div>
+          <div class="user-plan" data-user-plan>Free Plan</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <main class="main-content">
+    <div class="top-bar">
+      <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+      <span style="font-weight:700;font-size:.95rem"><i data-lucide="globe"></i> Website Saya</span>
+      <div style="width:34px"></div>
+    </div>
+
+    <div class="page-header">
+      <h1 class="page-title">Website Saya</h1>
+      <p class="page-subtitle">Urus dan publish website yang anda telah jana.</p>
+    </div>
+
+    <div class="page-body">
+      <div style="margin-bottom:20px;display:flex;justify-content:space-between;align-items:center">
+        <div id="websiteCount" style="font-size:.88rem;color:var(--text-secondary)"></div>
+        <a href="generator.html" class="btn btn-primary btn-sm"><i class="fa fa-wand-magic-sparkles"></i> Jana Website Baru</a>
+      </div>
+      <div id="websitesGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px"></div>
+      <div id="emptyState" style="display:none;text-align:center;padding:60px 20px;color:var(--text-muted)">
+        <div class="empty-icon" style="font-size:3rem;margin-bottom:16px;opacity:.5"><i data-lucide="globe"></i></div>
+        <h3 style="font-size:1.1rem;font-weight:700;color:var(--text-primary);margin-bottom:8px">Tiada Website Lagi</h3>
+        <p style="margin-bottom:20px">Jana website pertama anda dengan AI!</p>
+        <a href="generator.html" class="btn btn-primary"><i class="fa fa-wand-magic-sparkles"></i> Jana Sekarang</a>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="modal-overlay" id="previewModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:center;justify-content:center;padding:24px">
+  <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:16px;width:100%;max-width:1000px;height:85vh;display:flex;flex-direction:column;overflow:hidden">
+    <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+      <h3 style="font-size:1.1rem;font-weight:700" id="previewTitle">Preview</h3>
+      <button class="btn btn-ghost btn-sm" onclick="closePreview()"><i class="fa fa-xmark"></i></button>
+    </div>
+    <iframe id="previewFrame" style="flex:1;border:none;width:100%;background:#fff" sandbox="allow-same-origin allow-scripts allow-popups allow-forms"></iframe>
+  </div>
+</div>
+
+<script src="js/rate-limiting.js?v=2"></script>
+<script src="js/api.js?v=2"></script>
+<script src="js/i18n.js?v=2"></script>
+<script src="js/auth.js?v=2"></script>
+<script src="js/storage.js?v=2"></script>
+<script src="js/utils.js?v=2"></script>
+<script>
+  initI18n('langSwitcher');
+  window.addEventListener('DOMContentLoaded', () => { if (window.lucide) lucide.createIcons({ icons: lucide.icons }); });
+
+  const session = requireAuth();
+  if (session) populateUserUI(session);
+
+  async function loadWebsites() {
+    try {
+      const data = await api('/api/websites');
+      const grid = document.getElementById('websitesGrid');
+      const empty = document.getElementById('emptyState');
+      const count = document.getElementById('websiteCount');
+      count.textContent = `${data.total} website${data.total !== 1 ? 's' : ''}`;
+
+      if (data.websites.length === 0) {
+        empty.style.display = 'block';
+        grid.style.display = 'none';
+        return;
+      }
+      empty.style.display = 'none';
+      grid.style.display = 'grid';
+
+      grid.innerHTML = data.websites.map(w => `
+        <div class="prompt-card" style="padding:20px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <span class="badge ${w.status === 'published' ? 'badge-green' : 'badge-yellow'}">${w.status === 'published' ? 'Published' : 'Draft'}</span>
+            <span style="font-size:.72rem;color:var(--text-muted)">v${w.version}</span>
+          </div>
+          <h3 style="font-size:1rem;font-weight:700;margin-bottom:6px">${escapeHtml(w.title)}</h3>
+          <p style="font-size:.78rem;color:var(--text-muted);margin-bottom:14px">${new Date(w.created_at).toLocaleDateString('ms-MY')}</p>
+          ${w.slug ? `<p style="font-size:.78rem;color:var(--text-secondary);margin-bottom:14px;word-break:break-all"><i class="fa fa-link"></i> /site/${escapeHtml(w.slug)}</p>` : ''}
+          <div style="display:flex;gap:6px;flex-wrap:wrap">
+            <button class="btn btn-ghost btn-sm" onclick="previewWebsite('${w.id}')"><i class="fa fa-eye"></i></button>
+            ${w.status === 'draft'
+              ? `<button class="btn btn-primary btn-sm" onclick="publishWebsite('${w.id}')"><i class="fa fa-globe"></i> Publish</button>`
+              : `<button class="btn btn-ghost btn-sm" onclick="unpublishWebsite('${w.id}')"><i class="fa fa-eye-slash"></i></button>`
+            }
+            ${w.slug ? `<a href="/site/${w.slug}" target="_blank" class="btn btn-ghost btn-sm"><i class="fa fa-external-link"></i></a>` : ''}
+            <button class="btn btn-danger btn-sm" onclick="deleteWebsite('${w.id}')"><i class="fa fa-trash"></i></button>
+          </div>
+        </div>
+      `).join('');
+    } catch (e) {
+      showToast(e.message, 'error');
+    }
+  }
+
+  async function previewWebsite(id) {
+    try {
+      const data = await api(`/api/websites?id=${id}`);
+      document.getElementById('previewTitle').textContent = data.website.title;
+      document.getElementById('previewFrame').srcdoc = data.website.html_content;
+      const m = document.getElementById('previewModal');
+      m.style.display = 'flex';
+      m.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    } catch (e) { showToast(e.message, 'error'); }
+  }
+
+  function closePreview() {
+    document.getElementById('previewModal').style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
+  async function publishWebsite(id) {
+    try {
+      const res = await fetch('/api/websites', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('pgp_token')}` },
+        body: JSON.stringify({ action: 'publish', websiteId: id })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      showToast(`Website published di /site/${data.website.slug}`, 'success', 5000);
+      loadWebsites();
+    } catch (e) { showToast(e.message, 'error'); }
+  }
+
+  async function unpublishWebsite(id) {
+    try {
+      await api('/api/websites', { method: 'POST', body: JSON.stringify({ action: 'unpublish', websiteId: id }) });
+      showToast('Website di-unpublish', 'info');
+      loadWebsites();
+    } catch (e) { showToast(e.message, 'error'); }
+  }
+
+  async function deleteWebsite(id) {
+    if (!confirm('Padam website ini? Tidak boleh dibatalkan.')) return;
+    try {
+      await api(`/api/websites?id=${id}`, { method: 'DELETE' });
+      showToast('Website dipadam', 'success');
+      loadWebsites();
+    } catch (e) { showToast(e.message, 'error'); }
+  }
+
+  loadWebsites();
+
+  document.getElementById('previewModal').addEventListener('click', e => {
+    if (e.target === e.currentTarget) closePreview();
+  });
+</script>
+</body>
+</html>

@@ -4,6 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
 import rateLimit from 'express-rate-limit';
+import pg from 'pg';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -51,6 +52,33 @@ const globalLimiter = rateLimit({
 
 app.use('/api', globalLimiter);
 app.use('/api/auth', authLimiter);
+
+const generateLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Had janaan AI: 5 website sejam. Sila cuba kemudian.' },
+});
+app.use('/api/generate', generateLimiter);
+
+const pgPool = new pg.Pool({
+  connectionString: process.env.POSTGRES_URL,
+  max: 5,
+  ssl: process.env.POSTGRES_SSL === 'true' ? { rejectUnauthorized: false } : false,
+});
+
+app.get('/site/:slug', async (req, res) => {
+  try {
+    const { rows } = await pgPool.query('SELECT html_content FROM websites WHERE slug = $1 AND status = $2', [req.params.slug, 'published']);
+    if (rows.length === 0) return res.status(404).sendFile(path.join(__dirname, '404.html'));
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.send(rows[0].html_content);
+  } catch (err) {
+    console.error('[/site/:slug]', err.message);
+    res.status(500).sendFile(path.join(__dirname, '404.html'));
+  }
+});
 
 const API_DIR = path.join(__dirname, 'api');
 const handlers = {};

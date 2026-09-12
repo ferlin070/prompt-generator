@@ -56,6 +56,7 @@
         <a href="dashboard.html" class="nav-link"><span class="nav-icon"><i data-lucide="layout-dashboard"></i></span> <span data-i18n="nav.dashboard">Dashboard</span></a>
         <a href="generator.html" class="nav-link active"><span class="nav-icon"><i data-lucide="sparkles"></i></span> <span data-i18n="dash.newPrompt">Website Generator</span></a>
         <a href="image-generator.html" class="nav-link"><span class="nav-icon"><i data-lucide="image"></i></span> <span data-i18n="dash.imageGenerator">Image Generator</span></a>
+        <a href="websites.html" class="nav-link"><span class="nav-icon"><i data-lucide="globe"></i></span> <span>Website Saya</span></a>
         <a href="saved-prompts.html" class="nav-link"><span class="nav-icon"><i data-lucide="save"></i></span> <span data-i18n="dash.saved">Prompt Tersimpan</span></a>
       </div>
       <div class="nav-section">
@@ -405,6 +406,7 @@
             <div style="display:flex;gap:8px">
               <button class="btn btn-ghost" onclick="goStep(6)"><i class="fa fa-code"></i> Live Preview</button>
               <button class="btn btn-primary" onclick="saveGenerated()"><i class="fa fa-floppy-disk"></i> <span data-i18n="dash.edit">Simpan Prompt</span></button>
+              <button class="btn btn-primary" id="generateWebsiteBtn" onclick="generateWebsite()" style="background:var(--accent-primary)"><i class="fa fa-wand-magic-sparkles"></i> Jana Website</button>
             </div>
           </div>
         </div>
@@ -450,6 +452,7 @@ let selectedBizType = null;
 let selectedTone    = '';
 let generatedText   = '';
 let editingId       = null;
+let lastFormData    = null;
 
 const STEPS = ['', i18nText('generator.step1.title', 'Pilih Jenis Perniagaan'), i18nText('generator.step2.title', 'Maklumat Asas'), i18nText('generator.step3.title', 'Reka Bentuk'), i18nText('generator.step4.title', 'Hubungan & Ciri'), i18nText('generator.step5.title', 'Prompt Dijana'), 'Live Preview'];
 const PCTS  = [0,15,30,45,60,80,100];
@@ -685,6 +688,7 @@ function buildPrompt() {
   formData.businessTypeLabel = tpl.label || selectedBizType;
 
   generatedText = generatePrompt(formData, selectedBizType);
+  lastFormData = formData;
   document.getElementById('generatedOutput').value = generatedText;
 
   // Summary
@@ -768,6 +772,103 @@ async function saveGenerated() {
     }
   }
 })();
+
+async function generateWebsite() {
+  if (!generatedText) { showToast('Jana prompt dahulu!', 'error'); return; }
+  const btn = document.getElementById('generateWebsiteBtn');
+  const origHTML = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> AI sedang menjana...';
+
+  const formData = lastFormData || { businessName: document.getElementById('bizName').value.trim() || 'Website Baru' };
+  formData.businessName = document.getElementById('bizName').value.trim() || formData.businessName || 'Website Baru';
+  formData.language = document.getElementById('bizLanguage')?.value || formData.language || 'ms';
+
+  try {
+    const tpl = BUSINESS_TEMPLATES[selectedBizType] || { label: selectedBizType };
+    let promptId = editingId;
+
+    if (!promptId) {
+      const saved = await savePrompt({
+        title: formData.businessName,
+        businessType: selectedBizType,
+        businessTypeLabel: tpl.label,
+        generatedPrompt: generatedText,
+        formData: { businessName: formData.businessName },
+        tags: [selectedBizType, tpl.category || ''].filter(Boolean)
+      });
+      promptId = saved?.prompt?.id || null;
+      editingId = promptId;
+    }
+
+    const res = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('pgp_token')}` },
+      body: JSON.stringify({ formData, businessType: selectedBizType, promptId, title: formData.businessName })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Gagal menjana website');
+
+    const modal = document.getElementById('websitePreviewModal');
+    const iframe = document.getElementById('websitePreviewFrame');
+    iframe.srcdoc = data.html;
+    modal.dataset.websiteId = data.website.id;
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    showToast('Website berjaya dijana!', 'success');
+  } catch (e) {
+    showToast(e.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = origHTML;
+  }
+}
+
+function closeWebsitePreview() {
+  const modal = document.getElementById('websitePreviewModal');
+  modal.classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+async function publishWebsiteFromPreview() {
+  const modal = document.getElementById('websitePreviewModal');
+  const websiteId = modal.dataset.websiteId;
+  if (!websiteId) return;
+  try {
+    const res = await fetch('/api/websites', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('pgp_token')}` },
+      body: JSON.stringify({ action: 'publish', websiteId })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+    showToast(`Website published! URL: /site/${data.website.slug}`, 'success', 5000);
+    closeWebsitePreview();
+  } catch (e) { showToast(e.message, 'error'); }
+}
+</script>
+
+<div class="modal-overlay" id="websitePreviewModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:center;justify-content:center;padding:24px">
+  <div style="background:var(--bg-secondary);border:1px solid var(--border);border-radius:16px;width:100%;max-width:1000px;height:85vh;display:flex;flex-direction:column;overflow:hidden">
+    <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+      <h3 style="font-size:1.1rem;font-weight:700"><i class="fa fa-wand-magic-sparkles"></i> Preview Website</h3>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-primary btn-sm" onclick="publishWebsiteFromPreview()"><i class="fa fa-globe"></i> Publish</button>
+        <button class="btn btn-ghost btn-sm" onclick="closeWebsitePreview()"><i class="fa fa-xmark"></i></button>
+      </div>
+    </div>
+    <iframe id="websitePreviewFrame" style="flex:1;border:none;width:100%;background:#fff" sandbox="allow-same-origin allow-scripts allow-popups allow-forms"></iframe>
+  </div>
+</div>
+
+<script>
+  (function() {
+    const m = document.getElementById('websitePreviewModal');
+    const style = document.createElement('style');
+    style.textContent = '#websitePreviewModal.active{display:flex!important}';
+    document.head.appendChild(style);
+    m.addEventListener('click', e => { if (e.target === m) closeWebsitePreview(); });
+  })();
 </script>
 </body>
 </html>
