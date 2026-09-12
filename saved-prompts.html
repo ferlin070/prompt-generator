@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
   <title>Prompt Tersimpan — Prompt Generator Pro</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
@@ -167,6 +168,9 @@ function setTab(tab, el) {
 }
 
 async function applyFilters() {
+  const grid = document.getElementById('promptsGrid');
+  grid.innerHTML = Array.from({ length: 3 }).map(() => `<div class="skeleton skeleton-card"><div class="skeleton-line mid"></div><div class="skeleton-line short"></div><div class="skeleton-line"></div></div>`).join('');
+
   const q    = document.getElementById('searchInput').value.trim();
   const sort = document.getElementById('sortSelect').value;
   let prompts = await getUserPrompts();
@@ -208,20 +212,20 @@ function renderPrompts(prompts) {
     <div class="prompt-card">
       <div class="prompt-card-header">
         <div style="flex:1;min-width:0">
-          <div class="prompt-card-title" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.business_type_label||''} ${p.title}</div>
+          <div class="prompt-card-title" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escapeHtml(p.business_type_label||'')} ${escapeHtml(p.title)}</div>
           <div class="prompt-card-meta">${timeAgo(p.updated_at)} &middot; v${p.version||1}</div>
         </div>
-        <button class="star-btn" onclick="toggleFav('${p.id}')" title="${p.is_favourite? i18nText('saved.tab.all', 'Buang kegemaran') : i18nText('saved.tab.fav', 'Tambah kegemaran')}">${p.is_favourite?'⭐':'☆'}</button>
+        <button class="star-btn" onclick="toggleFav('${escapeHtml(p.id)}')" title="${p.is_favourite? i18nText('saved.tab.all', 'Buang kegemaran') : i18nText('saved.tab.fav', 'Tambah kegemaran')}">${p.is_favourite?'⭐':'☆'}</button>
       </div>
       <div class="prompt-card-tags">
-        ${(p.tags||[]).slice(0,3).map(t=>`<span class="badge badge-blue">#${t}</span>`).join('')}
+        ${(p.tags||[]).slice(0,3).map(t=>`<span class="badge badge-blue">#${escapeHtml(t)}</span>`).join('')}
         ${p.generated_prompt ? `<span class="badge badge-green">${p.generated_prompt.length} ${i18nText('dash.meta.prompt', 'aksara')}</span>` : ''}
       </div>
       <div class="prompt-card-actions">
-        <button class="btn btn-ghost btn-sm" onclick="viewPrompt('${p.id}')"><i class="fa fa-eye"></i> <span data-i18n="dash.view">${i18nText('dash.view', 'Lihat')}</span></button>
-        <a href="generator.html?edit=${p.id}" class="btn btn-ghost btn-sm"><i class="fa fa-pen"></i> <span data-i18n="dash.edit">${i18nText('dash.edit', 'Edit')}</span></a>
-        <button class="btn btn-ghost btn-sm" onclick="copyPrompt('${p.id}')"><i class="fa fa-copy"></i> <span data-i18n="dash.copy">${i18nText('dash.copy', 'Salin')}</span></button>
-        <button class="btn btn-danger btn-sm" onclick="removePrompt('${p.id}')"><i class="fa fa-trash"></i></button>
+        <button class="btn btn-ghost btn-sm" onclick="viewPrompt('${escapeHtml(p.id)}')"><i class="fa fa-eye"></i> <span data-i18n="dash.view">${i18nText('dash.view', 'Lihat')}</span></button>
+        <a href="generator.html?edit=${escapeHtml(p.id)}" class="btn btn-ghost btn-sm"><i class="fa fa-pen"></i> <span data-i18n="dash.edit">${i18nText('dash.edit', 'Edit')}</span></a>
+        <button class="btn btn-ghost btn-sm" onclick="copyPrompt('${escapeHtml(p.id)}')"><i class="fa fa-copy"></i> <span data-i18n="dash.copy">${i18nText('dash.copy', 'Salin')}</span></button>
+        <button class="btn btn-danger btn-sm" onclick="removePrompt('${escapeHtml(p.id)}')"><i class="fa fa-trash"></i></button>
       </div>
     </div>`).join('');
 }
@@ -232,7 +236,7 @@ async function viewPrompt(id) {
   currentView = p;
   document.getElementById('viewTitle').textContent = p.title;
   document.getElementById('viewMeta').innerHTML = `
-    <span class="badge badge-green">${p.business_type_label||'Prompt'}</span>
+    <span class="badge badge-green">${escapeHtml(p.business_type_label||'Prompt')}</span>
     <span class="badge badge-blue">v${p.version||1}</span>
     <span class="badge badge-yellow">${new Date(p.created_at).toLocaleDateString(getLanguage())}</span>
     ${p.is_favourite?'<span class="badge badge-yellow">⭐ ' + i18nText('saved.tab.fav', 'Kegemaran') + '</span>':''}`;

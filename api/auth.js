@@ -10,14 +10,16 @@ export async function POST(request) {
 
     if (action === 'register' || (name && email && password)) {
       if (!name || !email || !password) return json({ error: 'Nama, email dan password diperlukan' }, 400);
-      if (password.length < 6) return json({ error: 'Password mesti sekurang-kurangnya 6 aksara' }, 400);
+      if (typeof name !== 'string' || name.trim().length < 2 || name.length > 100) return json({ error: 'Nama tidak sah' }, 400);
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 255) return json({ error: 'Format email tidak sah' }, 400);
+      if (password.length < 6 || password.length > 128) return json({ error: 'Password mesti sekurang-kurangnya 6 aksara' }, 400);
 
-      const { rows: existing } = await sql`SELECT id FROM profiles WHERE email = ${email}`;
+      const { rows: existing } = await sql`SELECT id FROM profiles WHERE email = ${email.toLowerCase()}`;
       if (existing.length > 0) return json({ error: 'Email sudah didaftarkan' }, 409);
 
       const hash = await bcrypt.hash(password, 12);
       const { rows } = await sql`INSERT INTO profiles (name, email, password_hash, business_type, phone)
-        VALUES (${name}, ${email}, ${hash}, ${businessType || null}, ${phone || null})
+        VALUES (${name.trim()}, ${email.toLowerCase()}, ${hash}, ${businessType || null}, ${phone || null})
         RETURNING id, name, email, plan, is_admin, created_at`;
       const user = rows[0];
 
@@ -37,7 +39,8 @@ export async function POST(request) {
 
     // Login
     if (!email || !password) return json({ error: 'Email dan password diperlukan' }, 400);
-    const { rows } = await sql`SELECT * FROM profiles WHERE email = ${email}`;
+    if (typeof email !== 'string' || email.length > 255) return json({ error: 'Format email tidak sah' }, 400);
+    const { rows } = await sql`SELECT id, name, email, password_hash, plan, is_admin, phone, business_type, affiliate_code, affiliate_balance, affiliate_total_earned, ai_credits_left, created_at FROM profiles WHERE email = ${email.toLowerCase()}`;
     if (rows.length === 0) return json({ error: 'Email atau password salah' }, 401);
 
     const user = rows[0];

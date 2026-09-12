@@ -19,8 +19,9 @@ export async function GET(request) {
     switch (type) {
       case 'users': {
         const query = url.searchParams.get('q') || '';
-        const result = query ? await sql`SELECT * FROM profiles WHERE name ILIKE ${'%' + query + '%'} OR email ILIKE ${'%' + query + '%'} ORDER BY created_at DESC LIMIT 50`
-          : await sql`SELECT * FROM profiles ORDER BY created_at DESC LIMIT 50`;
+        const result = query
+          ? await sql`SELECT id, name, email, plan, is_admin, created_at, updated_at FROM profiles WHERE name ILIKE ${'%' + query + '%'} OR email ILIKE ${'%' + query + '%'} ORDER BY created_at DESC LIMIT 50`
+          : await sql`SELECT id, name, email, plan, is_admin, created_at, updated_at FROM profiles ORDER BY created_at DESC LIMIT 50`;
         return json({ users: result.rows });
       }
       case 'subs': {

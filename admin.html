@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
   <title>Admin Panel — PromptBiz Pro</title>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
@@ -183,7 +184,6 @@
   // Auth Guard
   const sessionData = requireAuth();
   if (sessionData && !sessionData.isAdmin) {
-    alert(i18nText('admin.accessDenied', 'Akses Ditolak: Anda bukan Admin.'));
     window.location.href = "dashboard.html";
   }
 
@@ -219,7 +219,7 @@
     const users = data.users || [];
     const tbody = document.getElementById('recentUsersTable');
     if (users.length === 0) { tbody.innerHTML = `<tr><td colspan="4" style="text-align:center">${i18nText('admin.noUsers', 'Tiada pengguna terbaru')}</td></tr>`; return; }
-    tbody.innerHTML = users.slice(0, 5).map(u => `<tr><td style="font-weight:600">${u.name}</td><td>${u.email}</td><td><span class="badge ${u.plan === 'free' ? 'badge-blue' : 'badge-green'}">${u.plan || 'free'}</span></td><td>${new Date(u.created_at).toLocaleDateString(getLanguage())}</td></tr>`).join('');
+    tbody.innerHTML = users.slice(0, 5).map(u => `<tr><td style="font-weight:600">${escapeHtml(u.name)}</td><td>${escapeHtml(u.email)}</td><td><span class="badge ${u.plan === 'free' ? 'badge-blue' : 'badge-green'}">${escapeHtml(u.plan || 'free')}</span></td><td>${new Date(u.created_at).toLocaleDateString(getLanguage())}</td></tr>`).join('');
   }
 
   async function showTab(tabId, el) {
@@ -237,7 +237,7 @@
     const url = query ? `/api/admin?type=users&q=${encodeURIComponent(query)}` : '/api/admin?type=users';
     const data = await api(url);
     const tbody = document.getElementById('allUsersTable');
-    tbody.innerHTML = (data.users || []).map(u => `<tr><td>${u.name}</td><td>${u.email}</td><td><select onchange="updateUserPlan('${u.id}', this.value)" style="padding:4px;border-radius:4px"><option value="free" ${u.plan==='free'?'selected':''}>Free</option><option value="starter" ${u.plan==='starter'?'selected':''}>Starter</option><option value="pro" ${u.plan==='pro'?'selected':''}>Pro</option><option value="agency" ${u.plan==='agency'?'selected':''}>Agency</option></select></td><td><span class="badge ${u.is_admin ? 'badge-green' : 'badge-blue'}">${u.is_admin ? 'Admin' : 'User'}</span></td><td><button class="btn btn-ghost btn-sm" onclick="toggleUserAdmin('${u.id}', ${!u.is_admin})">${u.is_admin ? 'Revoke Admin' : 'Make Admin'}</button></td></tr>`).join('');
+    tbody.innerHTML = (data.users || []).map(u => `<tr><td>${escapeHtml(u.name)}</td><td>${escapeHtml(u.email)}</td><td><select onchange="updateUserPlan('${escapeHtml(u.id)}', this.value)" style="padding:4px;border-radius:4px"><option value="free" ${u.plan==='free'?'selected':''}>Free</option><option value="starter" ${u.plan==='starter'?'selected':''}>Starter</option><option value="pro" ${u.plan==='pro'?'selected':''}>Pro</option><option value="agency" ${u.plan==='agency'?'selected':''}>Agency</option></select></td><td><span class="badge ${u.is_admin ? 'badge-green' : 'badge-blue'}">${u.is_admin ? 'Admin' : 'User'}</span></td><td><button class="btn btn-ghost btn-sm" onclick="toggleUserAdmin('${escapeHtml(u.id)}', ${!u.is_admin})">${u.is_admin ? 'Revoke Admin' : 'Make Admin'}</button></td></tr>`).join('');
   }
 
   async function updateUserPlan(userId, plan) {
@@ -253,13 +253,13 @@
   async function loadAllSubs() {
     const data = await api('/api/admin?type=subs');
     const tbody = document.getElementById('allSubsTable');
-    tbody.innerHTML = (data.subscriptions || []).map(s => `<tr><td style="font-size:10px">${s.user_id}</td><td>${s.plan}</td><td>RM${s.amount}</td><td>${s.billing_cycle}</td><td>${s.expires_at ? new Date(s.expires_at).toLocaleDateString(getLanguage()) : '∞'}</td></tr>`).join('');
+    tbody.innerHTML = (data.subscriptions || []).map(s => `<tr><td style="font-size:10px">${escapeHtml(s.user_id)}</td><td>${escapeHtml(s.plan)}</td><td>RM${escapeHtml(s.amount)}</td><td>${escapeHtml(s.billing_cycle)}</td><td>${s.expires_at ? new Date(s.expires_at).toLocaleDateString(getLanguage()) : '∞'}</td></tr>`).join('');
   }
 
   async function loadAllPromos() {
     const data = await api('/api/admin?type=promos');
     const tbody = document.getElementById('allPromosTable');
-    tbody.innerHTML = (data.promos || []).map(p => `<tr><td style="font-weight:700">${p.code}</td><td>${p.type}</td><td>${p.value}${p.type==='percentage'?'%':'RM'}</td><td>${p.used_count || 0}</td><td><button class="btn btn-ghost btn-sm" onclick="togglePromo('${p.id}', ${!p.active})">${p.active ? '✅ ' + i18nText('admin.active', 'Aktif') : '❌ ' + i18nText('admin.inactive', 'Mati')}</button></td></tr>`).join('');
+    tbody.innerHTML = (data.promos || []).map(p => `<tr><td style="font-weight:700">${escapeHtml(p.code)}</td><td>${escapeHtml(p.type)}</td><td>${escapeHtml(p.value)}${p.type==='percentage'?'%':'RM'}</td><td>${p.used_count || 0}</td><td><button class="btn btn-ghost btn-sm" onclick="togglePromo('${escapeHtml(p.id)}', ${!p.active})">${p.active ? '✅ ' + i18nText('admin.active', 'Aktif') : '❌ ' + i18nText('admin.inactive', 'Mati')}</button></td></tr>`).join('');
   }
 
   async function createNewPromo() {
@@ -275,7 +275,7 @@
   async function loadAllWithdrawals() {
     const data = await api('/api/admin?type=withdrawals');
     const tbody = document.getElementById('allWithdrawalsTable');
-    tbody.innerHTML = (data.withdrawals || []).map(w => `<tr><td style="font-size:10px">${w.user_id}</td><td>RM${w.amount}</td><td>${w.bank_name}<br/>${w.account_number}</td><td><span class="badge ${w.status==='pending'?'badge-yellow':'badge-green'}">${w.status}</span></td><td>${w.status === 'pending' ? `<button class="btn btn-primary btn-sm" onclick="approveWithdrawal('${w.id}')">Approve</button>` : 'Selesai'}</td></tr>`).join('');
+    tbody.innerHTML = (data.withdrawals || []).map(w => `<tr><td style="font-size:10px">${escapeHtml(w.user_id)}</td><td>RM${escapeHtml(w.amount)}</td><td>${escapeHtml(w.bank_name)}<br/>${escapeHtml(w.account_number)}</td><td><span class="badge ${w.status==='pending'?'badge-yellow':'badge-green'}">${escapeHtml(w.status)}</span></td><td>${w.status === 'pending' ? `<button class="btn btn-primary btn-sm" onclick="approveWithdrawal('${escapeHtml(w.id)}')">Approve</button>` : 'Selesai'}</td></tr>`).join('');
   }
 
   async function approveWithdrawal(id) {

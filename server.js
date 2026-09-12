@@ -3,11 +3,54 @@ import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fs from 'fs';
+import rateLimit from 'express-rate-limit';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 
+app.disable('x-powered-by');
 app.use(express.json({ limit: '5mb' }));
+
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  res.setHeader('Content-Security-Policy', [
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-inline' https://unpkg.com https://cdnjs.cloudflare.com https://fonts.googleapis.com https://static.cloudflareinsights.com",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://unpkg.com",
+    "img-src 'self' data: https:",
+    "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com",
+    "connect-src 'self' https://cloudflareinsights.com",
+    "frame-ancestors 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+  ].join('; '));
+  if (process.env.NODE_ENV === 'production') {
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  }
+  next();
+});
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Terlalu banyak percubaan. Sila cuba semula kemudian.' },
+});
+
+const globalLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 200,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Terlalu banyak permintaan. Sila cuba semula kemudian.' },
+});
+
+app.use('/api', globalLimiter);
+app.use('/api/auth', authLimiter);
 
 const API_DIR = path.join(__dirname, 'api');
 const handlers = {};
@@ -69,6 +112,15 @@ app.use(express.static(__dirname, {
   index: 'index.html',
   extensions: ['html'],
 }));
+
+app.get('/favicon.ico', (req, res) => {
+  res.sendFile(path.join(__dirname, 'favicon.svg'));
+});
+
+app.use((req, res, next) => {
+  if (req.method !== 'GET' || req.path.startsWith('/api/')) return next();
+  res.status(404).sendFile(path.join(__dirname, '404.html'));
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

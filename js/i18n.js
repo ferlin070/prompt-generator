@@ -1,6 +1,6 @@
 (function () {
   const STORAGE_KEY = 'pgp_lang';
-  const DEFAULT_LANG = 'en-US';
+  const DEFAULT_LANG = 'ms-MY';
   const SUPPORTED = ['en-US', 'ms-MY'];
 
   const MESSAGES = {
@@ -75,7 +75,7 @@
       'dash.pricing': 'Pricing & Plans',
       'dash.account': 'Account',
       'dash.logout': 'Log Out',
-      'dash.welcome': 'Welcome!',
+      'dash.welcome': 'Welcome',
       'dash.savedCount': 'You have',
       'dash.savedCountSuffix': 'saved prompts.',
       'dash.stat.total': 'Total Prompts',
@@ -230,7 +230,7 @@
       'dash.pricing': 'Harga & Pelan',
       'dash.account': 'Akaun',
       'dash.logout': 'Log Keluar',
-      'dash.welcome': 'Selamat datang!',
+      'dash.welcome': 'Selamat datang',
       'dash.savedCount': 'Anda mempunyai',
       'dash.savedCountSuffix': 'prompt tersimpan.',
       'dash.stat.total': 'Jumlah Prompt',

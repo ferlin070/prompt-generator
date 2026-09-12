@@ -30,6 +30,8 @@ export async function POST(request) {
   if (!auth) return json({ error: 'Unauthorized' }, 401);
   try {
     const data = await request.json();
+    if (!data.title || typeof data.title !== 'string' || data.title.length > 200) return json({ error: 'Tajuk diperlukan (maks 200 aksara)' }, 400);
+    if (!data.business_type || typeof data.business_type !== 'string' || data.business_type.length > 50) return json({ error: 'Jenis perniagaan diperlukan' }, 400);
     const { rows } = await sql`INSERT INTO prompts (user_id, title, business_type, business_type_label, form_data, generated_prompt, tags)
       VALUES (${auth.userId}, ${data.title}, ${data.business_type}, ${data.business_type_label || null},
       ${JSON.stringify(data.form_data || {})}, ${data.generated_prompt || null}, ${data.tags || []}) RETURNING *`;

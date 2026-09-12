@@ -9,14 +9,14 @@ export async function GET(request) {
     const type = url.searchParams.get('type') || 'stats';
 
     if (type === 'withdrawals') {
-      const { rows } = await sql`SELECT * FROM withdrawals WHERE user_id = ${auth.userId} ORDER BY requested_at DESC`;
+      const { rows } = await sql`SELECT id, amount, bank_name, account_number, account_name, status, requested_at, approved_at FROM withdrawals WHERE user_id = ${auth.userId} ORDER BY requested_at DESC`;
       return json({ withdrawals: rows });
     }
 
-    const { rows: [profile] } = await sql`SELECT * FROM profiles WHERE id = ${auth.userId}`;
+    const { rows: [profile] } = await sql`SELECT id, affiliate_code, affiliate_enabled, affiliate_balance, affiliate_total_earned FROM profiles WHERE id = ${auth.userId}`;
     if (!profile) return json({ error: 'User not found' }, 404);
 
-    const { rows: earnings } = await sql`SELECT * FROM affiliate_earnings WHERE affiliate_id = ${auth.userId} ORDER BY created_at DESC LIMIT 20`;
+    const { rows: earnings } = await sql`SELECT id, referred_user_id, amount, commission_rate, status, created_at FROM affiliate_earnings WHERE affiliate_id = ${auth.userId} ORDER BY created_at DESC LIMIT 20`;
     const { rows: referrals } = await sql`SELECT id, plan FROM profiles WHERE referred_by = ${auth.userId}`;
     const activeReferrals = referrals.filter(u => u.plan && u.plan !== 'free');
     const monthStart = new Date(); monthStart.setDate(1); monthStart.setHours(0, 0, 0, 0);
