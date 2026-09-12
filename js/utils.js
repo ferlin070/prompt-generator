@@ -144,7 +144,7 @@ function markActiveNav() {
   const current = window.location.pathname.split('/').pop();
   document.querySelectorAll('.nav-link').forEach(link => {
     const href = link.getAttribute('href') || '';
-    link.classList.toggle('active', href === current || href.endsWith(current));
+    link.classList.toggle('active', href === current);
   });
 }
 

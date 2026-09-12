@@ -19,10 +19,10 @@ app.use((req, res, next) => {
   res.setHeader('Content-Security-Policy', [
     "default-src 'self'",
     "script-src 'self' 'unsafe-inline' https://unpkg.com https://cdnjs.cloudflare.com https://fonts.googleapis.com https://static.cloudflareinsights.com",
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://unpkg.com",
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://unpkg.com https://www.gstatic.com",
     "img-src 'self' data: https:",
     "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com",
-    "connect-src 'self' https://cloudflareinsights.com",
+    "connect-src 'self' https://cloudflareinsights.com https://unpkg.com",
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",
