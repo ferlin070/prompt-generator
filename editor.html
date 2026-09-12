@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+  <title>Editor — PromptBiz Pro</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <script src="https://unpkg.com/lucide@1.45.0/dist/umd/lucide.min.js" defer></script>
+  <link rel="stylesheet" href="css/style.css?v=4"/>
+  <link rel="stylesheet" href="https://unpkg.com/grapesjs/dist/css/grapes.min.css"/>
+  <script src="https://unpkg.com/grapesjs/dist/grapes.min.js"></script>
+  <style>
+    body { overflow: hidden; }
+    .editor-layout { display: flex; flex-direction: column; height: 100vh; }
+    .editor-topbar { display: flex; align-items: center; justify-content: space-between; padding: 8px 16px; background: var(--bg-secondary); border-bottom: 1px solid var(--border); height: 48px; flex-shrink: 0; }
+    .editor-topbar-left { display: flex; align-items: center; gap: 12px; }
+    .editor-topbar-title { font-weight: 700; font-size: 0.95rem; }
+    .editor-topbar-actions { display: flex; gap: 8px; }
+    #gjs { flex: 1; overflow: hidden; }
+    .gjs-editor-cont { border: none !important; }
+    .gjs-pn-panels { width: 280px; }
+    .gjs-pn-options { border-left: 1px solid var(--border); }
+    .gjs-devices-c { display: flex; gap: 4px; align-items: center; }
+    .gjs-devices-c button { padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-secondary); cursor: pointer; font-size: 0.8rem; }
+    .gjs-devices-c button.active { background: var(--accent-primary); color: #0B0F19; border-color: var(--accent-primary); }
+    .media-panel { padding: 12px; }
+    .media-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 10px; }
+    .media-item { position: relative; border-radius: 8px; overflow: hidden; cursor: pointer; border: 2px solid transparent; transition: border-color 0.2s; }
+    .media-item:hover { border-color: var(--accent-primary); }
+    .media-item img { width: 100%; height: 60px; object-fit: cover; display: block; }
+    .media-item .media-del { position: absolute; top: 2px; right: 2px; background: rgba(0,0,0,.7); color: #fff; border: none; border-radius: 4px; width: 18px; height: 18px; font-size: 0.7rem; cursor: pointer; display: none; }
+    .media-item:hover .media-del { display: block; }
+    .upload-btn { display: flex; flex-direction: column; align-items: center; justify-content: center; border: 2px dashed var(--border); border-radius: 8px; padding: 16px; cursor: pointer; color: var(--text-muted); font-size: 0.75rem; transition: border-color 0.2s; }
+    .upload-btn:hover { border-color: var(--accent-primary); color: var(--accent-primary); }
+    .upload-btn i { font-size: 1.5rem; margin-bottom: 4px; }
+    .save-bar { position: fixed; bottom: 16px; right: 16px; z-index: 1000; }
+  </style>
+</head>
+<body>
+
+<div class="editor-layout">
+  <div class="editor-topbar">
+    <div class="editor-topbar-left">
+      <a href="websites.html" class="btn btn-ghost btn-sm"><i class="fa fa-arrow-left"></i></a>
+      <span class="editor-topbar-title" id="editorTitle">Editor</span>
+      <span class="badge badge-yellow" id="statusBadge">Draft</span>
+    </div>
+    <div class="gjs-devices-c" id="deviceButtons">
+      <button class="active" onclick="setDevice('desktop')"><i class="fa fa-desktop"></i></button>
+      <button onclick="setDevice('tablet')"><i class="fa fa-tablet-screen-button"></i></button>
+      <button onclick="setDevice('mobile')"><i class="fa fa-mobile-screen-button"></i></button>
+    </div>
+    <div class="editor-topbar-actions">
+      <button class="btn btn-ghost btn-sm" onclick="toggleMediaPanel()"><i class="fa fa-images"></i> Media</button>
+      <button class="btn btn-ghost btn-sm" id="previewBtn" onclick="togglePreview()"><i class="fa fa-eye"></i> Preview</button>
+      <button class="btn btn-primary btn-sm" id="saveBtn" onclick="saveWebsite()"><i class="fa fa-floppy-disk"></i> Simpan</button>
+      <button class="btn btn-primary btn-sm" onclick="publishCurrent()"><i class="fa fa-globe"></i> Publish</button>
+    </div>
+  </div>
+  <div id="gjs"></div>
+</div>
+
+<input type="file" id="mediaInput" accept="image/*" multiple style="display:none"/>
+<div id="mediaPanel" style="display:none;position:fixed;top:48px;right:0;width:300px;height:calc(100vh - 48px);background:var(--bg-secondary);border-left:1px solid var(--border);z-index:100;overflow-y:auto;transform:translateX(100%);transition:transform 0.3s">
+  <div class="media-panel">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <h3 style="font-size:0.95rem;font-weight:700"><i class="fa fa-images"></i> Media Library</h3>
+      <button class="btn btn-ghost btn-sm" onclick="toggleMediaPanel()"><i class="fa fa-xmark"></i></button>
+    </div>
+    <div class="upload-btn" onclick="document.getElementById('mediaInput').click()">
+      <i class="fa fa-cloud-arrow-up"></i>
+      <span>Klik untuk upload gambar</span>
+    </div>
+    <div class="media-grid" id="mediaGrid"></div>
+  </div>
+</div>
+
+<div id="previewOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.8);z-index:200;align-items:center;justify-content:center;padding:24px">
+  <div style="background:#fff;border-radius:12px;width:100%;max-width:1024px;height:90vh;overflow:hidden;display:flex;flex-direction:column">
+    <div style="padding:8px 16px;background:var(--bg-secondary);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)">
+      <span style="color:var(--text-primary);font-weight:600">Preview</span>
+      <button class="btn btn-ghost btn-sm" onclick="togglePreview()"><i class="fa fa-xmark" style="color:var(--text-primary)"></i></button>
+    </div>
+    <iframe id="previewIframe" style="flex:1;border:none;width:100%"></iframe>
+  </div>
+</div>
+
+<script src="js/rate-limiting.js?v=2"></script>
+<script src="js/api.js?v=2"></script>
+<script src="js/i18n.js?v=2"></script>
+<script src="js/auth.js?v=2"></script>
+<script src="js/utils.js?v=2"></script>
+<script>
+  initI18n('langSwitcher');
+  window.addEventListener('DOMContentLoaded', () => { if (window.lucide) lucide.createIcons({ icons: lucide.icons }); });
+
+  const session = requireAuth();
+  let websiteId = null;
+  let editor = null;
+  let originalHtml = '';
+
+  async function initEditor() {
+    const params = new URLSearchParams(window.location.search);
+    websiteId = params.get('id');
+    if (!websiteId) { showToast('ID website diperlukan', 'error'); setTimeout(() => window.location.href = 'websites.html', 1500); return; }
+
+    try {
+      const data = await api(`/api/websites?id=${websiteId}`);
+      document.getElementById('editorTitle').textContent = data.website.title;
+      document.getElementById('statusBadge').textContent = data.website.status;
+      document.getElementById('statusBadge').className = `badge ${data.website.status === 'published' ? 'badge-green' : 'badge-yellow'}`;
+      originalHtml = data.website.html_content || '<!DOCTYPE html><html><body><h1>Empty</h1></body></html>';
+
+      editor = grapesjs.init({
+        container: '#gjs',
+        components: originalHtml,
+        fromElement: false,
+        storageManager: false,
+        deviceManager: { devices: [
+          { name: 'Desktop', width: '' },
+          { name: 'Tablet', width: '768px' },
+          { name: 'Mobile', width: '375px' },
+        ]},
+        plugins: [],
+        canvas: { styles: [] },
+      });
+
+      loadMediaLibrary();
+    } catch (e) {
+      showToast(e.message, 'error');
+    }
+  }
+
+  function setDevice(device) {
+    document.querySelectorAll('#deviceButtons button').forEach(b => b.classList.remove('active'));
+    event.target.closest('button').classList.add('active');
+    const devices = { desktop: 'Desktop', tablet: 'Tablet', mobile: 'Mobile' };
+    editor.setDevice(devices[device]);
+  }
+
+  async function saveWebsite() {
+    if (!editor || !websiteId) return;
+    const btn = document.getElementById('saveBtn');
+    const orig = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Menyimpan...';
+    try {
+      const html = editor.getHtml() + '<style>' + editor.getCss() + '</style>';
+      const fullHtml = `<!DOCTYPE html>\n<html>\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n${editor.getCss() ? '<style>' + editor.getCss() + '</style>' : ''}\n</head>\n${editor.getHtml()}\n</html>`;
+      await api('/api/websites', { method: 'PUT', body: JSON.stringify({ id: websiteId, html_content: fullHtml }) });
+      originalHtml = fullHtml;
+      showToast('Website disimpan!', 'success');
+    } catch (e) {
+      showToast(e.message, 'error');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = orig;
+    }
+  }
+
+  async function publishCurrent() {
+    if (!websiteId) return;
+    try {
+      const html = `<!DOCTYPE html>\n<html>\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n${editor.getCss() ? '<style>' + editor.getCss() + '</style>' : ''}\n</head>\n${editor.getHtml()}\n</html>`;
+      await api('/api/websites', { method: 'PUT', body: JSON.stringify({ id: websiteId, html_content: html }) });
+      const res = await fetch('/api/websites', { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('pgp_token')}` }, body: JSON.stringify({ action: 'publish', websiteId }) });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      document.getElementById('statusBadge').textContent = 'published';
+      document.getElementById('statusBadge').className = 'badge badge-green';
+      showToast(`Published di /site/${data.website.slug}`, 'success', 5000);
+    } catch (e) { showToast(e.message, 'error'); }
+  }
+
+  function togglePreview() {
+    const overlay = document.getElementById('previewOverlay');
+    const iframe = document.getElementById('previewIframe');
+    if (overlay.style.display === 'flex') {
+      overlay.style.display = 'none';
+    } else {
+      const html = `<!DOCTYPE html>\n<html>\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n${editor.getCss() ? '<style>' + editor.getCss() + '</style>' : ''}\n</head>\n${editor.getHtml()}\n</html>`;
+      iframe.srcdoc = html;
+      overlay.style.display = 'flex';
+    }
+  }
+
+  function toggleMediaPanel() {
+    const panel = document.getElementById('mediaPanel');
+    if (panel.style.transform === 'translateX(100%)' || panel.style.transform === '') {
+      panel.style.display = 'block';
+      panel.style.transform = 'translateX(0)';
+    } else {
+      panel.style.transform = 'translateX(100%)';
+    }
+  }
+
+  document.getElementById('mediaInput').addEventListener('change', async (e) => {
+    const files = e.target.files;
+    if (!files.length) return;
+    const formData = new FormData();
+    for (const f of files) formData.append('files', f);
+    formData.append('websiteId', websiteId);
+    try {
+      showToast('Uploading...', 'info');
+      const res = await fetch('/api/upload', { method: 'POST', headers: { 'Authorization': `Bearer ${localStorage.getItem('pgp_token')}` }, body: formData });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      showToast(`${data.files.length} gambar diupload!`, 'success');
+      loadMediaLibrary();
+    } catch (err) { showToast(err.message, 'error'); }
+    e.target.value = '';
+  });
+
+  async function loadMediaLibrary() {
+    try {
+      const res = await fetch('/api/upload/media?websiteId=' + websiteId, { headers: { 'Authorization': `Bearer ${localStorage.getItem('pgp_token')}` } });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      const grid = document.getElementById('mediaGrid');
+      grid.innerHTML = (data.files || []).map(f => `
+        <div class="media-item" onclick="insertImage('${f.url}')" title="${escapeHtml(f.filename)}">
+          <img src="${f.url}" alt="${escapeHtml(f.filename)}"/>
+          <button class="media-del" onclick="event.stopPropagation();deleteMedia('${f.id}')"><i class="fa fa-trash"></i></button>
+        </div>
+      `).join('');
+    } catch (e) {
+      console.log('media load:', e.message);
+    }
+  }
+
+  function insertImage(url) {
+    if (!editor) return;
+    const comp = editor.getSelected();
+    if (comp) {
+      comp.set('src', url);
+    } else {
+      editor.runCommand('core:component-drag', { src: url });
+      editor.DomComponents.getWrapper().append(`<img src="${url}" style="max-width:100%;height:auto"/>`);
+    }
+    showToast('Gambar dimasukkan', 'success');
+  }
+
+  async function deleteMedia(id) {
+    if (!confirm('Padam gambar ini?')) return;
+    try {
+      await fetch(`/api/upload/media?id=${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${localStorage.getItem('pgp_token')}` } });
+      showToast('Gambar dipadam', 'success');
+      loadMediaLibrary();
+    } catch (e) { showToast(e.message, 'error'); }
+  }
+
+  initEditor();
+</script>
+</body>
+</html>

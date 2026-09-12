@@ -5,6 +5,9 @@ import { fileURLToPath } from 'url';
 import fs from 'fs';
 import rateLimit from 'express-rate-limit';
 import pg from 'pg';
+import multer from 'multer';
+import sharp from 'sharp';
+import crypto from 'crypto';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
@@ -78,6 +81,94 @@ app.get('/site/:slug', async (req, res) => {
     console.error('[/site/:slug]', err.message);
     res.status(500).sendFile(path.join(__dirname, '404.html'));
   }
+});
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) cb(null, true);
+    else cb(new Error('Hanya gambar dibenarkan'));
+  },
+});
+
+const SUPABASE_URL = process.env.SUPABASE_URL || 'http://192.168.1.218:8000';
+const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const STORAGE_BUCKET = process.env.SUPABASE_STORAGE_BUCKET || 'websites-media';
+
+async function uploadToStorage(buffer, storagePath, contentType) {
+  const res = await fetch(`${SUPABASE_URL}/storage/v1/object/${STORAGE_BUCKET}/${storagePath}`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${SERVICE_ROLE_KEY}`,
+      'Content-Type': contentType,
+      'x-upsert': 'true',
+    },
+    body: buffer,
+  });
+  if (!res.ok) throw new Error(`Storage upload failed: ${(await res.text()).slice(0, 200)}`);
+  return `${SUPABASE_URL}/storage/v1/object/public/${STORAGE_BUCKET}/${storagePath}`;
+}
+
+async function verifyToken(req) {
+  const auth = req.headers.authorization;
+  if (!auth || !auth.startsWith('Bearer ')) return null;
+  try {
+    const jwt = (await import('jsonwebtoken')).default;
+    return jwt.verify(auth.slice(7), process.env.JWT_SECRET);
+  } catch { return null; }
+}
+
+app.post('/api/upload', upload.array('files', 10), async (req, res) => {
+  const auth = await verifyToken(req);
+  if (!auth) return res.status(401).json({ error: 'Unauthorized' });
+  const files = req.files || [];
+  if (!files.length) return res.status(400).json({ error: 'Tiada fail diupload' });
+
+  const websiteId = req.body.websiteId || null;
+  const results = [];
+  for (const file of files) {
+    const ext = file.originalname.split('.').pop().toLowerCase();
+    const rand = crypto.randomBytes(4).toString('hex');
+    const isGif = ext === 'gif';
+    const processed = isGif ? file.buffer : await sharp(file.buffer).resize(1920, 1080, { fit: 'inside', withoutEnlargement: true }).webp({ quality: 85 }).toBuffer();
+    const finalExt = isGif ? 'gif' : 'webp';
+    const finalPath = `${auth.userId}/${rand}.${finalExt}`;
+    const contentType = isGif ? 'image/gif' : 'image/webp';
+    const publicUrl = await uploadToStorage(processed, finalPath, contentType);
+    const metadata = isGif ? { width: 0, height: 0 } : await sharp(processed).metadata();
+    const { rows } = await pgPool.query(
+      'INSERT INTO media_assets (user_id, website_id, filename, storage_path, public_url, mime_type, size_bytes, width, height) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING id, filename, public_url, mime_type, size_bytes, width, height',
+      [auth.userId, websiteId, file.originalname, finalPath, publicUrl, contentType, processed.length, metadata.width || 0, metadata.height || 0]
+    );
+    results.push(rows[0]);
+  }
+  res.status(201).json({ files: results });
+});
+
+app.get('/api/upload/media', async (req, res) => {
+  const auth = await verifyToken(req);
+  if (!auth) return res.status(401).json({ error: 'Unauthorized' });
+  const websiteId = req.query.websiteId;
+  const { rows } = await pgPool.query(
+    websiteId
+      ? 'SELECT id, filename, public_url, mime_type, size_bytes, width, height, created_at FROM media_assets WHERE user_id = $1 AND (website_id = $2 OR website_id IS NULL) ORDER BY created_at DESC LIMIT 100'
+      : 'SELECT id, filename, public_url, mime_type, size_bytes, width, height, created_at FROM media_assets WHERE user_id = $1 ORDER BY created_at DESC LIMIT 100',
+    websiteId ? [auth.userId, websiteId] : [auth.userId]
+  );
+  res.json({ files: rows });
+});
+
+app.delete('/api/upload/media', async (req, res) => {
+  const auth = await verifyToken(req);
+  if (!auth) return res.status(401).json({ error: 'Unauthorized' });
+  const id = req.query.id;
+  if (!id) return res.status(400).json({ error: 'id required' });
+  const { rows } = await pgPool.query('SELECT storage_path FROM media_assets WHERE id = $1 AND user_id = $2', [id, auth.userId]);
+  if (rows.length === 0) return res.status(404).json({ error: 'Not found' });
+  await fetch(`${SUPABASE_URL}/storage/v1/object/${STORAGE_BUCKET}/${rows[0].storage_path}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${SERVICE_ROLE_KEY}` } });
+  await pgPool.query('DELETE FROM media_assets WHERE id = $1 AND user_id = $2', [id, auth.userId]);
+  res.json({ success: true });
 });
 
 const API_DIR = path.join(__dirname, 'api');

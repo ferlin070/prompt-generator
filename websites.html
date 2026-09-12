@@ -130,6 +130,7 @@
           ${w.slug ? `<p style="font-size:.78rem;color:var(--text-secondary);margin-bottom:14px;word-break:break-all"><i class="fa fa-link"></i> /site/${escapeHtml(w.slug)}</p>` : ''}
           <div style="display:flex;gap:6px;flex-wrap:wrap">
             <button class="btn btn-ghost btn-sm" onclick="previewWebsite('${w.id}')"><i class="fa fa-eye"></i></button>
+            <a href="editor.html?id=${w.id}" class="btn btn-primary btn-sm"><i class="fa fa-pen"></i> Edit</a>
             ${w.status === 'draft'
               ? `<button class="btn btn-primary btn-sm" onclick="publishWebsite('${w.id}')"><i class="fa fa-globe"></i> Publish</button>`
               : `<button class="btn btn-ghost btn-sm" onclick="unpublishWebsite('${w.id}')"><i class="fa fa-eye-slash"></i></button>`

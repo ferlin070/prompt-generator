@@ -830,6 +830,12 @@ function closeWebsitePreview() {
   document.body.style.overflow = '';
 }
 
+function goToEditor() {
+  const modal = document.getElementById('websitePreviewModal');
+  const websiteId = modal.dataset.websiteId;
+  if (websiteId) window.location.href = `editor.html?id=${websiteId}`;
+}
+
 async function publishWebsiteFromPreview() {
   const modal = document.getElementById('websitePreviewModal');
   const websiteId = modal.dataset.websiteId;
@@ -853,6 +859,7 @@ async function publishWebsiteFromPreview() {
     <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
       <h3 style="font-size:1.1rem;font-weight:700"><i class="fa fa-wand-magic-sparkles"></i> Preview Website</h3>
       <div style="display:flex;gap:8px">
+        <a href="#" class="btn btn-ghost btn-sm" id="editFromPreview" onclick="goToEditor()"><i class="fa fa-pen"></i> Edit</a>
         <button class="btn btn-primary btn-sm" onclick="publishWebsiteFromPreview()"><i class="fa fa-globe"></i> Publish</button>
         <button class="btn btn-ghost btn-sm" onclick="closeWebsitePreview()"><i class="fa fa-xmark"></i></button>
       </div>
