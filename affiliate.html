@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <script src="https://unpkg.com/lucide@1.45.0/dist/umd/lucide.min.js" defer></script>
-  <link rel="stylesheet" href="css/style.css?v=2"/>
+  <link rel="stylesheet" href="css/style.css?v=3"/>
   <style>
     .aff-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px}
     .aff-link-box{display:flex;gap:8px;margin-bottom:20px}
@@ -46,10 +46,10 @@
         <div class="nav-section-label" data-i18n="dash.account">Akaun</div>
         <a href="#" class="nav-link" data-logout><span class="nav-icon"><i data-lucide="log-out"></i></span> <span data-i18n="dash.logout">Log Keluar</span></a>
       </div>
-      <div class="nav-section" style="margin-top: auto; padding-top: 20px;">
-        <select id="langSwitcher" class="form-control" style="width: 100%; font-size: 0.8rem; height: 32px;"></select>
-      </div>
     </nav>
+    <div class="sidebar-lang">
+      <select id="langSwitcher" class="form-control" style="width: 100%; font-size: 0.8rem; height: 32px;"></select>
+    </div>
     <div class="sidebar-user"><div class="user-info"><div class="user-avatar" data-user-initials>??</div><div><div class="user-name" data-user-name>Pengguna</div><div class="user-plan" data-user-plan>Free</div></div></div></div>
   </aside>
   <div class="sidebar-overlay" id="sidebarOverlay"></div>

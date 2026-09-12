@@ -8,7 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
   <script src="https://unpkg.com/lucide@1.45.0/dist/umd/lucide.min.js" defer></script>
-  <link rel="stylesheet" href="css/style.css?v=2"/>
+  <link rel="stylesheet" href="css/style.css?v=3"/>
   <style>
     .admin-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px}
     .admin-stat{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;transition:.3s}
@@ -58,10 +58,10 @@
         <a href="image-generator.html" class="nav-link"><span class="nav-icon"><i data-lucide="image"></i></span> <span data-i18n="dash.imageGenerator">Image Generator</span></a>
         <a href="#" class="nav-link" data-logout><span class="nav-icon"><i data-lucide="log-out"></i></span> <span data-i18n="dash.logout">Log Keluar</span></a>
       </div>
-      <div class="nav-section" style="margin-top: auto; padding-top: 20px;">
-        <select id="langSwitcher" class="form-control" style="width: 100%; font-size: 0.8rem; height: 32px;"></select>
-      </div>
     </nav>
+    <div class="sidebar-lang">
+      <select id="langSwitcher" class="form-control" style="width: 100%; font-size: 0.8rem; height: 32px;"></select>
+    </div>
   </aside>
   <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
