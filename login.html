@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
   <style>
     :root{--bg:#0D1117;--bg2:#161B22;--card:#1C2128;--border:#30363D;--accent:#238636;--accent-l:#2EA043;--accent-glow:rgba(35,134,54,.3);--text:#E6EDF3;--text2:#8B949E;--muted:#484F58;--error:#DA3633;--radius:10px}
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -117,7 +118,7 @@
   <div class="blob blob2"></div>
 
   <div class="brand-logo">
-    <div class="brand-icon">✨</div>
+    <div class="brand-icon"><i data-lucide="sparkles"></i></div>
     <div>
       <div class="brand-name">Prompt Generator Pro</div>
       <div class="brand-sub">Business Website Builder</div>
@@ -129,19 +130,19 @@
 
   <div class="feature-list">
     <div class="feature-item">
-      <span class="fi">🏪</span>
+      <span class="fi"><i data-lucide="store"></i></span>
       <p><strong>25+ Jenis Perniagaan</strong>Restoran, salon, butik, IT, hartanah & banyak lagi</p>
     </div>
     <div class="feature-item">
-      <span class="fi">✨</span>
+      <span class="fi"><i data-lucide="sparkles"></i></span>
       <p><strong>Prompt AI Berkualiti</strong>Prompt terperinci untuk Claude, ChatGPT & Gemini</p>
     </div>
     <div class="feature-item">
-      <span class="fi">💾</span>
+      <span class="fi"><i data-lucide="save"></i></span>
       <p><strong>Simpan & Urus</strong>Simpan semua prompt, edit, cari & filter dengan mudah</p>
     </div>
     <div class="feature-item">
-      <span class="fi">📤</span>
+      <span class="fi"><i data-lucide="file-output"></i></span>
       <p><strong>Eksport Mudah</strong>Salin ke clipboard atau muat turun sebagai fail .txt</p>
     </div>
   </div>
@@ -150,7 +151,7 @@
 <!-- RIGHT AUTH PANEL -->
 <div class="auth-right">
   <div class="brand-logo" style="margin-bottom:24px">
-    <div class="brand-icon" style="width:40px;height:40px;font-size:1.2rem">✨</div>
+    <div class="brand-icon" style="width:40px;height:40px;font-size:1.2rem"><i data-lucide="sparkles"></i></div>
     <div class="brand-name" style="font-size:1.1rem">Prompt Generator Pro</div>
   </div>
 
@@ -226,15 +227,15 @@
       <label class="form-label">Jenis Perniagaan Utama</label>
       <select id="regBusiness" class="form-control">
         <option value="">— Pilih kategori —</option>
-        <option value="makanan">🍜 Makanan & Minuman</option>
-        <option value="fesyen">👗 Fesyen & Pakaian</option>
-        <option value="kecantikan">💆 Kecantikan & Wellness</option>
-        <option value="pendidikan">📚 Pendidikan</option>
-        <option value="profesional">📊 Perkhidmatan Profesional</option>
-        <option value="hartanah">🏠 Hartanah</option>
-        <option value="teknologi">💻 Teknologi & IT</option>
-        <option value="ecommerce">🛒 E-Commerce</option>
-        <option value="lain">🔖 Lain-lain</option>
+        <option value="makanan">Makanan & Minuman</option>
+        <option value="fesyen">Fesyen & Pakaian</option>
+        <option value="kecantikan">Kecantikan & Wellness</option>
+        <option value="pendidikan">Pendidikan</option>
+        <option value="profesional">Perkhidmatan Profesional</option>
+        <option value="hartanah">Hartanah</option>
+        <option value="teknologi">Teknologi & IT</option>
+        <option value="ecommerce">E-Commerce</option>
+        <option value="lain">Lain-lain</option>
       </select>
     </div>
     <button type="submit" class="btn-auth" id="registerBtn">
@@ -252,6 +253,7 @@
 <script src="js/auth.js"></script>
 <script>
   initI18n('langSwitcher');
+  if (window.lucide) lucide.createIcons();
 
   // Redirect jika dah login
   (function() {
@@ -295,10 +297,16 @@
 
   function showToast(msg, type='info') {
     const c = document.getElementById('toastContainer');
-    const icons = {success:'✅',error:'❌',info:'ℹ️'};
+    const icons = {success:'fa-solid fa-circle-check',error:'fa-solid fa-circle-xmark',info:'fa-solid fa-circle-info'};
     const t = document.createElement('div');
     t.className = `toast toast-${type}`;
-    t.innerHTML = `<span>${icons[type]||'ℹ️'}</span><span style="font-size:.88rem">${msg}</span>`;
+    const icon = document.createElement('span');
+    icon.className = icons[type] || icons.info;
+    const msgEl = document.createElement('span');
+    msgEl.style.fontSize = '.88rem';
+    msgEl.textContent = msg;
+    t.appendChild(icon);
+    t.appendChild(msgEl);
     c.appendChild(t);
     setTimeout(()=>{ t.classList.add('toast-exit'); setTimeout(()=>t.remove(),350); }, 3500);
   }

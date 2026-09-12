@@ -3,15 +3,17 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
   <title>Pricing & Plans — PromptBiz Pro AI Generator</title>
   <meta name="description" content="Affordable AI landing page generation plans for Malaysia businesses. Start for free or upgrade to Pro for unlimited prompts and commercial usage."/>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
   <link rel="stylesheet" href="css/style.css"/>
   <style>
     .pricing-hero{text-align:center;padding:60px 24px 40px}
     .pricing-hero h1{font-size:2.2rem;font-weight:800;margin-bottom:10px}
-    .pricing-hero h1 span{background:linear-gradient(135deg,var(--accent-light),#58a6ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .pricing-hero h1 span{color:var(--accent-primary)}
     .pricing-hero p{color:var(--text-secondary);max-width:500px;margin:0 auto 28px}
     .billing-toggle{display:inline-flex;align-items:center;gap:14px;background:var(--bg-card);border:1px solid var(--border);border-radius:30px;padding:5px 6px}
     .billing-toggle button{padding:8px 20px;border:none;border-radius:24px;font-family:'Outfit',sans-serif;font-weight:600;font-size:.85rem;cursor:pointer;transition:.25s;background:transparent;color:var(--text-secondary)}
@@ -21,7 +23,7 @@
     .plan-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:28px 24px;display:flex;flex-direction:column;transition:.3s;position:relative;overflow:hidden}
     .plan-card:hover{border-color:var(--accent-primary);transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,.4)}
     .plan-card.featured{border-color:var(--accent-primary);box-shadow:0 0 30px var(--accent-glow)}
-    .plan-card.featured::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent-primary),#388BFD)}
+    .plan-card.featured::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent-primary)}
     .plan-badge{position:absolute;top:14px;right:14px;padding:3px 10px;border-radius:12px;font-size:.7rem;font-weight:700}
     .plan-icon{font-size:2rem;margin-bottom:10px}
     .plan-name{font-size:1.1rem;font-weight:800;margin-bottom:4px}
@@ -42,14 +44,13 @@
     .promo-row{display:flex;gap:8px}
     .promo-row input{flex:1;background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text-primary);font-family:'Outfit',sans-serif;font-size:.9rem;outline:none}
     .promo-row input:focus{border-color:var(--accent-primary)}
-    .faq-section{max-width:700px;margin:0 auto;padding:0 24px 80px}
-    .faq-section h2{text-align:center;font-size:1.5rem;margin-bottom:24px}
-    .faq-item{background:var(--bg-card);border:1px solid var(--border);border-radius:10px;margin-bottom:10px;overflow:hidden}
-    .faq-q{padding:16px 20px;cursor:pointer;font-weight:600;font-size:.92rem;display:flex;align-items:center;justify-content:space-between;transition:.25s}
-    .faq-q:hover{background:var(--bg-hover)}
-    .faq-a{padding:0 20px;max-height:0;overflow:hidden;transition:all .3s ease;color:var(--text-secondary);font-size:.88rem;line-height:1.7}
-    .faq-item.open .faq-a{max-height:300px;padding:0 20px 16px}
-    .faq-item.open .faq-q .fa{transform:rotate(180deg)}
+    .faq-section{max-width:840px;margin:0 auto;padding:0 24px 80px}
+    .faq-section h2{text-align:center;font-size:1.5rem;margin-bottom:32px}
+    .faq-grid{display:grid;grid-template-columns:1fr 1.6fr;gap:0;border-top:1px solid var(--border)}
+    .faq-item{display:contents}
+    .faq-q{padding:20px 20px 20px 0;font-weight:700;font-size:.95rem;color:var(--text-primary);border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:10px}
+    .faq-q svg{width:18px;height:18px;color:var(--accent-primary);flex-shrink:0;margin-top:2px}
+    .faq-a{padding:20px 0 20px 20px;font-size:.9rem;color:var(--text-secondary);line-height:1.7;border-bottom:1px solid var(--border)}
     .checkout-modal .modal{max-width:480px}
     .payment-methods{display:flex;flex-direction:column;gap:10px;margin:16px 0}
     .payment-method{display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--bg-card);border:2px solid var(--border);border-radius:10px;cursor:pointer;transition:.25s}
@@ -69,8 +70,8 @@
   <!-- NAV -->
   <nav style="display:flex;align-items:center;justify-content:space-between;padding:16px 32px;border-bottom:1px solid var(--border);background:var(--bg-secondary)">
     <a href="index.html" style="display:flex;align-items:center;gap:10px;text-decoration:none">
-      <div style="width:36px;height:36px;background:linear-gradient(135deg,var(--accent-primary),#388BFD);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem">✨</div>
-      <span style="font-weight:800;font-size:1rem;background:linear-gradient(135deg,var(--accent-light),#58a6ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent">PromptBiz Pro</span>
+      <div style="width:36px;height:36px;background:var(--accent-glow);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--accent-primary)"><i data-lucide="sparkles"></i></div>
+      <span style="font-weight:800;font-size:1rem;color:var(--text-primary)">PromptBiz Pro</span>
     </a>
     <div style="display:flex;gap:10px" id="navActions">
       <select id="langSwitcher" class="btn btn-ghost btn-sm" style="width: auto;"></select>
@@ -104,30 +105,32 @@
 
   <!-- FAQ -->
   <section class="faq-section">
-    <h2 data-i18n="pricing.faq">❓ Soalan Lazim</h2>
-    <div class="faq-item" onclick="toggleFaq(this)">
-      <div class="faq-q" data-i18n="pricing.faq.q1">Bolehkah saya batalkan bila-bila masa? <i class="fa fa-chevron-down"></i></div>
-      <div class="faq-a" data-i18n="pricing.faq.a1">Ya! Anda boleh batalkan subscription anda pada bila-bila masa. Tiada kontrak jangka panjang. Anda masih boleh menggunakan ciri-ciri premium sehingga tempoh langganan tamat.</div>
-    </div>
-    <div class="faq-item" onclick="toggleFaq(this)">
-      <div class="faq-q" data-i18n="pricing.faq.q2">Apakah AI yang digunakan? <i class="fa fa-chevron-down"></i></div>
-      <div class="faq-a" data-i18n="pricing.faq.a2">Kami menggunakan Claude (Anthropic) sebagai AI utama dan GPT-4 sebagai backup. Kedua-duanya adalah model AI terkemuka dunia yang menghasilkan kod HTML berkualiti tinggi.</div>
-    </div>
-    <div class="faq-item" onclick="toggleFaq(this)">
-      <div class="faq-q" data-i18n="pricing.faq.q3">Berapa lama masa untuk jana landing page? <i class="fa fa-chevron-down"></i></div>
-      <div class="faq-a" data-i18n="pricing.faq.a3">Biasanya antara 15-30 saat. AI kami akan menghasilkan kod HTML lengkap yang boleh terus digunakan. Anda boleh preview hasilnya sebelum menyimpan.</div>
-    </div>
-    <div class="faq-item" onclick="toggleFaq(this)">
-      <div class="faq-q" data-i18n="pricing.faq.q4">Adakah kod HTML boleh diedit? <i class="fa fa-chevron-down"></i></div>
-      <div class="faq-a" data-i18n="pricing.faq.a4">Sudah tentu! Kod HTML yang dijana adalah milik anda sepenuhnya. Anda boleh edit, ubah suai, dan gunakan tanpa sebarang sekatan. Tiada watermark untuk pelan berbayar.</div>
-    </div>
-    <div class="faq-item" onclick="toggleFaq(this)">
-      <div class="faq-q" data-i18n="pricing.faq.q5">Apakah kaedah pembayaran yang diterima? <i class="fa fa-chevron-down"></i></div>
-      <div class="faq-a" data-i18n="pricing.faq.a5">Kami menerima FPX (online banking Malaysia), kad kredit/debit (Visa, Mastercard), dan e-wallet melalui toyyibPay dan Billplz. Untuk pelanggan antarabangsa, kami juga menyokong Stripe.</div>
-    </div>
-    <div class="faq-item" onclick="toggleFaq(this)">
-      <div class="faq-q" data-i18n="pricing.faq.q6">Bagaimana program affiliate berfungsi? <i class="fa fa-chevron-down"></i></div>
-      <div class="faq-a" data-i18n="pricing.faq.a6">Daftar sebagai affiliate (percuma untuk pelan Starter ke atas), kongsi link unik anda, dan jana komisyen 30% berulang setiap bulan daripada setiap pelanggan yang anda rujuk. Minimum pengeluaran RM50.</div>
+    <h2 data-i18n="pricing.faq"><i data-lucide="help-circle"></i> Soalan Lazim</h2>
+    <div class="faq-grid">
+      <div class="faq-item">
+        <div class="faq-q" data-i18n="pricing.faq.q1"><i data-lucide="calendar-x"></i>Bolehkah saya batalkan bila-bila masa?</div>
+        <div class="faq-a" data-i18n="pricing.faq.a1">Ya! Anda boleh batalkan subscription anda pada bila-bila masa. Tiada kontrak jangka panjang. Anda masih boleh menggunakan ciri-ciri premium sehingga tempoh langganan tamat.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" data-i18n="pricing.faq.q2"><i data-lucide="cpu"></i>Apakah AI yang digunakan?</div>
+        <div class="faq-a" data-i18n="pricing.faq.a2">Kami menggunakan Claude (Anthropic) sebagai AI utama dan GPT-4 sebagai backup. Kedua-duanya adalah model AI terkemuka dunia yang menghasilkan kod HTML berkualiti tinggi.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" data-i18n="pricing.faq.q3"><i data-lucide="timer"></i>Berapa lama masa untuk jana landing page?</div>
+        <div class="faq-a" data-i18n="pricing.faq.a3">Biasanya antara 15-30 saat. AI kami akan menghasilkan kod HTML lengkap yang boleh terus digunakan. Anda boleh preview hasilnya sebelum menyimpan.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" data-i18n="pricing.faq.q4"><i data-lucide="code"></i>Adakah kod HTML boleh diedit?</div>
+        <div class="faq-a" data-i18n="pricing.faq.a4">Sudah tentu! Kod HTML yang dijana adalah milik anda sepenuhnya. Anda boleh edit, ubah suai, dan gunakan tanpa sebarang sekatan. Tiada watermark untuk pelan berbayar.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" data-i18n="pricing.faq.q5"><i data-lucide="credit-card"></i>Apakah kaedah pembayaran yang diterima?</div>
+        <div class="faq-a" data-i18n="pricing.faq.a5">Kami menerima FPX (online banking Malaysia), kad kredit/debit (Visa, Mastercard), dan e-wallet melalui toyyibPay dan Billplz. Untuk pelanggan antarabangsa, kami juga menyokong Stripe.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q" data-i18n="pricing.faq.q6"><i data-lucide="users"></i>Bagaimana program affiliate berfungsi?</div>
+        <div class="faq-a" data-i18n="pricing.faq.a6">Daftar sebagai affiliate (percuma untuk pelan Starter ke atas), kongsi link unik anda, dan jana komisyen 30% berulang setiap bulan daripada setiap pelanggan yang anda rujuk. Minimum pengeluaran RM50.</div>
+      </div>
     </div>
   </section>
 
@@ -135,8 +138,8 @@
   <div class="modal-overlay checkout-modal" id="checkoutModal">
     <div class="modal">
       <div class="modal-header">
-        <h3 class="modal-title" data-i18n="pricing.modal.title">🔒 Pembayaran Selamat</h3>
-        <button class="modal-close" onclick="closeModal('checkoutModal')">✕</button>
+        <h3 class="modal-title" data-i18n="pricing.modal.title"><i data-lucide="lock"></i> Pembayaran Selamat</h3>
+        <button class="modal-close" onclick="closeModal('checkoutModal')"><i class="fa fa-xmark"></i></button>
       </div>
       <div class="modal-body">
         <div class="order-summary" id="orderSummary"></div>
@@ -147,11 +150,11 @@
             <div><div class="pm-name">FPX (Bayarcash)</div><div class="pm-desc">Perbankan Internet Malaysia</div></div>
           </div>
           <div class="payment-method" onclick="selectPayment(this,'12')">
-            <div class="pm-icon">💳</div>
+            <div class="pm-icon"><i data-lucide="credit-card"></i></div>
             <div><div class="pm-name">Kad Kredit / Debit</div><div class="pm-desc">Visa / Mastercard via Bayarcash</div></div>
           </div>
           <div class="payment-method" onclick="selectPayment(this,'')">
-            <div class="pm-icon">🌐</div>
+            <div class="pm-icon"><i data-lucide="wallet"></i></div>
             <div><div class="pm-name">Lain-lain Kaedah</div><div class="pm-desc">E-Wallet, DuitNow, dsb.</div></div>
           </div>
         </div>
@@ -215,8 +218,8 @@
           <div class="plan-price"><span class="currency">RM</span>${price}<span class="period">/bln</span></div>
           <div class="plan-yearly">${billing==='yearly' && p.price.monthly?`Jimat RM${(p.price.monthly-p.price.yearly)*12}/thn`:billing==='monthly'&&p.price.yearly?`atau RM${p.price.yearly}/bln (tahunan)`:''}</div>
           <ul class="plan-features">
-            ${p.features.map(f=>`<li><span class="check">✅</span>${f}</li>`).join('')}
-            ${p.missing.map(f=>`<li class="disabled"><span class="cross">❌</span>${f}</li>`).join('')}
+            ${p.features.map(f=>`<li><span class="check"><i class="fa fa-check"></i></span>${f}</li>`).join('')}
+            ${p.missing.map(f=>`<li class="disabled"><span class="cross"><i class="fa fa-xmark"></i></span>${f}</li>`).join('')}
           </ul>
           ${isCurrent
             ?`<div class="plan-cta ghost" style="text-align:center;padding:12px;opacity:.7;cursor:default">Pelan Semasa</div>`
@@ -308,7 +311,7 @@
       else appliedPromo = null;
     }
 
-    function toggleFaq(el) { el.classList.toggle('open'); }
+    if (window.lucide) lucide.createIcons();
 
     renderPlans();
   </script>

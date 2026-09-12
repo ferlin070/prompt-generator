@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
   <link rel="stylesheet" href="css/style.css"/>
   <style>
     .step-content { display:none; }
@@ -46,26 +47,26 @@
   <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">
-      <h1>✨ <span data-i18n="nav.dashboard">Prompt Generator Pro</span></h1>
+      <h1><i data-lucide="sparkles"></i> <span data-i18n="nav.dashboard">Prompt Generator Pro</span></h1>
       <p>Business Website Builder</p>
     </div>
     <nav class="sidebar-nav">
       <div class="nav-section">
         <div class="nav-section-label" data-i18n="dash.main">Utama</div>
-        <a href="dashboard.html" class="nav-link"><span class="nav-icon">🏠</span> <span data-i18n="nav.dashboard">Dashboard</span></a>
-        <a href="generator.html" class="nav-link active"><span class="nav-icon">✨</span> <span data-i18n="dash.newPrompt">Website Generator</span></a>
-        <a href="image-generator.html" class="nav-link"><span class="nav-icon">🖼️</span> <span data-i18n="dash.imageGenerator">Image Generator</span></a>
-        <a href="saved-prompts.html" class="nav-link"><span class="nav-icon">💾</span> <span data-i18n="dash.saved">Prompt Tersimpan</span></a>
+        <a href="dashboard.html" class="nav-link"><span class="nav-icon"><i data-lucide="layout-dashboard"></i></span> <span data-i18n="nav.dashboard">Dashboard</span></a>
+        <a href="generator.html" class="nav-link active"><span class="nav-icon"><i data-lucide="sparkles"></i></span> <span data-i18n="dash.newPrompt">Website Generator</span></a>
+        <a href="image-generator.html" class="nav-link"><span class="nav-icon"><i data-lucide="image"></i></span> <span data-i18n="dash.imageGenerator">Image Generator</span></a>
+        <a href="saved-prompts.html" class="nav-link"><span class="nav-icon"><i data-lucide="save"></i></span> <span data-i18n="dash.saved">Prompt Tersimpan</span></a>
       </div>
       <div class="nav-section">
         <div class="nav-section-label" data-i18n="dash.other">Lain-lain</div>
-        <a href="pricing.html" class="nav-link"><span class="nav-icon">💰</span> <span data-i18n="dash.pricing">Harga & Pelan</span></a>
-        <a href="affiliate.html" class="nav-link"><span class="nav-icon">🔗</span> <span data-i18n="nav.affiliate">Affiliate</span></a>
-        <a href="admin.html" class="nav-link" data-admin-only><span class="nav-icon">👑</span> <span data-i18n="nav.admin">Admin Panel</span></a>
+        <a href="pricing.html" class="nav-link"><span class="nav-icon"><i data-lucide="circle-dollar-sign"></i></span> <span data-i18n="dash.pricing">Harga & Pelan</span></a>
+        <a href="affiliate.html" class="nav-link"><span class="nav-icon"><i data-lucide="link"></i></span> <span data-i18n="nav.affiliate">Affiliate</span></a>
+        <a href="admin.html" class="nav-link" data-admin-only><span class="nav-icon"><i data-lucide="crown"></i></span> <span data-i18n="nav.admin">Admin Panel</span></a>
       </div>
       <div class="nav-section">
         <div class="nav-section-label" data-i18n="dash.account">Akaun</div>
-        <a href="#" class="nav-link" data-logout><span class="nav-icon">🚪</span> <span data-i18n="dash.logout">Log Keluar</span></a>
+        <a href="#" class="nav-link" data-logout><span class="nav-icon"><i data-lucide="log-out"></i></span> <span data-i18n="dash.logout">Log Keluar</span></a>
       </div>
       <div class="nav-section" style="margin-top: auto; padding-top: 20px;">
         <select id="langSwitcher" class="form-control" style="width: 100%; font-size: 0.8rem; height: 32px;"></select>
@@ -86,12 +87,12 @@
   <main class="main-content">
     <div class="top-bar">
       <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
-      <span style="font-weight:700;font-size:.95rem" data-i18n="dash.newPrompt">✨ Jana Prompt Baru</span>
+      <span style="font-weight:700;font-size:.95rem" data-i18n="dash.newPrompt"><i data-lucide="sparkles"></i> Jana Prompt Baru</span>
       <div style="width:34px"></div>
     </div>
 
     <div class="page-header">
-      <h1 class="page-title" data-i18n="dash.newPrompt">✨ Jana Prompt Baru</h1>
+      <h1 class="page-title" data-i18n="dash.newPrompt"><i data-lucide="sparkles"></i> Jana Prompt Baru</h1>
       <p class="page-subtitle" data-i18n="generator.subtitle">Ikuti langkah-langkah berikut untuk menjana prompt AI yang lengkap.</p>
     </div>
 
@@ -121,7 +122,7 @@
           <h2 style="font-size:1.15rem;font-weight:700;margin-bottom:6px" data-i18n="generator.step1.title">Pilih Jenis Perniagaan</h2>
           <p style="color:var(--text-secondary);font-size:.88rem;margin-bottom:20px" data-i18n="generator.step1.sub">Pilih kategori yang paling sesuai dengan perniagaan anda.</p>
           <div style="margin-bottom:16px">
-            <input type="text" class="form-control" id="bizSearch" data-i18n-placeholder="saved.search" placeholder="🔍 Cari jenis perniagaan..." oninput="filterBiz(this.value)" style="max-width:360px"/>
+            <input type="text" class="form-control" id="bizSearch" data-i18n-placeholder="saved.search" placeholder="Cari jenis perniagaan..." oninput="filterBiz(this.value)" style="max-width:360px"/>
           </div>
           <div id="bizGrid"></div>
           <div class="nav-btns">
@@ -167,7 +168,7 @@
           <!-- DYNAMIC FIELDS CONTAINER -->
           <div id="dynamicFields" class="form-grid-2" style="margin-top:20px; grid-column: 1 / -1; border-top: 1px solid var(--border); padding-top: 20px; display: none;">
             <div style="grid-column: 1 / -1; margin-bottom: 10px;">
-              <h3 style="font-size: 1rem; color: var(--accent-light);">✨ <span data-i18n="generator.specialInfo">Maklumat Khusus</span> <span id="dynTitle">Perniagaan</span></h3>
+              <h3 style="font-size: 1rem; color: var(--accent-light);"><i data-lucide="sparkles"></i> <span data-i18n="generator.specialInfo">Maklumat Khusus</span> <span id="dynTitle">Perniagaan</span></h3>
               <p style="font-size: 0.8rem; color: var(--text-muted);" data-i18n="generator.specialInfoSub">Sila isi maklumat tambahan ini untuk hasil prompt yang lebih tepat.</p>
             </div>
             <!-- Dinamik fields akan masuk sini -->
@@ -175,7 +176,7 @@
 
           <!-- Product Catalog Section (NEW) -->
           <div style="grid-column: 1 / -1; margin-top: 30px; border-top: 1px solid var(--border); padding-top: 20px;">
-            <h3 style="font-size: 1rem; color: var(--accent-light); margin-bottom: 15px;">🛍️ <span data-i18n="generator.catalog">Katalog Produk & Harga (Optional)</span></h3>
+            <h3 style="font-size: 1rem; color: var(--accent-light); margin-bottom: 15px;"><i data-lucide="shopping-bag"></i> <span data-i18n="generator.catalog">Katalog Produk & Harga (Optional)</span></h3>
             <div id="productList" style="display: flex; flex-direction: column; gap: 15px;">
               <!-- Products will be added here -->
             </div>
@@ -214,12 +215,12 @@
           <div class="form-group" style="margin-top:20px">
             <label class="form-label" data-i18n="generator.tone">Nada Komunikasi</label>
             <div class="tone-grid" id="toneGrid">
-              <div class="tone-option" onclick="selectTone(this,'Profesional & Formal')">🎩 Profesional & Formal</div>
-              <div class="tone-option" onclick="selectTone(this,'Kasual & Mesra')">😊 Kasual & Mesra</div>
-              <div class="tone-option" onclick="selectTone(this,'Mewah & Eksklusif')">💎 Mewah & Eksklusif</div>
-              <div class="tone-option" onclick="selectTone(this,'Ceria & Energetik')">🎉 Ceria & Energetik</div>
-              <div class="tone-option" onclick="selectTone(this,'Tenang & Minimalis')">🌿 Tenang & Minimalis</div>
-              <div class="tone-option" onclick="selectTone(this,'Berani & Moden')">⚡ Berani & Moden</div>
+              <div class="tone-option" onclick="selectTone(this,'Profesional & Formal')"><i data-lucide="top-hat"></i> Profesional & Formal</div>
+              <div class="tone-option" onclick="selectTone(this,'Kasual & Mesra')"><i data-lucide="smile"></i> Kasual & Mesra</div>
+              <div class="tone-option" onclick="selectTone(this,'Mewah & Eksklusif')"><i data-lucide="gem"></i> Mewah & Eksklusif</div>
+              <div class="tone-option" onclick="selectTone(this,'Ceria & Energetik')"><i data-lucide="party-popper"></i> Ceria & Energetik</div>
+              <div class="tone-option" onclick="selectTone(this,'Tenang & Minimalis')"><i data-lucide="leaf"></i> Tenang & Minimalis</div>
+              <div class="tone-option" onclick="selectTone(this,'Berani & Moden')"><i data-lucide="zap"></i> Berani & Moden</div>
             </div>
           </div>
           <div class="form-group" style="margin-top:20px">
@@ -234,9 +235,9 @@
           <div class="form-group">
             <label class="form-label" data-i18n="generator.theme">Tema Utama</label>
             <div style="display:flex;gap:12px">
-              <label style="flex:1;cursor:pointer"><input type="radio" name="themeMode" value="light" checked/> ☀️ Light Mode</label>
-              <label style="flex:1;cursor:pointer"><input type="radio" name="themeMode" value="dark"/> 🌙 Dark Mode</label>
-              <label style="flex:1;cursor:pointer"><input type="radio" name="themeMode" value="auto"/> 🌓 Auto</label>
+              <label style="flex:1;cursor:pointer"><input type="radio" name="themeMode" value="light" checked/> <i data-lucide="sun"></i> Light Mode</label>
+              <label style="flex:1;cursor:pointer"><input type="radio" name="themeMode" value="dark"/> <i data-lucide="moon"></i> Dark Mode</label>
+              <label style="flex:1;cursor:pointer"><input type="radio" name="themeMode" value="auto"/> <i data-lucide="contrast"></i> Auto</label>
             </div>
           </div>
           <div class="form-group">
@@ -246,7 +247,7 @@
 
           <!-- Image Gallery Section (NEW) -->
           <div class="form-group" style="margin-top:20px">
-            <label class="form-label">📸 <span data-i18n="generator.gallery">Galeri Imej (URL)</span></label>
+            <label class="form-label"><i data-lucide="camera"></i> <span data-i18n="generator.gallery">Galeri Imej (URL)</span></label>
             <div id="imageList" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px;">
               <input type="text" class="form-control biz-image-input" placeholder="https://example.com/image1.jpg" oninput="updateProgress()"/>
             </div>
@@ -291,7 +292,7 @@
 
           <!-- QR Payment Section (NEW) -->
           <div class="form-group" style="margin-top: 20px; border-top: 1px solid var(--border); padding-top: 20px;">
-            <label class="form-label">💳 <span data-i18n="generator.qr">Maklumat Pembayaran (QR Code)</span></label>
+            <label class="form-label"><i data-lucide="credit-card"></i> <span data-i18n="generator.qr">Maklumat Pembayaran (QR Code)</span></label>
             <div class="form-grid-2">
               <div class="form-group">
                 <label class="form-label" data-i18n="generator.qrType">Jenis QR</label>
@@ -316,7 +317,7 @@
               
               <!-- Booking System -->
               <div class="extra-item-wrapper">
-                <label class="checkbox-item"><input type="checkbox" value="Sistem tempahan online" onchange="toggleExtraForm(this, 'form_booking')"/> <span>📅 <span data-i18n="generator.extra.booking">Sistem tempahan online</span></span></label>
+                <label class="checkbox-item"><input type="checkbox" value="Sistem tempahan online" onchange="toggleExtraForm(this, 'form_booking')"/> <span><i data-lucide="calendar-plus"></i> <span data-i18n="generator.extra.booking">Sistem tempahan online</span></span></label>
                 <div id="form_booking" class="extra-sub-form">
                   <input type="text" class="form-control form-control-sm" placeholder="Contoh: Temujanji servis, tempahan meja, atau slot masa..."/>
                 </div>
@@ -324,7 +325,7 @@
 
               <!-- Gallery -->
               <div class="extra-item-wrapper">
-                <label class="checkbox-item"><input type="checkbox" value="Galeri foto/video" onchange="toggleExtraForm(this, 'form_gallery')"/> <span>🖼️ <span data-i18n="generator.extra.gallery">Galeri foto/video</span></span></label>
+                <label class="checkbox-item"><input type="checkbox" value="Galeri foto/video" onchange="toggleExtraForm(this, 'form_gallery')"/> <span><i data-lucide="image"></i> <span data-i18n="generator.extra.gallery">Galeri foto/video</span></span></label>
                 <div id="form_gallery" class="extra-sub-form">
                   <input type="text" class="form-control form-control-sm" placeholder="Contoh: Kategori produk, video testimoni, atau portfolio..."/>
                 </div>
@@ -332,7 +333,7 @@
 
               <!-- Testimonials -->
               <div class="extra-item-wrapper">
-                <label class="checkbox-item"><input type="checkbox" value="Testimoni pelanggan" onchange="toggleExtraForm(this, 'form_testimoni')"/> <span>⭐ <span data-i18n="generator.extra.testimonials">Testimoni pelanggan</span></span></label>
+                <label class="checkbox-item"><input type="checkbox" value="Testimoni pelanggan" onchange="toggleExtraForm(this, 'form_testimoni')"/> <span><i data-lucide="star"></i> <span data-i18n="generator.extra.testimonials">Testimoni pelanggan</span></span></label>
                 <div id="form_testimoni" class="extra-sub-form">
                   <input type="text" class="form-control form-control-sm" placeholder="Contoh: Fokus pada kepuasan pelanggan atau hasil kerja..."/>
                 </div>
@@ -340,7 +341,7 @@
 
               <!-- FAQ -->
               <div class="extra-item-wrapper">
-                <label class="checkbox-item"><input type="checkbox" value="FAQ section" onchange="toggleExtraForm(this, 'form_faq')"/> <span>❓ <span data-i18n="generator.extra.faq">FAQ section</span></span></label>
+                <label class="checkbox-item"><input type="checkbox" value="FAQ section" onchange="toggleExtraForm(this, 'form_faq')"/> <span><i data-lucide="help-circle"></i> <span data-i18n="generator.extra.faq">FAQ section</span></span></label>
                 <div id="form_faq" class="extra-sub-form">
                   <input type="text" class="form-control form-control-sm" placeholder="Sertakan soalan khusus jika ada..."/>
                 </div>
@@ -348,7 +349,7 @@
 
               <!-- Maps -->
               <div class="extra-item-wrapper">
-                <label class="checkbox-item"><input type="checkbox" value="Peta Google Maps" onchange="toggleExtraForm(this, 'form_maps')"/> <span>📍 <span data-i18n="generator.extra.maps">Peta Google Maps</span></span></label>
+                <label class="checkbox-item"><input type="checkbox" value="Peta Google Maps" onchange="toggleExtraForm(this, 'form_maps')"/> <span><i data-lucide="map-pin"></i> <span data-i18n="generator.extra.maps">Peta Google Maps</span></span></label>
                 <div id="form_maps" class="extra-sub-form">
                   <input type="text" class="form-control form-control-sm" placeholder="Nama lokasi atau koordinat khusus..."/>
                 </div>
@@ -356,7 +357,7 @@
 
               <!-- WhatsApp -->
               <div class="extra-item-wrapper">
-                <label class="checkbox-item"><input type="checkbox" value="WhatsApp chat button" onchange="toggleExtraForm(this, 'form_wa')"/> <span>💬 <span data-i18n="generator.extra.wa">WhatsApp floating button</span></span></label>
+                <label class="checkbox-item"><input type="checkbox" value="WhatsApp chat button" onchange="toggleExtraForm(this, 'form_wa')"/> <span><i data-lucide="message-circle"></i> <span data-i18n="generator.extra.wa">WhatsApp floating button</span></span></label>
                 <div id="form_wa" class="extra-sub-form">
                   <input type="text" class="form-control form-control-sm" placeholder="Teks mesej automatik (Contoh: Nak tanya pasal servis...)"/>
                 </div>
@@ -364,7 +365,7 @@
 
               <!-- Blog -->
               <div class="extra-item-wrapper">
-                <label class="checkbox-item"><input type="checkbox" value="Blog / Artikel" onchange="toggleExtraForm(this, 'form_blog')"/> <span>📝 <span data-i18n="generator.extra.blog">Blog / Artikel</span></span></label>
+                <label class="checkbox-item"><input type="checkbox" value="Blog / Artikel" onchange="toggleExtraForm(this, 'form_blog')"/> <span><i data-lucide="file-text"></i> <span data-i18n="generator.extra.blog">Blog / Artikel</span></span></label>
                 <div id="form_blog" class="extra-sub-form">
                   <input type="text" class="form-control form-control-sm" placeholder="Topik utama blog..."/>
                 </div>
@@ -372,7 +373,7 @@
 
               <!-- Calculator -->
               <div class="extra-item-wrapper">
-                <label class="checkbox-item"><input type="checkbox" value="Kalkulator harga" onchange="toggleExtraForm(this, 'form_calc')"/> <span>🧮 <span data-i18n="generator.extra.calc">Kalkulator harga</span></span></label>
+                <label class="checkbox-item"><input type="checkbox" value="Kalkulator harga" onchange="toggleExtraForm(this, 'form_calc')"/> <span><i data-lucide="calculator"></i> <span data-i18n="generator.extra.calc">Kalkulator harga</span></span></label>
                 <div id="form_calc" class="extra-sub-form">
                   <input type="text" class="form-control form-control-sm" placeholder="Jenis kalkulator (Contoh: Kos renovasi, BMI, pinjaman...)"/>
                 </div>
@@ -388,7 +389,7 @@
 
         <!-- STEP 5: Result -->
         <div class="step-content" id="step5">
-          <h2 style="font-size:1.15rem;font-weight:700;margin-bottom:6px" data-i18n="generator.step5.title">✅ Prompt Anda Telah Dijana!</h2>
+          <h2 style="font-size:1.15rem;font-weight:700;margin-bottom:6px" data-i18n="generator.step5.title"><i data-lucide="check"></i> Prompt Anda Telah Dijana!</h2>
           <p style="color:var(--text-secondary);font-size:.88rem;margin-bottom:20px" data-i18n="generator.step5.sub">Semak prompt di bawah, kemudian simpan atau gunakan terus.</p>
           <div class="summary-grid" id="summaryGrid"></div>
           <div style="margin-bottom:12px;display:flex;align-items:center;justify-content:space-between">
@@ -410,7 +411,7 @@
 
         <!-- STEP 6: Live Preview (NEW) -->
         <div class="step-content" id="step6">
-          <h2 style="font-size:1.15rem;font-weight:700;margin-bottom:6px">🌐 Website Previewer</h2>
+          <h2 style="font-size:1.15rem;font-weight:700;margin-bottom:6px"><i data-lucide="globe"></i> Website Previewer</h2>
           <p style="color:var(--text-secondary);font-size:.88rem;margin-bottom:20px">Tampal kod HTML anda di bawah untuk melihat pratonton live.</p>
           <div class="form-group">
             <textarea class="form-control" id="codePreviewInput" style="min-height:200px;font-family:monospace;font-size:.78rem;resize:vertical" placeholder="<!DOCTYPE html>..."></textarea>
@@ -440,6 +441,7 @@
 <script src="js/utils.js"></script>
 <script>
 initI18n('langSwitcher');
+  if (window.lucide) lucide.createIcons();
 
 const session = requireAuth();
 if (session) populateUserUI(session);
@@ -573,7 +575,7 @@ function addProduct() {
   div.innerHTML = `
     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
       <span style="font-weight: 600; font-size: 0.85rem; color: var(--accent-light);">${i18nText('generator.catalog', 'Produk/Servis')}</span>
-      <button onclick="this.parentElement.parentElement.remove(); updateProductCount();" style="background:none; border:none; color:var(--accent-secondary); cursor:pointer;">✕</button>
+      <button onclick="this.parentElement.parentElement.remove(); updateProductCount();" style="background:none; border:none; color:var(--accent-secondary); cursor:pointer;"><i class="fa fa-xmark"></i></button>
     </div>
     <div class="form-grid-2">
       <input type="text" class="form-control form-control-sm p-name" placeholder="${i18nText('generator.productName', 'Nama Produk')}" oninput="updateProgress()">

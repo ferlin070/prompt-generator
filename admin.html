@@ -7,13 +7,15 @@
   <title>Admin Panel — PromptBiz Pro</title>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js" defer></script>
   <link rel="stylesheet" href="css/style.css"/>
   <style>
     .admin-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px}
     .admin-stat{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px;transition:.3s}
     .admin-stat:hover{border-color:var(--accent-primary);transform:translateY(-2px)}
-    .admin-stat .as-icon{font-size:1.3rem;margin-bottom:8px}
-    .admin-stat .as-val{font-size:1.8rem;font-weight:800;background:linear-gradient(135deg,var(--accent-light),#58a6ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .admin-stat .as-icon{font-size:1.3rem;margin-bottom:8px;display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:10px;background:var(--accent-glow);color:var(--accent-light)}
+    .admin-stat .as-icon svg{width:20px;height:20px}
+    .admin-stat .as-val{font-size:1.8rem;font-weight:800;color:var(--accent-light)}
     .admin-stat .as-label{font-size:.78rem;color:var(--text-secondary);margin-top:2px}
     .data-table{width:100%;border-collapse:collapse;font-size:.85rem}
     .data-table th{text-align:left;padding:12px 14px;color:var(--text-muted);font-size:.75rem;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid var(--border)}
@@ -37,24 +39,24 @@
 <div class="app-layout">
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">
-      <h1>👑 <span data-i18n="nav.admin">Admin Panel</span></h1>
+      <h1><i data-lucide="crown"></i> <span data-i18n="nav.admin">Admin Panel</span></h1>
       <p>PromptBiz Pro</p>
     </div>
     <nav class="sidebar-nav">
       <div class="nav-section">
         <div class="nav-section-label" data-i18n="admin.menu">Menu Utama</div>
-        <a href="#" class="nav-link active" onclick="showTab('overview', this)" data-admin-only><span class="nav-icon">📊</span> <span data-i18n="admin.overview">Ringkasan</span></a>
-        <a href="#" class="nav-link" onclick="showTab('users', this)" data-admin-only><span class="nav-icon">👥</span> <span data-i18n="admin.users">Pengguna</span></a>
-        <a href="#" class="nav-link" onclick="showTab('subs', this)" data-admin-only><span class="nav-icon">💰</span> <span data-i18n="admin.subs">Langganan</span></a>
-        <a href="#" class="nav-link" onclick="showTab('promo', this)" data-admin-only><span class="nav-icon">🎟️</span> <span data-i18n="admin.promo">Kod Promo</span></a>
-        <a href="#" class="nav-link" onclick="showTab('affiliate', this)" data-admin-only><span class="nav-icon">🔗</span> <span data-i18n="nav.affiliate">Affiliate</span></a>
+        <a href="#" class="nav-link active" onclick="showTab('overview', this)" data-admin-only><span class="nav-icon"><i data-lucide="bar-chart-3"></i></span> <span data-i18n="admin.overview">Ringkasan</span></a>
+        <a href="#" class="nav-link" onclick="showTab('users', this)" data-admin-only><span class="nav-icon"><i data-lucide="users"></i></span> <span data-i18n="admin.users">Pengguna</span></a>
+        <a href="#" class="nav-link" onclick="showTab('subs', this)" data-admin-only><span class="nav-icon"><i data-lucide="circle-dollar-sign"></i></span> <span data-i18n="admin.subs">Langganan</span></a>
+        <a href="#" class="nav-link" onclick="showTab('promo', this)" data-admin-only><span class="nav-icon"><i data-lucide="ticket"></i></span> <span data-i18n="admin.promo">Kod Promo</span></a>
+        <a href="#" class="nav-link" onclick="showTab('affiliate', this)" data-admin-only><span class="nav-icon"><i data-lucide="link"></i></span> <span data-i18n="nav.affiliate">Affiliate</span></a>
       </div>
       <div class="nav-section">
         <div class="nav-section-label" data-i18n="admin.system">Sistem</div>
-        <a href="dashboard.html" class="nav-link"><span class="nav-icon">🏠</span> <span data-i18n="admin.userDash">Dashboard User</span></a>
-        <a href="generator.html" class="nav-link"><span class="nav-icon">✨</span> <span data-i18n="dash.newPrompt">Website Generator</span></a>
-        <a href="image-generator.html" class="nav-link"><span class="nav-icon">🖼️</span> <span data-i18n="dash.imageGenerator">Image Generator</span></a>
-        <a href="#" class="nav-link" data-logout><span class="nav-icon">🚪</span> <span data-i18n="dash.logout">Log Keluar</span></a>
+        <a href="dashboard.html" class="nav-link"><span class="nav-icon"><i data-lucide="layout-dashboard"></i></span> <span data-i18n="admin.userDash">Dashboard User</span></a>
+        <a href="generator.html" class="nav-link"><span class="nav-icon"><i data-lucide="sparkles"></i></span> <span data-i18n="dash.newPrompt">Website Generator</span></a>
+        <a href="image-generator.html" class="nav-link"><span class="nav-icon"><i data-lucide="image"></i></span> <span data-i18n="dash.imageGenerator">Image Generator</span></a>
+        <a href="#" class="nav-link" data-logout><span class="nav-icon"><i data-lucide="log-out"></i></span> <span data-i18n="dash.logout">Log Keluar</span></a>
       </div>
       <div class="nav-section" style="margin-top: auto; padding-top: 20px;">
         <select id="langSwitcher" class="form-control" style="width: 100%; font-size: 0.8rem; height: 32px;"></select>
@@ -66,11 +68,11 @@
   <main class="main-content">
     <div class="top-bar">
       <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
-      <span style="font-weight:700" id="adminUserTitle">👑 <span data-i18n="nav.admin">Admin Panel</span></span>
+      <span style="font-weight:700" id="adminUserTitle"><i data-lucide="crown"></i> <span data-i18n="nav.admin">Admin Panel</span></span>
     </div>
 
     <div class="page-header">
-      <h1 class="page-title" data-i18n="admin.manage">👑 Panel Pengurusan</h1>
+      <h1 class="page-title" data-i18n="admin.manage"><i data-lucide="crown"></i> Panel Pengurusan</h1>
       <p class="page-subtitle" data-i18n="admin.manageSub">Urus pengguna, langganan dan statistik platform</p>
     </div>
 
@@ -78,14 +80,14 @@
       <!-- TAB: OVERVIEW -->
       <div class="tab-content active" id="tabOverview">
         <div class="admin-grid" id="adminStatsGrid">
-          <div class="admin-stat"><div class="as-icon">👥</div><div class="as-val" id="statTotalUsers">-</div><div class="as-label" data-i18n="admin.totalUsers">Jumlah Pengguna</div></div>
-          <div class="admin-stat"><div class="as-icon">📝</div><div class="as-val" id="statTotalPrompts">-</div><div class="as-label" data-i18n="admin.totalPrompts">Jumlah Prompt</div></div>
-          <div class="admin-stat"><div class="as-icon">💎</div><div class="as-val" id="statActiveSubs">-</div><div class="as-label" data-i18n="admin.activeSubs">Subs Aktif</div></div>
-          <div class="admin-stat"><div class="as-icon">💰</div><div class="as-val" id="statTotalRevenue">RM0</div><div class="as-label" data-i18n="admin.revenue">Anggaran MRR</div></div>
+          <div class="admin-stat"><div class="as-icon"><i data-lucide="users"></i></div><div class="as-val" id="statTotalUsers">-</div><div class="as-label" data-i18n="admin.totalUsers">Jumlah Pengguna</div></div>
+          <div class="admin-stat"><div class="as-icon"><i data-lucide="file-text"></i></div><div class="as-val" id="statTotalPrompts">-</div><div class="as-label" data-i18n="admin.totalPrompts">Jumlah Prompt</div></div>
+          <div class="admin-stat"><div class="as-icon"><i data-lucide="gem"></i></div><div class="as-val" id="statActiveSubs">-</div><div class="as-label" data-i18n="admin.activeSubs">Subs Aktif</div></div>
+          <div class="admin-stat"><div class="as-icon"><i data-lucide="circle-dollar-sign"></i></div><div class="as-val" id="statTotalRevenue">RM0</div><div class="as-label" data-i18n="admin.revenue">Anggaran MRR</div></div>
         </div>
         
         <div class="card">
-          <div class="card-header"><h3 class="card-title" data-i18n="admin.recentReg">👥 Pendaftaran Terbaru</h3></div>
+          <div class="card-header"><h3 class="card-title" data-i18n="admin.recentReg"><i data-lucide="users"></i> Pendaftaran Terbaru</h3></div>
           <div style="overflow-x:auto">
             <table class="data-table">
               <thead><tr><th data-i18n="admin.table.name">Nama</th><th data-i18n="admin.table.email">Email</th><th data-i18n="admin.table.plan">Pelan</th><th data-i18n="admin.table.date">Tarikh</th></tr></thead>
@@ -113,7 +115,7 @@
       <!-- TAB: SUBS -->
       <div class="tab-content" id="tabSubs">
         <div class="card">
-          <div class="card-header"><h3 class="card-title" data-i18n="admin.activeSubsTitle">💰 Langganan Aktif</h3></div>
+          <div class="card-header"><h3 class="card-title" data-i18n="admin.activeSubsTitle"><i data-lucide="circle-dollar-sign"></i> Langganan Aktif</h3></div>
           <div style="overflow-x:auto">
             <table class="data-table">
               <thead><tr><th>User ID</th><th data-i18n="admin.table.plan">Pelan</th><th data-i18n="admin.table.amount">Jumlah</th><th data-i18n="admin.table.cycle">Kitaran</th><th>Exp</th></tr></thead>
@@ -127,7 +129,7 @@
       <div class="tab-content" id="tabPromo">
         <div class="card">
           <div class="card-header">
-            <h3 class="card-title" data-i18n="admin.promoCodes">🎟️ Kod Promosi</h3>
+            <h3 class="card-title" data-i18n="admin.promoCodes"><i data-lucide="ticket"></i> Kod Promosi</h3>
             <button class="btn btn-primary btn-sm" onclick="openModal('addPromoModal')"><i class="fa fa-plus"></i> <span data-i18n="admin.add">Tambah</span></button>
           </div>
           <div style="overflow-x:auto">
@@ -142,7 +144,7 @@
       <!-- TAB: AFFILIATE -->
       <div class="tab-content" id="tabAffiliate">
         <div class="card">
-          <div class="card-header"><h3 class="card-title" data-i18n="admin.withdrawRequests">🔗 Permohonan Pengeluaran (Withdrawal)</h3></div>
+          <div class="card-header"><h3 class="card-title" data-i18n="admin.withdrawRequests"><i data-lucide="link"></i> Permohonan Pengeluaran (Withdrawal)</h3></div>
           <div style="overflow-x:auto">
             <table class="data-table">
               <thead><tr><th>User</th><th data-i18n="admin.table.amount">Jumlah</th><th data-i18n="admin.table.bankInfo">Bank Info</th><th>Status</th><th data-i18n="admin.table.action">Tindakan</th></tr></thead>
@@ -159,7 +161,7 @@
 <!-- MODAL: ADD PROMO -->
 <div class="modal-overlay" id="addPromoModal">
   <div class="modal" style="max-width:400px">
-    <div class="modal-header"><h3 class="modal-title" data-i18n="admin.addPromo">Tambah Kod Promo</h3><button class="modal-close" onclick="closeModal('addPromoModal')">✕</button></div>
+    <div class="modal-header"><h3 class="modal-title" data-i18n="admin.addPromo">Tambah Kod Promo</h3><button class="modal-close" onclick="closeModal('addPromoModal')"><i class="fa fa-xmark"></i></button></div>
     <div class="modal-body">
       <div class="form-group"><label class="form-label" data-i18n="admin.table.code">Kod</label><input type="text" class="form-control" id="newPromoCode" placeholder="RAYA50"/></div>
       <div class="form-group"><label class="form-label" data-i18n="admin.table.type">Jenis</label><select class="form-control" id="newPromoType"><option value="percentage">Percentage (%)</option><option value="fixed">Fixed (RM)</option></select></div>
@@ -169,7 +171,7 @@
   </div>
 </div>
 
-<div class="modal-overlay" id="confirmModal"><div class="modal" style="max-width:400px"><div class="modal-header"><h3 class="modal-title" data-i18n="dash.modal.confirm">Sahkan</h3><button class="modal-close" onclick="closeConfirmModal()">✕</button></div><div class="modal-body"><p id="confirmMessage"></p></div><div class="modal-footer"><button class="btn btn-ghost" onclick="closeConfirmModal()" data-i18n="dash.modal.cancel">Batal</button><button class="btn btn-danger" id="confirmOk" data-i18n="dash.modal.delete">Ya, Sahkan</button></div></div></div>
+<div class="modal-overlay" id="confirmModal"><div class="modal" style="max-width:400px"><div class="modal-header"><h3 class="modal-title" data-i18n="dash.modal.confirm">Sahkan</h3><button class="modal-close" onclick="closeConfirmModal()"><i class="fa fa-xmark"></i></button></div><div class="modal-body"><p id="confirmMessage"></p></div><div class="modal-footer"><button class="btn btn-ghost" onclick="closeConfirmModal()" data-i18n="dash.modal.cancel">Batal</button><button class="btn btn-danger" id="confirmOk" data-i18n="dash.modal.delete">Ya, Sahkan</button></div></div></div>
 
 <script src="js/rate-limiting.js"></script>
 <script src="js/api.js"></script>
@@ -180,6 +182,7 @@
 
 <script>
   initI18n('langSwitcher');
+  if (window.lucide) lucide.createIcons();
 
   // Auth Guard
   const sessionData = requireAuth();
@@ -259,7 +262,7 @@
   async function loadAllPromos() {
     const data = await api('/api/admin?type=promos');
     const tbody = document.getElementById('allPromosTable');
-    tbody.innerHTML = (data.promos || []).map(p => `<tr><td style="font-weight:700">${escapeHtml(p.code)}</td><td>${escapeHtml(p.type)}</td><td>${escapeHtml(p.value)}${p.type==='percentage'?'%':'RM'}</td><td>${p.used_count || 0}</td><td><button class="btn btn-ghost btn-sm" onclick="togglePromo('${escapeHtml(p.id)}', ${!p.active})">${p.active ? '✅ ' + i18nText('admin.active', 'Aktif') : '❌ ' + i18nText('admin.inactive', 'Mati')}</button></td></tr>`).join('');
+    tbody.innerHTML = (data.promos || []).map(p => `<tr><td style="font-weight:700">${escapeHtml(p.code)}</td><td>${escapeHtml(p.type)}</td><td>${escapeHtml(p.value)}${p.type==='percentage'?'%':'RM'}</td><td>${p.used_count || 0}</td><td><button class="btn btn-ghost btn-sm" onclick="togglePromo('${escapeHtml(p.id)}', ${!p.active})">${p.active ? '<i class="fa fa-check"></i> ' + i18nText('admin.active', 'Aktif') : '<i class="fa fa-xmark"></i> ' + i18nText('admin.inactive', 'Mati')}</button></td></tr>`).join('');
   }
 
   async function createNewPromo() {
