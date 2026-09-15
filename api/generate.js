@@ -18,6 +18,16 @@ export async function POST(request) {
       if (recent.length >= 3) {
         return json({ error: 'Had janaan: 3 website sejam. Sila cuba kemudian.' }, 429);
       }
+      const { rows: profile } = await sql`SELECT plan, plan_expires_at FROM profiles WHERE id = ${auth.userId}`;
+      let plan = profile[0]?.plan || 'free';
+      if (plan !== 'free' && plan !== 'starter' && plan !== 'pro' && plan !== 'agency') plan = 'free';
+      const expires = profile[0]?.plan_expires_at;
+      if (expires && new Date(expires) < new Date()) plan = 'free';
+      const siteQuota = { free: 1, starter: 3, pro: 10, agency: 999 }[plan] || 1;
+      const { rows: owned } = await sql`SELECT id FROM websites WHERE user_id = ${auth.userId}`;
+      if (owned.length >= siteQuota) {
+        return json({ error: `Had website dicapai (${owned.length}/${siteQuota}) untuk pelan ${plan}. Naik taraf untuk jana lebih banyak website.` }, 403);
+      }
     }
 
     const tpl = BUSINESS_TEMPLATES[businessType] || { label: businessType };

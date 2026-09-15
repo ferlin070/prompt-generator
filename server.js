@@ -121,11 +121,39 @@ async function verifyToken(req) {
   } catch { return null; }
 }
 
+const PLAN_LIMITS = {
+  free: 50 * 1024 * 1024,
+  starter: 500 * 1024 * 1024,
+  pro: 5 * 1024 * 1024 * 1024,
+  agency: 20 * 1024 * 1024 * 1024,
+};
+
+async function getUserPlan(userId) {
+  const { rows } = await pgPool.query('SELECT plan FROM profiles WHERE id = $1', [userId]);
+  const plan = rows[0]?.plan || 'free';
+  if (plan !== 'free' && plan !== 'starter' && plan !== 'pro' && plan !== 'agency') return 'free';
+  const { rows: exp } = await pgPool.query('SELECT plan_expires_at FROM profiles WHERE id = $1', [userId]);
+  const expires = exp[0]?.plan_expires_at;
+  if (expires && new Date(expires) < new Date()) return 'free';
+  return plan;
+}
+
 app.post('/api/upload', upload.array('files', 10), async (req, res) => {
   const auth = await verifyToken(req);
   if (!auth) return res.status(401).json({ error: 'Unauthorized' });
   const files = req.files || [];
   if (!files.length) return res.status(400).json({ error: 'Tiada fail diupload' });
+
+  const plan = await getUserPlan(auth.userId);
+  const quota = PLAN_LIMITS[plan] || PLAN_LIMITS.free;
+  const { rows: usageRows } = await pgPool.query('SELECT COALESCE(SUM(size_bytes),0) AS used FROM media_assets WHERE user_id = $1', [auth.userId]);
+  const used = parseInt(usageRows[0].used) || 0;
+  const incoming = files.reduce((s, f) => s + f.size, 0);
+  if (used + incoming > quota) {
+    const usedMB = (used / 1024 / 1024).toFixed(1);
+    const quotaMB = (quota / 1024 / 1024).toFixed(0);
+    return res.status(413).json({ error: `Storagen penuh (${usedMB}MB / ${quotaMB}MB). Naik taraf pelan untuk lebih banyak ruang.` });
+  }
 
   const websiteId = req.body.websiteId || null;
   const results = [];

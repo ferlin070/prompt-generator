@@ -40,12 +40,19 @@ export async function POST(request) {
     // Login
     if (!email || !password) return json({ error: 'Email dan password diperlukan' }, 400);
     if (typeof email !== 'string' || email.length > 255) return json({ error: 'Format email tidak sah' }, 400);
-    const { rows } = await sql`SELECT id, name, email, password_hash, plan, is_admin, phone, business_type, affiliate_code, affiliate_balance, affiliate_total_earned, ai_credits_left, created_at FROM profiles WHERE email = ${email.toLowerCase()}`;
+    const { rows } = await sql`SELECT id, name, email, password_hash, plan, plan_expires_at, is_admin, phone, business_type, affiliate_code, affiliate_balance, affiliate_total_earned, ai_credits_left, created_at FROM profiles WHERE email = ${email.toLowerCase()}`;
     if (rows.length === 0) return json({ error: 'Email atau password salah' }, 401);
 
     const user = rows[0];
     const valid = await bcrypt.compare(password, user.password_hash);
     if (!valid) return json({ error: 'Email atau password salah' }, 401);
+
+    if (user.plan && user.plan !== 'free' && user.plan_expires_at && new Date(user.plan_expires_at) < new Date()) {
+      await sql`UPDATE profiles SET plan = 'free', ai_credits_left = 5, updated_at = now() WHERE id = ${user.id}`;
+      user.plan = 'free';
+      user.ai_credits_left = 5;
+      console.log('[auth] Plan expired, downgraded:', user.email);
+    }
 
     const token = signToken({ userId: user.id, email: user.email, isAdmin: user.is_admin });
     return json({
