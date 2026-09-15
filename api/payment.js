@@ -58,24 +58,51 @@ export async function POST(request) {
   if (isWebhook) {
     try {
       const rawBody = await request.text();
-      const body = JSON.parse(rawBody);
-      if (SECRET_KEY && body.checksum && !verifyChecksum(body, body.checksum)) {
-        return json({ error: 'Invalid checksum' }, 401);
+      let body = {};
+      const contentType = request.headers.get('content-type') || '';
+      if (contentType.includes('application/json')) {
+        body = JSON.parse(rawBody);
+      } else {
+        for (const [k, v] of new URLSearchParams(rawBody)) body[k] = v;
       }
-      const status = (body.status || '').toLowerCase();
-      if (['success', 'completed', 'paid'].includes(status)) {
-        const { rows: subs } = await sql`SELECT id, user_id, plan, billing_cycle, amount FROM subscriptions WHERE order_no = ${body.order_number} AND status = 'pending'`;
+
+      if (body.checksum && SECRET_KEY) {
+        const cbPayload = {
+          amount: String(body.amount ?? ''),
+          order_number: String(body.order_number ?? ''),
+          payer_email: String(body.payer_email ?? ''),
+          payer_name: String(body.payer_name ?? ''),
+          payment_channel: String(body.payment_channel ?? ''),
+        };
+        const sorted = Object.keys(cbPayload).sort();
+        const payloadString = sorted.map(k => cbPayload[k]).join('|');
+        const expected = crypto.createHmac('sha256', SECRET_KEY).update(payloadString).digest('hex');
+        if (expected !== body.checksum.toLowerCase()) {
+          return json({ error: 'Invalid checksum' }, 401);
+        }
+      }
+
+      const rawStatus = String(body.status ?? '').toLowerCase();
+      const successStatuses = ['1', 'success', 'completed', 'paid', 'true'];
+      const failStatuses = ['0', '2', 'failed', 'cancelled', 'expired', 'false'];
+      const orderNo = body.order_number || body.orderNo;
+
+      if (successStatuses.includes(rawStatus)) {
+        const { rows: subs } = await sql`SELECT id, user_id, plan, billing_cycle, amount FROM subscriptions WHERE order_no = ${orderNo} AND status = 'pending'`;
         if (subs.length > 0) {
           const s = subs[0];
-          await activatePlan(s.user_id, s.plan, s.billing_cycle, s.amount, body.order_number);
-          console.log('[payment] Activated:', body.order_number, 'plan:', s.plan);
+          await activatePlan(s.user_id, s.plan, s.billing_cycle, s.amount, orderNo);
+          console.log('[payment] ACTIVATED:', orderNo, 'plan:', s.plan, 'amount:', s.amount);
         }
-      } else if (['failed', 'cancelled', 'expired'].includes(status)) {
-        await sql`UPDATE subscriptions SET status = ${status} WHERE order_no = ${body.order_number}`;
+      } else if (failStatuses.includes(rawStatus)) {
+        await sql`UPDATE subscriptions SET status = 'failed' WHERE order_no = ${orderNo}`;
+        console.log('[payment] FAILED:', orderNo);
+      } else {
+        console.log('[payment] webhook received, status:', rawStatus, 'order:', orderNo);
       }
       return json({ success: true });
     } catch (error) {
-      console.error('[payment webhook]', error.message);
+      console.error('[payment webhook error]', error.message);
       return json({ success: true });
     }
   }
