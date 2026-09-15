@@ -225,6 +225,35 @@
             </div>
           </div>
           <div class="form-group" style="margin-top:20px">
+            <label class="form-label"><i data-lucide="palette"></i> Gaya Design Website</label>
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px" id="designThemeGrid">
+              <label style="cursor:pointer;text-align:center;border:2px solid var(--border);border-radius:10px;padding:12px 8px;transition:.2s" class="theme-choice selected">
+                <input type="radio" name="designTheme" value="modern" checked style="display:none"/>
+                <div style="font-size:1.4rem;margin-bottom:4px">🎨</div>
+                <div style="font-size:.75rem;font-weight:600">Moden</div>
+                <div style="font-size:.65rem;color:var(--text-muted)">Gradient & glass</div>
+              </label>
+              <label style="cursor:pointer;text-align:center;border:2px solid var(--border);border-radius:10px;padding:12px 8px;transition:.2s" class="theme-choice">
+                <input type="radio" name="designTheme" value="elegan" style="display:none"/>
+                <div style="font-size:1.4rem;margin-bottom:4px">✨</div>
+                <div style="font-size:.75rem;font-weight:600">Elegan</div>
+                <div style="font-size:.65rem;color:var(--text-muted)">Serif mewah</div>
+              </label>
+              <label style="cursor:pointer;text-align:center;border:2px solid var(--border);border-radius:10px;padding:12px 8px;transition:.2s" class="theme-choice">
+                <input type="radio" name="designTheme" value="minimalis" style="display:none"/>
+                <div style="font-size:1.4rem;margin-bottom:4px">⬜</div>
+                <div style="font-size:.75rem;font-weight:600">Minimalis</div>
+                <div style="font-size:.65rem;color:var(--text-muted)">Clean & simple</div>
+              </label>
+              <label style="cursor:pointer;text-align:center;border:2px solid var(--border);border-radius:10px;padding:12px 8px;transition:.2s" class="theme-choice">
+                <input type="radio" name="designTheme" value="gelap" style="display:none"/>
+                <div style="font-size:1.4rem;margin-bottom:4px">🌙</div>
+                <div style="font-size:.75rem;font-weight:600">Gelap</div>
+                <div style="font-size:.65rem;color:var(--text-muted)">Dark mode</div>
+              </label>
+            </div>
+          </div>
+          <div class="form-group" style="margin-top:20px">
             <label class="form-label" data-i18n="generator.animation">Gaya Animasi</label>
             <select class="form-control" id="animationStyle">
               <option value="fade">Fade In (Lembut)</option>
@@ -442,7 +471,19 @@
 <script src="js/generator.js?v=2"></script>
 <script src="js/utils.js?v=2"></script>
 <script>
-initI18n('langSwitcher');
+  initI18n('langSwitcher');
+
+  document.querySelectorAll('.theme-choice').forEach(l => {
+    l.addEventListener('click', () => {
+      document.querySelectorAll('.theme-choice').forEach(x => {
+        x.style.borderColor = 'var(--border)';
+        x.style.background = 'transparent';
+      });
+      l.style.borderColor = 'var(--accent-primary, #F59E0B)';
+      l.style.background = 'rgba(245,158,11,.08)';
+      l.querySelector('input').checked = true;
+    });
+  });
   window.addEventListener('DOMContentLoaded', () => { if (window.lucide) lucide.createIcons({ icons: lucide.icons }); });
 
 const session = requireAuth();
@@ -781,6 +822,7 @@ async function generateWebsite() {
   btn.innerHTML = '<span class="spinner"></span> AI sedang menjana...';
 
   const formData = lastFormData || { businessName: document.getElementById('bizName').value.trim() || 'Website Baru' };
+  const designTheme = document.querySelector('input[name="designTheme"]:checked')?.value || 'modern';
   formData.businessName = document.getElementById('bizName').value.trim() || formData.businessName || 'Website Baru';
   formData.language = document.getElementById('bizLanguage')?.value || formData.language || 'ms';
 
@@ -804,7 +846,7 @@ async function generateWebsite() {
     const res = await fetch('/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('pgp_token')}` },
-      body: JSON.stringify({ formData, businessType: selectedBizType, promptId, title: formData.businessName })
+      body: JSON.stringify({ formData, businessType: selectedBizType, promptId, title: formData.businessName, theme: designTheme })
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Gagal menjana website');

@@ -7,11 +7,14 @@ export async function POST(request) {
   const auth = getAuthUser(request);
   if (!auth) return json({ error: 'Unauthorized' }, 401);
   try {
-    const { formData, businessType, promptId, title } = await request.json();
+    const { formData, businessType, promptId, title, theme } = await request.json();
 
     if (!formData || !businessType) {
       return json({ error: 'formData dan businessType diperlukan' }, 400);
     }
+
+    const validThemes = ['modern', 'elegan', 'minimalis', 'gelap'];
+    const chosenTheme = validThemes.includes(theme) ? theme : 'modern';
 
     if (auth.userId) {
       const { rows: recent } = await sql`SELECT id FROM websites WHERE user_id = ${auth.userId} AND created_at > now() - interval '1 hour'`;
@@ -32,7 +35,10 @@ export async function POST(request) {
 
     const tpl = BUSINESS_TEMPLATES[businessType] || { label: businessType };
     const prompt = generatePrompt(formData, businessType);
-    const result = await generateWebsiteHTML(prompt, { language: formData.language || 'ms' });
+    const result = await generateWebsiteHTML(prompt, {
+      language: formData.language || 'ms',
+      theme: chosenTheme,
+    });
 
     const { rows } = await sql`INSERT INTO websites (user_id, prompt_id, title, html_content, version)
       VALUES (${auth.userId}, ${promptId || null}, ${title || formData.businessName || tpl.label || 'Website Baru'}, ${result.html}, 1)
