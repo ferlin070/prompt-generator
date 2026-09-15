@@ -83,8 +83,8 @@ export async function POST(request) {
       }
 
       const rawStatus = String(body.status ?? '').toLowerCase();
-      const successStatuses = ['1', 'success', 'completed', 'paid', 'true'];
-      const failStatuses = ['0', '2', 'failed', 'cancelled', 'expired', 'false'];
+      const successStatuses = ['1', '3', 'success', 'successful', 'completed', 'paid', 'true'];
+      const failStatuses = ['0', '2', '4', 'failed', 'cancelled', 'expired', 'false'];
       const orderNo = body.order_number || body.orderNo;
 
       if (successStatuses.includes(rawStatus)) {

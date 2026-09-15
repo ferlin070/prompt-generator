@@ -15,6 +15,7 @@ const app = express();
 app.set('trust proxy', 1);
 app.disable('x-powered-by');
 app.use(express.json({ limit: '5mb' }));
+app.use(express.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
@@ -206,6 +207,9 @@ async function invoke(method, req, res) {
     body = undefined;
   } else if (req.headers['content-type']?.includes('application/json')) {
     body = JSON.stringify(req.body ?? {});
+  } else if (typeof req.body === 'object' && req.body !== null) {
+    body = new URLSearchParams(req.body).toString();
+    headers.set('content-type', 'application/x-www-form-urlencoded');
   } else {
     body = req.body;
   }
