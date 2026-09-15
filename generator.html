@@ -227,6 +227,7 @@
           <div class="form-group" style="margin-top:20px">
             <label class="form-label"><i data-lucide="palette"></i> Gaya Design Website</label>
             <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px" id="designThemeGrid">
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px" id="designThemeGrid">
               <label style="cursor:pointer;text-align:center;border:2px solid var(--border);border-radius:10px;padding:12px 8px;transition:.2s" class="theme-choice selected">
                 <input type="radio" name="designTheme" value="modern" checked style="display:none"/>
                 <div style="font-size:1.4rem;margin-bottom:4px">🎨</div>
@@ -252,6 +253,22 @@
                 <div style="font-size:.65rem;color:var(--text-muted)">Dark mode</div>
               </label>
             </div>
+          </div>
+          <div class="form-group" style="margin-top:20px">
+            <label class="form-label"><i data-lucide="droplet"></i> Skema Warna</label>
+            <select class="form-control" id="colorStyle">
+              <option value="">🤖 Auto (AI Pilih Terbaik)</option>
+              <option value="hangat">🔥 Terracotta Hangat — F&B</option>
+              <option value="sejuk">🌊 Ocean Blue — Profesional</option>
+              <option value="mewah">👑 Royal Gold — Premium</option>
+              <option value="elegan">💜 Amethyst — Fashion</option>
+              <option value="segar">🌿 Forest Green — Sihat</option>
+              <option value="berani">⚡ Sunset Red — Berani</option>
+              <option value="lembut">🌸 Peach Soft — Lembut</option>
+              <option value="gelap2">⬛ Charcoal Pro — Korporat</option>
+              <option value="tropika">🌴 Tropical Teal — Santai</option>
+              <option value="manis">🍬 Candy Pop — Muda</option>
+            </select>
           </div>
           <div class="form-group" style="margin-top:20px">
             <label class="form-label" data-i18n="generator.animation">Gaya Animasi</label>
@@ -823,6 +840,7 @@ async function generateWebsite() {
 
   const formData = lastFormData || { businessName: document.getElementById('bizName').value.trim() || 'Website Baru' };
   const designTheme = document.querySelector('input[name="designTheme"]:checked')?.value || 'modern';
+  const colorStyle = document.getElementById('colorStyle')?.value || '';
   formData.businessName = document.getElementById('bizName').value.trim() || formData.businessName || 'Website Baru';
   formData.language = document.getElementById('bizLanguage')?.value || formData.language || 'ms';
 
@@ -846,7 +864,7 @@ async function generateWebsite() {
     const res = await fetch('/api/generate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('pgp_token')}` },
-      body: JSON.stringify({ formData, businessType: selectedBizType, promptId, title: formData.businessName, theme: designTheme })
+      body: JSON.stringify({ formData, businessType: selectedBizType, promptId, title: formData.businessName, theme: designTheme, colorStyle })
     });
     const data = await res.json();
     if (!res.ok) throw new Error(data.error || 'Gagal menjana website');

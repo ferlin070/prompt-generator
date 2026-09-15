@@ -7,7 +7,7 @@ export async function POST(request) {
   const auth = getAuthUser(request);
   if (!auth) return json({ error: 'Unauthorized' }, 401);
   try {
-    const { formData, businessType, promptId, title, theme } = await request.json();
+    const { formData, businessType, promptId, title, theme, colorStyle } = await request.json();
 
     if (!formData || !businessType) {
       return json({ error: 'formData dan businessType diperlukan' }, 400);
@@ -15,6 +15,8 @@ export async function POST(request) {
 
     const validThemes = ['modern', 'elegan', 'minimalis', 'gelap'];
     const chosenTheme = validThemes.includes(theme) ? theme : 'modern';
+    const validColors = ['', 'hangat', 'sejuk', 'mewah', 'elegan', 'segar', 'berani', 'lembut', 'tropika', 'manis', 'gelap2'];
+    const chosenColor = validColors.includes(colorStyle) ? colorStyle : '';
 
     if (auth.userId) {
       const { rows: recent } = await sql`SELECT id FROM websites WHERE user_id = ${auth.userId} AND created_at > now() - interval '1 hour'`;
@@ -38,6 +40,7 @@ export async function POST(request) {
     const result = await generateWebsiteHTML(prompt, {
       language: formData.language || 'ms',
       theme: chosenTheme,
+      colorStyle: chosenColor,
     });
 
     const { rows } = await sql`INSERT INTO websites (user_id, prompt_id, title, html_content, version)
