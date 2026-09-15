@@ -53,6 +53,7 @@
       <button onclick="setDevice('mobile')"><i class="fa fa-mobile-screen-button"></i></button>
     </div>
     <div class="editor-topbar-actions">
+      <button class="btn btn-ghost btn-sm" onclick="toggleVersionPanel()"><i class="fa fa-clock-rotate-left"></i> Versi</button>
       <button class="btn btn-ghost btn-sm" onclick="toggleMediaPanel()"><i class="fa fa-images"></i> Media</button>
       <button class="btn btn-ghost btn-sm" id="previewBtn" onclick="togglePreview()"><i class="fa fa-eye"></i> Preview</button>
       <button class="btn btn-primary btn-sm" id="saveBtn" onclick="saveWebsite()"><i class="fa fa-floppy-disk"></i> Simpan</button>
@@ -74,6 +75,17 @@
       <span>Klik untuk upload gambar</span>
     </div>
     <div class="media-grid" id="mediaGrid"></div>
+  </div>
+</div>
+
+<div id="versionPanel" style="display:none;position:fixed;top:48px;right:0;width:320px;height:calc(100vh - 48px);background:var(--bg-secondary);border-left:1px solid var(--border);z-index:100;overflow-y:auto;transform:translateX(100%);transition:transform 0.3s">
+  <div style="padding:12px 16px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+      <h3 style="font-size:0.95rem;font-weight:700"><i class="fa fa-clock-rotate-left"></i> Sejarah Versi</h3>
+      <button class="btn btn-ghost btn-sm" onclick="toggleVersionPanel()"><i class="fa fa-xmark"></i></button>
+    </div>
+    <p style="font-size:.72rem;color:var(--text-muted);margin-bottom:12px">Setiap simpanan mencipta versi baharu. Klik untuk rollback.</p>
+    <div id="versionList"></div>
   </div>
 </div>
 
@@ -248,6 +260,52 @@
       await fetch(`/api/upload/media?id=${id}`, { method: 'DELETE', headers: { 'Authorization': `Bearer ${localStorage.getItem('pgp_token')}` } });
       showToast('Gambar dipadam', 'success');
       loadMediaLibrary();
+    } catch (e) { showToast(e.message, 'error'); }
+  }
+
+  function toggleVersionPanel() {
+    const panel = document.getElementById('versionPanel');
+    if (panel.style.transform === 'translateX(100%)' || panel.style.transform === '') {
+      panel.style.display = 'block';
+      panel.style.transform = 'translateX(0)';
+      loadVersions();
+    } else {
+      panel.style.transform = 'translateX(100%)';
+    }
+  }
+
+  async function loadVersions() {
+    try {
+      const data = await api(`/api/websites?versions=1&id=${websiteId}`);
+      const list = document.getElementById('versionList');
+      if (!data.versions || data.versions.length === 0) {
+        list.innerHTML = '<p style="font-size:.78rem;color:var(--text-muted);padding:12px 0">Tiada versi lagi. Simpan untuk mula merekod.</p>';
+        return;
+      }
+      list.innerHTML = data.versions.map(v => `
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px">
+          <div>
+            <div style="font-size:.82rem;font-weight:600">v${v.version}</div>
+            <div style="font-size:.7rem;color:var(--text-muted)">${new Date(v.created_at).toLocaleString('ms-MY')}</div>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="rollbackVersion('${v.id}')"><i class="fa fa-rotate-left"></i></button>
+        </div>
+      `).join('');
+    } catch (e) { console.log('versions:', e.message); }
+  }
+
+  async function rollbackVersion(versionId) {
+    if (!confirm('Rollback ke versi ini? Perubahan semasa akan disimpan sebagai versi baharu dahulu.')) return;
+    try {
+      const res = await fetch('/api/websites', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('pgp_token')}` },
+        body: JSON.stringify({ id: websiteId, action: 'rollback', versionId })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      showToast('Rollback berjaya! Muat semula editor...', 'success');
+      setTimeout(() => window.location.reload(), 1200);
     } catch (e) { showToast(e.message, 'error'); }
   }
 

@@ -16,6 +16,13 @@ export async function GET(request) {
     const url = new URL(request.url);
     const id = url.searchParams.get('id');
 
+    if (url.searchParams.get('versions') === '1' && id) {
+      const { rows } = await sql`SELECT id, version, created_at FROM website_versions
+        WHERE website_id = (SELECT id FROM websites WHERE id = ${id} AND user_id = ${auth.userId})
+        ORDER BY version DESC LIMIT 20`;
+      return json({ versions: rows });
+    }
+
     if (id) {
       const { rows } = await sql`SELECT id, title, slug, html_content, css_content, status, version, custom_domain, published_at, created_at, updated_at
         FROM websites WHERE id = ${id} AND user_id = ${auth.userId}`;
@@ -72,7 +79,16 @@ export async function PUT(request) {
   const auth = getAuthUser(request);
   if (!auth) return json({ error: 'Unauthorized' }, 401);
   try {
-    const { id, title, html_content, css_content } = await request.json();
+    const { id, title, html_content, css_content, action, versionId } = await request.json();
+
+    if (action === 'rollback' && versionId) {
+      const { rows: v } = await sql`SELECT html_content FROM website_versions WHERE id = ${versionId} AND website_id IN (SELECT id FROM websites WHERE id = ${id} AND user_id = ${auth.userId})`;
+      if (v.length === 0) return json({ error: 'Version tidak dijumpai' }, 404);
+      const { rows } = await sql`UPDATE websites SET html_content = ${v[0].html_content}, version = version + 1, updated_at = now() WHERE id = ${id} AND user_id = ${auth.userId} RETURNING id, title, slug, status, version, updated_at`;
+      await sql`INSERT INTO website_versions (website_id, html_content, version) VALUES (${id}, ${v[0].html_content}, ${rows[0].version})`;
+      return json({ website: rows[0], rolledBack: true });
+    }
+
     if (!id) return json({ error: 'id required' }, 400);
     const updates = [];
     const values = [];
@@ -82,10 +98,16 @@ export async function PUT(request) {
     if (updates.length === 0) return json({ error: 'No valid fields' }, 400);
     updates.push(`version = version + 1`);
     updates.push(`updated_at = now()`);
+    const idParam = values.length + 1;
     values.push(id);
-    const query = `UPDATE websites SET ${updates.join(', ')} WHERE id = $${values.length} AND user_id = $${auth.userId} RETURNING id, title, slug, status, version, updated_at`;
+    const userParam = values.length + 1;
+    values.push(auth.userId);
+    const query = `UPDATE websites SET ${updates.join(', ')} WHERE id = $${idParam} AND user_id = $${userParam} RETURNING id, title, slug, status, version, updated_at`;
     const { rows } = await sql.unsafe(query, values);
     if (rows.length === 0) return json({ error: 'Not found' }, 404);
+    if (html_content !== undefined) {
+      await sql`INSERT INTO website_versions (website_id, html_content, version) VALUES (${id}, ${html_content}, ${rows[0].version})`;
+    }
     return json({ website: rows[0] });
   } catch (error) {
     return json({ error: error.message }, 500);

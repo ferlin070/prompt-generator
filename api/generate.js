@@ -44,6 +44,8 @@ export async function POST(request) {
       VALUES (${auth.userId}, ${promptId || null}, ${title || formData.businessName || tpl.label || 'Website Baru'}, ${result.html}, 1)
       RETURNING id, title, slug, status, created_at`;
 
+    await sql`INSERT INTO website_versions (website_id, html_content, version) VALUES (${rows[0].id}, ${result.html}, 1)`;
+
     return json({
       website: rows[0],
       html: result.html,
