@@ -60,6 +60,7 @@ export async function POST(request) {
       }
       const { rows } = await sql`UPDATE websites SET status = 'published', slug = ${slug}, published_at = now(), updated_at = now()
         WHERE id = ${websiteId} AND user_id = ${auth.userId} RETURNING id, title, slug, status, published_at`;
+      globalThis.invalidateSlugCache?.();
       return json({ website: rows[0] });
     }
 
@@ -88,6 +89,7 @@ export async function POST(request) {
     if (action === 'unpublish') {
       const { rows } = await sql`UPDATE websites SET status = 'draft', updated_at = now()
         WHERE id = ${websiteId} AND user_id = ${auth.userId} RETURNING id, title, slug, status`;
+      globalThis.invalidateSlugCache?.();
       return json({ website: rows[0] });
     }
 
@@ -127,6 +129,7 @@ export async function PUT(request) {
     const query = `UPDATE websites SET ${updates.join(', ')} WHERE id = $${idParam} AND user_id = $${userParam} RETURNING id, title, slug, status, version, updated_at`;
     const { rows } = await sql.unsafe(query, values);
     if (rows.length === 0) return json({ error: 'Not found' }, 404);
+    globalThis.invalidateSlugCache?.();
     if (html_content !== undefined) {
       await sql`INSERT INTO website_versions (website_id, html_content, version) VALUES (${id}, ${html_content}, ${rows[0].version})`;
     }

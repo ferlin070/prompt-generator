@@ -99,11 +99,66 @@ app.use(async (req, res, next) => {
   next();
 });
 
+app.get('/sitemap.xml', async (req, res) => {
+  try {
+    const base = 'https://prompt.nakhodacloud.top';
+    const { rows } = await pgPool.query("SELECT slug, custom_domain, updated_at FROM websites WHERE status = 'published' AND slug IS NOT NULL");
+    let xml = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+    const staticPages = ['/', '/pricing.html', '/login.html', '/affiliate.html', '/privacy.html', '/terms.html'];
+    for (const p of staticPages) {
+      xml += `  <url><loc>${base}${p}</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>\n`;
+    }
+    for (const w of rows) {
+      const loc = w.custom_domain ? `https://${w.custom_domain}/` : `${base}/site/${w.slug}`;
+      const mod = w.updated_at ? new Date(w.updated_at).toISOString().split('T')[0] : '';
+      xml += `  <url><loc>${loc}</loc>${mod ? `<lastmod>${mod}</lastmod>` : ''}<changefreq>weekly</changefreq><priority>0.8</priority></url>\n`;
+    }
+    xml += '</urlset>';
+    res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+    res.send(xml);
+  } catch {
+    res.status(500).send('<?xml version="1.0"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>');
+  }
+});
+
+const SLUG_CACHE = new Map();
+const SLUG_CACHE_TTL = 300000;
+const SLUG_CACHE_MAX = 100;
+
+function slugCacheGet(key) {
+  const e = SLUG_CACHE.get(key);
+  if (!e || Date.now() - e.ts > SLUG_CACHE_TTL) {
+    if (e) SLUG_CACHE.delete(key);
+    return null;
+  }
+  return e.html;
+}
+
+function slugCacheSet(key, html) {
+  if (SLUG_CACHE.size >= SLUG_CACHE_MAX) {
+    const firstKey = SLUG_CACHE.keys().next().value;
+    SLUG_CACHE.delete(firstKey);
+  }
+  SLUG_CACHE.set(key, { html, ts: Date.now() });
+}
+
+globalThis.invalidateSlugCache = (slug) => { if (slug) SLUG_CACHE.delete(slug); SLUG_CACHE.clear(); DOMAIN_CACHE.clear(); };
+
 app.get('/site/:slug', async (req, res) => {
   try {
-    const { rows } = await pgPool.query('SELECT html_content FROM websites WHERE slug = $1 AND status = $2', [req.params.slug, 'published']);
+    const cached = slugCacheGet(req.params.slug);
+    if (cached) {
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      res.setHeader('Cache-Control', 'public, max-age=300');
+      res.setHeader('X-Cache', 'HIT');
+      return res.send(cached);
+    }
+    const { rows } = await pgPool.query('SELECT html_content, updated_at FROM websites WHERE slug = $1 AND status = $2', [req.params.slug, 'published']);
     if (rows.length === 0) return res.status(404).sendFile(path.join(__dirname, '404.html'));
+    slugCacheSet(req.params.slug, rows[0].html_content);
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.setHeader('Cache-Control', 'public, max-age=300');
+    res.setHeader('X-Cache', 'MISS');
     res.send(rows[0].html_content);
   } catch (err) {
     console.error('[/site/:slug]', err.message);
