@@ -185,6 +185,27 @@
 
   // Auth guard
   const session = requireAuth();
+
+  const payParams = new URLSearchParams(window.location.search);
+  if (payParams.get('payment') === 'success' && payParams.get('order')) {
+    const orderNo = payParams.get('order');
+    fetch(`/api/payment/status?order=${encodeURIComponent(orderNo)}`, {
+      headers: { 'Authorization': `Bearer ${localStorage.getItem('pgp_token')}` }
+    })
+      .then(r => r.json())
+      .then(d => {
+        if (d.paid) {
+          showToast('Pembayaran berjaya! Pelan anda telah diaktifkan.', 'success', 6000);
+          cacheSession();
+          window.history.replaceState({}, '', '/dashboard.html');
+        } else if (d.status === 'unknown') {
+          showToast('Menunggu pengesahan pembayaran...', 'info', 5000);
+        } else {
+          showToast('Status pembayaran: ' + d.status, 'warning', 5000);
+        }
+      })
+      .catch(() => {});
+  }
   if (session) {
     populateUserUI(session);
     document.getElementById('welcomeMsg').textContent = `${i18nText('dash.welcome', 'Selamat datang')}, ${session.name} 👋`;

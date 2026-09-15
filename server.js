@@ -181,8 +181,9 @@ for (const file of fs.readdirSync(API_DIR)) {
   handlers[name] = await import(path.join(API_DIR, file));
 }
 
-async function invoke(method, req, res) {
-  const handler = handlers[req.params.name];
+async function invoke(method, req, res, fixedName) {
+  const apiName = fixedName || req.params.name;
+  const handler = handlers[apiName];
   if (!handler) {
     return res.status(404).json({ error: 'Not found' });
   }
@@ -227,6 +228,7 @@ async function invoke(method, req, res) {
   }
 }
 
+app.get('/api/payment/status', (req, res) => invoke('GET', req, res, 'payment'));
 app.get('/api/:name', (req, res) => invoke('GET', req, res));
 app.post('/api/:name', (req, res) => invoke('POST', req, res));
 app.put('/api/:name', (req, res) => invoke('PUT', req, res));

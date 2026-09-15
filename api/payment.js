@@ -51,6 +51,37 @@ async function activatePlan(userId, planId, billingCycle, amount, orderNo) {
   return rows[0];
 }
 
+export async function GET(request) {
+  const auth = getAuthUser(request);
+  if (!auth) return json({ error: 'Unauthorized' }, 401);
+  try {
+    const url = new URL(request.url);
+    const orderNo = url.searchParams.get('order');
+    if (!orderNo) return json({ error: 'order required' }, 400);
+
+    const res = await fetch(`${BASE_URL}/transactions`, {
+      headers: { 'Authorization': `Bearer ${API_TOKEN}`, 'Accept': 'application/json' },
+    });
+    const data = await res.json();
+    const txn = (data.data || []).find(t => t.order_number === orderNo);
+    if (!txn) return json({ found: false, status: 'unknown' });
+
+    const okStatuses = [3, '3', 'success', 'successful', 'completed'];
+    if (okStatuses.includes(txn.status)) {
+      const { rows: subs } = await sql`SELECT id, user_id, plan, billing_cycle, amount FROM subscriptions WHERE order_no = ${orderNo} AND status = 'pending'`;
+      if (subs.length > 0) {
+        const s = subs[0];
+        await activatePlan(s.user_id, s.plan, s.billing_cycle, s.amount, orderNo);
+        console.log('[payment] ACTIVATED (poll):', orderNo, 'plan:', s.plan);
+      }
+      return json({ found: true, status: 'success', paid: true, plan: txn.order_number });
+    }
+    return json({ found: true, status: txn.status_description || String(txn.status), paid: false });
+  } catch (error) {
+    return json({ error: error.message }, 500);
+  }
+}
+
 export async function POST(request) {
   const url = new URL(request.url);
   const isWebhook = url.searchParams.get('webhook') === '1' || url.pathname.includes('webhook');
