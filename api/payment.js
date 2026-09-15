@@ -10,9 +10,16 @@ const BASE_URL = SANDBOX ? 'https://api.console.bayarcash-sandbox.com/v3' : 'htt
 const MOCK_MODE = !API_TOKEN || API_TOKEN.startsWith('your-');
 
 function checksumFor(data) {
-  const keys = ['amount', 'callback_url', 'order_number', 'payer_email', 'payer_name', 'payer_telephone_number', 'payment_channel', 'portal_key', 'return_url'];
-  const values = keys.map(k => String(data[k] ?? '')).reduce((a, v) => a + v, '');
-  return crypto.createHash('sha256').update(SECRET_KEY + values).digest('hex').toUpperCase();
+  const payload = {
+    amount: String(data.amount),
+    order_number: String(data.order_number ?? ''),
+    payer_email: String(data.payer_email ?? ''),
+    payer_name: String(data.payer_name ?? ''),
+    payment_channel: String(data.payment_channel ?? ''),
+  };
+  const sorted = Object.keys(payload).sort();
+  const payloadString = sorted.map(k => payload[k]).join('|');
+  return crypto.createHmac('sha256', SECRET_KEY).update(payloadString).digest('hex');
 }
 
 function verifyChecksum(data, received) {
