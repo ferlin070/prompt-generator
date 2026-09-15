@@ -33,7 +33,7 @@ export async function GET(request) {
     const page = parseInt(url.searchParams.get('page')) || 1;
     const limit = parseInt(url.searchParams.get('limit')) || 20;
     const offset = (page - 1) * limit;
-    const { rows } = await sql`SELECT id, title, slug, status, version, published_at, created_at, updated_at
+    const { rows } = await sql`SELECT id, title, slug, custom_domain, status, version, published_at, created_at, updated_at
       FROM websites WHERE user_id = ${auth.userId} ORDER BY created_at DESC LIMIT ${limit} OFFSET ${offset}`;
     const { rows: countRows } = await sql`SELECT COUNT(*) FROM websites WHERE user_id = ${auth.userId}`;
     return json({ websites: rows, total: parseInt(countRows[0].count), page, limit });
@@ -60,6 +60,28 @@ export async function POST(request) {
       }
       const { rows } = await sql`UPDATE websites SET status = 'published', slug = ${slug}, published_at = now(), updated_at = now()
         WHERE id = ${websiteId} AND user_id = ${auth.userId} RETURNING id, title, slug, status, published_at`;
+      return json({ website: rows[0] });
+    }
+
+    if (action === 'set-domain') {
+      const domain = String(data.domain || '').toLowerCase().trim().replace(/^https?:\/\//, '').replace(/\/.*$/, '');
+      if (!/^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$/.test(domain) || domain.length > 100) {
+        return json({ error: 'Domain tidak sah' }, 400);
+      }
+      const { rows: dupe } = await sql`SELECT id FROM websites WHERE custom_domain = ${domain} AND id != ${websiteId}`;
+      if (dupe.length > 0) return json({ error: 'Domain sudah digunakan' }, 409);
+      const { rows: owned } = await sql`SELECT id, plan FROM profiles WHERE id = ${auth.userId}`;
+      if ((owned[0]?.plan || 'free') === 'free') {
+        return json({ error: 'Custom domain hanya untuk pelan berbayar. Naik taraf dahulu.' }, 403);
+      }
+      const { rows } = await sql`UPDATE websites SET custom_domain = ${domain}, updated_at = now()
+        WHERE id = ${websiteId} AND user_id = ${auth.userId} RETURNING id, title, custom_domain`;
+      return json({ website: rows[0], dns: { type: 'CNAME', name: domain, target: 'prompt.nakhodacloud.top' } });
+    }
+
+    if (action === 'unset-domain') {
+      const { rows } = await sql`UPDATE websites SET custom_domain = NULL, updated_at = now()
+        WHERE id = ${websiteId} AND user_id = ${auth.userId} RETURNING id, title, custom_domain`;
       return json({ website: rows[0] });
     }
 

@@ -73,6 +73,32 @@ const pgPool = new pg.Pool({
   ssl: process.env.POSTGRES_SSL === 'true' ? { rejectUnauthorized: false } : false,
 });
 
+const DOMAIN_CACHE = new Map();
+const DOMAIN_CACHE_TTL = 60000;
+
+app.use(async (req, res, next) => {
+  if (req.path.startsWith('/api/') || req.path.startsWith('/site/')) return next();
+  const host = (req.headers.host || '').split(':')[0].toLowerCase();
+  if (!host || host === 'localhost' || host.endsWith('nakhodacloud.top') || host.endsWith('127.0.0.1')) return next();
+
+  const cached = DOMAIN_CACHE.get(host);
+  if (cached && Date.now() - cached.ts < DOMAIN_CACHE_TTL) {
+    if (cached.html === null) return next();
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    return res.send(cached.html);
+  }
+  try {
+    const { rows } = await pgPool.query('SELECT w.html_content FROM websites w JOIN profiles p ON w.user_id = p.id WHERE w.custom_domain = $1 AND w.status = \'published\' AND p.plan != \'free\'', [host]);
+    if (rows.length > 0) {
+      DOMAIN_CACHE.set(host, { html: rows[0].html_content, ts: Date.now() });
+      res.setHeader('Content-Type', 'text/html; charset=utf-8');
+      return res.send(rows[0].html_content);
+    }
+    DOMAIN_CACHE.set(host, { html: null, ts: Date.now() });
+  } catch { /* fallthrough */ }
+  next();
+});
+
 app.get('/site/:slug', async (req, res) => {
   try {
     const { rows } = await pgPool.query('SELECT html_content FROM websites WHERE slug = $1 AND status = $2', [req.params.slug, 'published']);
