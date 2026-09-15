@@ -1,6 +1,7 @@
 import { sql } from '../lib/db.js';
 import { getAuthUser, json } from '../lib/auth.js';
 import crypto from 'crypto';
+import { sendMail, receiptEmail } from '../lib/email.js';
 
 const API_TOKEN = process.env.BAYARCASH_API_TOKEN;
 const SECRET_KEY = process.env.BAYARCASH_API_SECRET_KEY;
@@ -48,6 +49,16 @@ async function activatePlan(userId, planId, billingCycle, amount, orderNo) {
   await sql`
     UPDATE subscriptions SET status = 'paid', payment_method = 'bayarcash'
     WHERE id = (SELECT id FROM subscriptions WHERE user_id = ${userId} AND status = 'pending' ORDER BY created_at DESC LIMIT 1)`;
+
+  try {
+    const { rows: u } = await sql`SELECT name, email FROM profiles WHERE id = ${userId}`;
+    if (u[0]?.email) {
+      sendMail(u[0].email, `Resit Pembayaran - ${orderNo || 'PromptBiz Pro'}`, receiptEmail(u[0].name || 'Pelanggan', planId, amount, orderNo || '-')).then(sent => {
+        if (sent) console.log('[payment] Receipt email sent:', u[0].email);
+      }).catch(() => {});
+    }
+  } catch {}
+
   return rows[0];
 }
 

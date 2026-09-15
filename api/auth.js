@@ -1,6 +1,7 @@
 import { sql } from '../lib/db.js';
 import { signToken, getAuthUser, json } from '../lib/auth.js';
 import bcrypt from 'bcryptjs';
+import { sendMail, welcomeEmail, resetEmail } from '../lib/email.js';
 
 const COMMISSION_RATE = 0.30;
 
@@ -32,6 +33,10 @@ export async function POST(request) {
           await sql`UPDATE profiles SET referred_by = ${aff[0].id} WHERE id = ${user.id}`;
         }
       }
+
+      sendMail(email, 'Selamat Datang ke PromptBiz Pro!', welcomeEmail(name)).then(sent => {
+        if (sent) console.log('[auth] Welcome email sent:', email);
+      }).catch(() => {});
 
       const token = signToken({ userId: user.id, email: user.email, isAdmin: user.is_admin });
       return json({ user, token }, 201);
@@ -70,24 +75,38 @@ export async function POST(request) {
   }
 }
 
-export async function GET(request) {
-  const auth = getAuthUser(request);
-  if (!auth) return json({ error: 'Unauthorized' }, 401);
-  try {
-    const { rows } = await sql`SELECT id, name, email, plan, is_admin, phone, business_type,
-      affiliate_code, affiliate_balance, affiliate_total_earned, ai_credits_left, created_at
-      FROM profiles WHERE id = ${auth.userId}`;
-    if (rows.length === 0) return json({ error: 'User not found' }, 404);
-    return json({ user: rows[0] });
-  } catch (error) {
-    return json({ error: error.message }, 500);
-  }
-}
-
 export async function PUT(request) {
-  const auth = getAuthUser(request);
-  if (!auth) return json({ error: 'Unauthorized' }, 401);
   try {
+    const { action, email, code, newPassword } = await request.json();
+
+    if (action === 'request-reset') {
+      if (!email) return json({ error: 'Email diperlukan' }, 400);
+      const { rows } = await sql`SELECT id, name FROM profiles WHERE email = ${email.toLowerCase()}`;
+      if (rows.length === 0) return json({ success: true });
+      const resetCode = String(Math.floor(100000 + Math.random() * 900000));
+      await sql`INSERT INTO password_resets (user_id, code, expires_at) VALUES (${rows[0].id}, ${resetCode}, now() + interval '15 minutes')`;
+      const sent = await sendMail(email, 'Reset Kata Laluan - PromptBiz Pro', resetEmail(rows[0].name || 'Pengguna', resetCode));
+      return json({ success: true, emailSent: sent });
+    }
+
+    if (action === 'confirm-reset') {
+      if (!email || !code || !newPassword) return json({ error: 'Data tidak lengkap' }, 400);
+      if (newPassword.length < 6) return json({ error: 'Kata laluan min 6 aksara' }, 400);
+      const { rows } = await sql`SELECT pr.id, pr.user_id FROM password_resets pr
+        JOIN profiles p ON pr.user_id = p.id
+        WHERE p.email = ${email.toLowerCase()} AND pr.code = ${code} AND pr.used = false AND pr.expires_at > now()
+        ORDER BY pr.created_at DESC LIMIT 1`;
+      if (rows.length === 0) return json({ error: 'Kod tidak sah atau tamat tempoh' }, 400);
+      const hash = await bcrypt.hash(newPassword, 12);
+      await sql`UPDATE profiles SET password_hash = ${hash}, updated_at = now() WHERE id = ${rows[0].user_id}`;
+      await sql`UPDATE password_resets SET used = true WHERE id = ${rows[0].id}`;
+      return json({ success: true });
+    }
+
+    if (action) return json({ error: 'Invalid action' }, 400);
+
+    const auth = getAuthUser(request);
+    if (!auth) return json({ error: 'Unauthorized' }, 401);
     const updates = await request.json();
     const allowed = ['name', 'phone', 'business_type', 'plan', 'plan_billing_cycle', 'plan_started_at', 'plan_expires_at', 'ai_credits_left', 'is_trial', 'trial_ends_at'];
     const setClauses = []; const values = [];
@@ -95,7 +114,8 @@ export async function PUT(request) {
       if (updates[key] !== undefined) { setClauses.push(`${key} = $${values.length + 1}`); values.push(updates[key]); }
     }
     if (setClauses.length === 0) return json({ error: 'No valid fields' }, 400);
-    setClauses.push(`updated_at = now()`); values.push(auth.userId);
+    setClauses.push(`updated_at = now()`);
+    values.push(auth.userId);
     const query = `UPDATE profiles SET ${setClauses.join(', ')} WHERE id = $${values.length} RETURNING id, name, email, plan, is_admin, phone, business_type, ai_credits_left`;
     const { rows } = await sql.unsafe(query, values);
     return json({ user: rows[0] });

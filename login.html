@@ -183,6 +183,7 @@
     </div>
     <div class="check-row">
       <label><input type="checkbox" id="rememberMe"/> <span data-i18n="login.remember">Ingat Saya</span></label>
+      <a href="#" onclick="openResetModal()" style="font-size:.82rem">Terlupa Kata Laluan?</a>
     </div>
     <button type="submit" class="btn-auth" id="loginBtn">
       <i class="fa fa-right-to-bracket"></i> <span data-i18n="login.signin">Log Masuk</span>
@@ -248,6 +249,59 @@
 </div>
 
 <div class="toast-container" id="toastContainer"></div>
+
+<div class="modal-overlay" id="resetModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:200;align-items:center;justify-content:center;padding:20px">
+  <div style="background:var(--bg2,#161D2E);border:1px solid var(--border,#232D45);border-radius:14px;width:100%;max-width:400px;padding:28px">
+    <h3 style="margin-bottom:6px;font-size:1.1rem">Reset Kata Laluan</h3>
+    <div id="resetStep1">
+      <p style="font-size:.82rem;color:var(--text2,#9AA5B8);margin-bottom:16px">Masukkan emel anda. Kami akan hantar kod reset 6-digit.</p>
+      <input type="email" id="resetEmail" class="form-control" placeholder="nama@email.com" style="margin-bottom:14px"/>
+      <button class="btn-auth" style="width:100%" onclick="requestReset()">Hantar Kod</button>
+    </div>
+    <div id="resetStep2" style="display:none">
+      <p style="font-size:.82rem;color:var(--text2,#9AA5B8);margin-bottom:8px">Masukkan kod 6-digit + kata laluan baharu:</p>
+      <input type="text" id="resetCode" class="form-control" placeholder="123456" maxlength="6" style="margin-bottom:10px;text-align:center;font-size:1.2rem;letter-spacing:6px"/>
+      <input type="password" id="resetNewPass" class="form-control" placeholder="Kata laluan baharu (min 6)" style="margin-bottom:14px"/>
+      <button class="btn-auth" style="width:100%" onclick="confirmReset()">Tukar Kata Laluan</button>
+    </div>
+    <button style="background:none;border:none;color:var(--text2,#9AA5B8);cursor:pointer;margin-top:12px;font-size:.8rem;width:100%" onclick="closeResetModal()">Tutup</button>
+  </div>
+</div>
+
+<script>
+  function openResetModal() {
+    document.getElementById('resetModal').style.display = 'flex';
+    event.preventDefault();
+  }
+  function closeResetModal() {
+    document.getElementById('resetModal').style.display = 'none';
+  }
+  async function requestReset() {
+    const email = document.getElementById('resetEmail').value.trim();
+    if (!email) { showToast('Masukkan emel dahulu', 'error'); return; }
+    try {
+      const res = await fetch('/api/auth', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'request-reset', email }) });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      document.getElementById('resetStep1').style.display = 'none';
+      document.getElementById('resetStep2').style.display = 'block';
+      showToast(data.emailSent ? 'Kod dihantar ke emel anda!' : 'Jika emel wujud, kod akan dihantar', 'success');
+    } catch (e) { showToast(e.message, 'error'); }
+  }
+  async function confirmReset() {
+    const email = document.getElementById('resetEmail').value.trim();
+    const code = document.getElementById('resetCode').value.trim();
+    const newPassword = document.getElementById('resetNewPass').value;
+    if (!code || !newPassword) { showToast('Lengkapkan semua medan', 'error'); return; }
+    try {
+      const res = await fetch('/api/auth', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'confirm-reset', email, code, newPassword }) });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      showToast('Kata laluan ditukar! Sila log masuk.', 'success');
+      setTimeout(() => { closeResetModal(); switchTab('login'); }, 1500);
+    } catch (e) { showToast(e.message, 'error'); }
+  }
+</script>
 
 <script src="js/rate-limiting.js?v=2"></script>
 <script src="js/api.js?v=2"></script>
