@@ -75,6 +75,20 @@ export async function POST(request) {
   }
 }
 
+export async function GET(request) {
+  const auth = getAuthUser(request);
+  if (!auth) return json({ error: 'Unauthorized' }, 401);
+  try {
+    const { rows } = await sql`SELECT id, name, email, plan, is_admin, phone, business_type,
+      affiliate_code, affiliate_balance, affiliate_total_earned, ai_credits_left, created_at
+      FROM profiles WHERE id = ${auth.userId}`;
+    if (rows.length === 0) return json({ error: 'User not found' }, 404);
+    return json({ user: rows[0] });
+  } catch (error) {
+    return json({ error: error.message }, 500);
+  }
+}
+
 export async function PUT(request) {
   try {
     const { action, email, code, newPassword } = await request.json();
